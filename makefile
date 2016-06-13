@@ -10,11 +10,11 @@ LDIR=lib
 LIBS=-lm 
 
 #H files go here
-_DEPS = main.h
+_DEPS = entity.h main.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
 #Target object files go here (There basically the c files)
-_OBJ = main.o
+_OBJ = entity.h main.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 
