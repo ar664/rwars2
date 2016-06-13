@@ -7,7 +7,7 @@ ODIR=obj
 LDIR=lib
 
 #Libs are included without the lib prefix because -l does that for you
-LIBS=-lm -lSDL2
+LIBS=-lm 
 
 #H files go here
 _DEPS = main.h
