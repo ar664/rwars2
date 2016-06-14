@@ -7,14 +7,14 @@ ODIR=obj
 LDIR=lib
 
 #Libs are included without the lib prefix because -l does that for you
-LIBS=-lm 
+LIBS=-lm -lSFML 
 
 #H files go here
-_DEPS = entity.h main.h
+_DEPS = sprite.h entity.h main.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
 #Target object files go here (There basically the c files)
-_OBJ = entity.h main.o
+_OBJ = sprite.o entity.o main.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 
@@ -22,7 +22,7 @@ $(ODIR)/%.o : $(SRCDIR)/%.cpp $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 #The end program results name
-program_name : $(OBJ)
+rwars : $(OBJ)
 	gcc -o $@ $^ $(CFLAGS) $(LIBS)
 
 .PHONY: clean
