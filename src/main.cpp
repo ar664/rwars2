@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <SFML\Graphics.hpp>
 #include <iostream>
+#include "entity.h"
 #include "graphics.h"
 #include "globals.h"
 #include "main.h"
