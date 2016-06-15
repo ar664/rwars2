@@ -82,6 +82,7 @@
   <ItemGroup>
     <ClCompile Include="entity.cpp" />
     <ClCompile Include="physics.cpp" />
+    <ClCompile Include="sprite.cpp" />
     <ClCompile Include="src\globals.cpp" />
     <ClCompile Include="src\graphics.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -93,6 +94,7 @@
     <ClInclude Include="include\graphics.h" />
     <ClInclude Include="include\main.h" />
     <ClInclude Include="physics.h" />
+    <ClInclude Include="sprite.h" />
     <ClInclude Include="vectors.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
