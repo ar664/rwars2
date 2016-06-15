@@ -1,8 +1,3 @@
-#ifdef __WIN32
-	#include "SDL.h"
-#else
-	#include "SDL2/SDL.h"
-#endif
 
 #include <stdio.h>
 #include <SFML\Graphics.hpp>
@@ -44,3 +39,4 @@ void HandleEvent(sf::Event Event)
 		exit(1);
 	}
 }
+
