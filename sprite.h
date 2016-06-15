@@ -4,7 +4,7 @@
 #include "vectors.h"
 const int MAX_SPRITES = 500;
 
-typedef class Sprite : sf::Sprite
+typedef class Sprite 
 {
 
 public:

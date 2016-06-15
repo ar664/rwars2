@@ -43,7 +43,6 @@ void Loop()
 
 			gRenderWindow.clear();		//Clears the window
 			gRenderWindow.draw(ent);
-			//gRenderWindow.draw(sprite);
 			ent.setPosition(mouseX,mouseY);
 			std::cout << ent.getPosition().x << " , " << ent.getPosition().y << std::endl;
 			gRenderWindow.display();						//Displays whatever is drawn to the window
