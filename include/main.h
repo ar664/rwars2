@@ -1,8 +1,17 @@
 #ifndef __MAIN_H
 #define __MAIN_H
-
-#define VER		0.1
-
-
+/**
+ * @brief Intializes all systems
+ */
+void Init_All();
+/**
+ * @brief Game Loop
+ */
+void Loop();
+/**
+ * @brief Handles events
+ * @param an sf::Event
+ */
+void HandleEvent(sf::Event Event);
 
 #endif
