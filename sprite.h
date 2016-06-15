@@ -3,6 +3,7 @@
 
 #include "vectors.h"
 const int MAX_SPRITES = 500;
+
 typedef class Sprite : sf::Sprite
 {
 
@@ -10,7 +11,7 @@ public:
 	int				refCount;
 	int				fpl;
 	char*			filename;
-	sf::Sprite		sfmlSprite;
+	sf::Sprite		*sfmlSprite;
 	Vec2D			frameBB;
 	~Sprite(void);
 

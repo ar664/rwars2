@@ -16,7 +16,7 @@ private:
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states)const
 	{
 	    states.transform *= getTransform();
-		target.draw(rSprite->sfmlSprite, states);
+		target.draw(*rSprite->sfmlSprite, states);
 	}
 public:
 	int				cellIndex;

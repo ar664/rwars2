@@ -9,6 +9,7 @@
 #include "main.h"
 
 int mouseX = 0,mouseY = 0;
+Entity ent;
 int main(int argc,char *argv[])
 {
 	Init_All();
@@ -18,22 +19,21 @@ int main(int argc,char *argv[])
 void Init_All()
 {
 	Init_Graphics(WINDOW_WIDTH,WINDOW_HEIGHT,"RWARS");
+	sf::Image image;
+	image.create(75,75,sf::Color::Blue);
+
+	sf::Texture *texture = new sf::Texture;
+	texture->loadFromImage(image);
+	sf::Sprite *sprite = new sf::Sprite;
+	sprite->setTexture(*texture,1);
+	sprite->setPosition(mouseX,mouseY);
+	ent.rSprite = (Sprite*)malloc(sizeof(Sprite));
+	ent.rSprite->sfmlSprite = sprite;
+
 }
 
 void Loop()
 {
-	Entity ent;
-	sf::Image image;
-	image.create(75,75,sf::Color::Blue);
-
-	sf::Texture texture;
-	texture.loadFromImage(image);
-	sf::Sprite sprite(texture);
-	
-	sprite.setPosition(mouseX,mouseY);
-	ent.rSprite = (Sprite*)malloc(sizeof(Sprite));
-	ent.rSprite->sfmlSprite = sprite;
-
 	//delete ent.sp;
 	while(gRenderWindow.isOpen())
 	{
