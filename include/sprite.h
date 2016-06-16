@@ -2,21 +2,47 @@
 #define __SPRITE_H
 
 #include <SFML/Graphics.hpp>
+const int MAX_SPRITES = 500;
+#define ANIMATION_FRAME_LENGTH 128
+#define ANIMATION_FRAME_HEIGHT 128
+#include "vectors.h"
 
+typedef struct AnimationData{
+	char			name[20];
+	int				startFrame;
+	int				currentFrame;
+	int				frameInc;
+	int				frameRate;
+	int				heldFrame;
+	long			oldTime;
+	int				maxFrames;
+	int				oscillate;
+	int				holdFrame;
+}Animation;
 
-class RSprite : public sf::Image
+typedef class Sprite 
 {
 public:
-//Declaration
-	RSprite(char *file, int frame_width, int frame_height, int fpl);
-	~RSprite();
-//Variables	
-	int mFrameWidth;
-	int mFrameHeight;
-	int mFramesPerLine;
-//Functions
-	void Draw(int frame, int x, int y);
-
+	int				refCount;
+	int				fpl;
+	int				width;
+	int				height;
+	char			filename[128];
+	sf::Sprite*     sfmlSprite;
+	sf::IntRect*	frameBB;
+	~Sprite(void);
+	void FreeSprite();
+	void SetFrameBB();
 };
-
+Sprite *LoadSprite(char* filename);
+void CloseSpriteList();
+void InitSpriteList();
+/**
+* @brief steps through an animation by its frameInc
+*/
+void		Animate(Animation* animation,int startFrame);
+void		SetCurrentFrame(Animation* animation,int Frame);
+void		FreeAnimation(char* key,Animation* animation);
+void		SetFrameRate(Animation* animation);
+int			GetCurrentFrame(Animation* animation);
 #endif

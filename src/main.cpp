@@ -10,6 +10,7 @@
 
 int mouseX = 0,mouseY = 0;
 Entity ent;
+
 int main(int argc,char *argv[])
 {
 	Init_All();
@@ -20,15 +21,22 @@ void Init_All()
 {
 	Init_Graphics(WINDOW_WIDTH,WINDOW_HEIGHT,"RWARS");
 	InitSpriteList();
-	sf::Image image;
-	image.create(75,75,sf::Color::Blue);
+	gClock.restart();
 
-	sf::Texture *texture = new sf::Texture;
-	texture->loadFromImage(image);
-	sf::Sprite *sprite = new sf::Sprite;
-	sprite->setTexture(*texture,1);
-	sprite->setPosition(mouseX,mouseY);
-	ent.rSprite = LoadSprite("sprites/Enemies3.png",32,32,2);
+	ent.rSprite = LoadSprite("sprites/Enemies3.png");
+	ent.SetDimensions(CreateVec2D(2,2));
+	ent.rSprite->SetFrameBB();
+	ent.frameNum = 2;
+	Animation* anim = new Animation;
+	anim->currentFrame = 0;
+	anim->frameInc = 1;
+	anim->frameRate = 10;
+	anim->maxFrames = 2;
+	anim->oscillate = 1;
+	ent.animations.insert(std::make_pair<char*,Animation*>("idle",anim));
+	ent.SetCurrentAnimation(anim);
+	std::cout << ent.rSprite->sfmlSprite->getTexture()->getSize().x << " "<<
+		ent.rSprite->sfmlSprite->getTexture()->getSize().y <<  std::endl;
 	//ent.rSprite = (Sprite*)malloc(sizeof(Sprite));
 	//ent.rSprite->sfmlSprite = sprite;
 
@@ -36,14 +44,24 @@ void Init_All()
 
 void Loop()
 {
-	//delete ent.sp;
+	sf::Image image;
+	image.create(ent.rSprite->frameBB[ent.frameNum].width,
+	ent.rSprite->frameBB[ent.frameNum].height,sf::Color::Blue);
+
+	sf::Texture *texture = new sf::Texture;
+	texture->loadFromImage(image);
+	sf::Sprite *sprite = new sf::Sprite;
+	sprite->setTexture(*texture,1);
+	sprite->setPosition(mouseX,mouseY);
 	while(gRenderWindow.isOpen())
 	{
 		while(gRenderWindow.pollEvent(gEvent))
 		{
 			HandleEvent(gEvent);
 			gRenderWindow.clear();		//Clears the window
+			gRenderWindow.draw(*sprite);
 			ent.Draw(gRenderWindow);
+			sprite->setPosition(mouseX,mouseY);
 			ent.setPosition(mouseX,mouseY);
 			std::cout << ent.getPosition().x << " , " << 
 				ent.getPosition().y << std::endl;
