@@ -24,6 +24,10 @@ Vec2D Entity::GetVelocity()
 {
 	return velocity;
 }
+void Entity::SetCurrentAnimation(Animation* anim)
+{
+	curAnim = anim;
 
+}
 
 
