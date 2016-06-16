@@ -84,7 +84,7 @@ void Grid::addEntity(Entity* ent)
 	Cell* cell = getCell(CreateVec2D(ent->getPosition().x,ent->getPosition().y));
 	cell->entities.push_back(ent);
 	ent->SetCell(cell);
-	ent->cellIndex = cell->entities.size() - 1;
+	ent->mCellIndex = cell->entities.size() - 1;
 	printf("Added to new cell,CellSize:%d",cell->entities.size());
 }
 
@@ -97,7 +97,7 @@ void Grid::addEntity(Entity* ent,Cell* cell)
 {
 	cell->entities.push_back(ent);
 	ent->SetCell(cell);
-	ent->cellIndex = cell->entities.size() - 1;
+	ent->mCellIndex = cell->entities.size() - 1;
 	printf("Added to new cell,CellSize:%d",cell->entities.size());
 
 }
@@ -110,16 +110,16 @@ void Grid::removeEntityFromCell(Entity* ent)
 	std::vector<Entity*> & ents = ent->GetCell()->entities;
 	
 	//Vector swap, Need to check for 0 or else get error because you cant pop_back from an empty vector
-	ents[ent->cellIndex] = ents.back();					//Setting one vectors index to the last element in the other vector
+	ents[ent->mCellIndex] = ents.back();					//Setting one vectors index to the last element in the other vector
 	ents.pop_back();									//Deletes last element
 	//update vector index
-	if(ent->cellIndex < ents.size())
+	if(ent->mCellIndex < ents.size())
 	{
-		ents[ent->cellIndex]->cellIndex = ent->cellIndex;
+		ents[ent->mCellIndex]->mCellIndex = ent->mCellIndex;
 	}
 	
 	//Set index of ent to 1
-	ent->cellIndex = -1;
+	ent->mCellIndex = -1;
 	ent->SetCell(nullptr);
 	printf("Removed from old cell\n");
 }

@@ -2,6 +2,57 @@
 #include "physics.h"
 #include "entity.h"
 
+Entity *gEntities = NULL;
+
+
+void Entity::Load(char **Sprites)
+{
+	//Load Sprites
+}
+
+void Entity::Free()
+{
+	//Free Sprites
+
+	//Reset you own memory
+	memset(this, 0, sizeof(Entity));
+}
+
+bool EntitySystemInit()
+{
+	if(gEntities)
+	{
+		return false;
+	}
+	gEntities = (Entity*) malloc(sizeof(Entity)*MAX_ENTITIES);
+	if(!gEntities)
+	{
+		return false;
+	}
+	memset(gEntities, 0, sizeof(Entity)*MAX_ENTITIES);
+	atexit(EntitySystemShutdown);
+	return true;
+}
+
+void EntitySystemShutdown()
+{
+	int i;
+	if(!gEntities)
+	{
+		return;
+	}
+	for(i = 0; i < MAX_ENTITIES; i++)
+	{
+		if(gEntities[i].mInUse)
+		{
+			if(gEntities[i].rSprite)
+			{
+				gEntities[i].Free();
+			}
+		}
+
+	}
+}
 
 void Entity::SetCell(Cell* cell)
 {
@@ -14,12 +65,26 @@ Cell* Entity::GetCell()
 }
 Vec2D Entity::GetDimension()
 {
-	return dimension;
+	return mDimension;
 }
 Vec2D Entity::GetVelocity()
 {
-	return velocity;
+	return mVelocity;
 }
 
 
+//Empty Functions Tbd (To be defined)
+void			SetPosition(Vec2D)
+{
+	
+}
 
+void			SetDimensions(Vec2D)
+{
+	
+}
+
+void			SetVelocity(Vec2D)
+{
+	
+}

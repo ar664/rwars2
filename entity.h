@@ -5,24 +5,27 @@
 struct Cell;
 class Grid;
 
+#define MAX_ENTITIES 1000
+
 typedef class Entity: public sf::Transformable
 {
 private:
-	int					speed;
-	Vec2D				velocity;
-	Vec2D				dimension;
+	int					mSpeed;
+	Vec2D				mVelocity;
+	Vec2D				mDimension;
 	Cell*				mCell;
 public:
-	int					cellIndex;
-	int					frameNum;
+	int					mInUse;
+	int					mCellIndex;
+	int					mFrameNum;
 	Vec2D				GetDimension();
 	Vec2D				GetVelocity();
 	Sprite				*rSprite;
 
 	void Draw(sf::RenderTarget &target)const
 	{
-		sf::IntRect rect(frameNum % rSprite->fpl * rSprite->width,
-			frameNum / rSprite->fpl * rSprite->height,
+		sf::IntRect rect(mFrameNum % rSprite->fpl * rSprite->width,
+			mFrameNum / rSprite->fpl * rSprite->height,
 			rSprite->width,
 			rSprite->height);
 		rSprite->sfmlSprite->setTextureRect(rect);
@@ -36,7 +39,16 @@ public:
 	void			SetPosition(Vec2D);
 	void			SetDimensions(Vec2D);
 	void			SetVelocity(Vec2D);
+
+	//Constructors
+	void	Load(char **Sprites);
+	void	Free();
 };
+
+extern Entity *gEntities;
+
+bool EntitySystemInit();
+void EntitySystemShutdown();
 
 
 #endif
