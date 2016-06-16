@@ -8,10 +8,10 @@ int AABB(Entity *ent1, Entity *ent2)
 		/*
 	Checks if the boxes intersect by comparing the boxes (x and widths) and (y and heights)
 	*/
-	if((ent1->GetPosition().x + ent1->GetDimension().x) > ent2->GetPosition().x 
-		&& (ent2->GetPosition().x + ent2->GetDimension().x) > ent1->GetPosition().x
-		&& (ent1->GetPosition().y + ent1->GetDimension().y) > ent2->GetPosition().y 
-		&& (ent2->GetPosition().y + ent2->GetDimension().y) > ent1->GetPosition().y)
+	if((ent1->getPosition().x + ent1->GetDimension().x) > ent2->getPosition().x 
+		&& (ent2->getPosition().x + ent2->GetDimension().x) > ent1->getPosition().x
+		&& (ent1->getPosition().y + ent1->GetDimension().y) > ent2->getPosition().y 
+		&& (ent2->getPosition().y + ent2->GetDimension().y) > ent1->getPosition().y)
 	{
 
 		return 1;
@@ -81,7 +81,7 @@ Cell* Grid::getCell(Vec2D ent)
 
 void Grid::addEntity(Entity* ent)
 {
-	Cell* cell = getCell(ent->GetPosition());
+	Cell* cell = getCell(CreateVec2D(ent->getPosition().x,ent->getPosition().y));
 	cell->entities.push_back(ent);
 	ent->SetCell(cell);
 	ent->cellIndex = cell->entities.size() - 1;

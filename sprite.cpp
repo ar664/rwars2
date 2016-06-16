@@ -15,15 +15,29 @@ void InitSpriteList()
 }
 void CloseSpriteList()
 {
-
-}
-/*
-Sprite *LoadSprite(char* filename,int sizex,int sizey,char*,int fpl)
-{
-	sf::Texture texture;
-	for(int i = 0; i< MAX_SPRITES;i++)
+	int i,j;
+	if(!SpriteList)
 	{
-		if(strncmp(filename,SpriteList[i].filename,40) == 0)
+		return;
+	}
+	for (i = 0;i < MAX_SPRITES;i++)
+	{
+		if(SpriteList[i].sfmlSprite != NULL)
+		{
+			SpriteList[i].FreeSprite();
+		}
+	}
+	free(SpriteList);
+	SpriteList = NULL;
+}
+
+Sprite *LoadSprite(char* filename,int sizex,int sizey,int fpl)
+{
+	int i;
+	sf::Texture *texture = new sf::Texture;
+	for(i = 0; i< MAX_SPRITES;i++)
+	{
+		if(strncmp(filename,SpriteList[i].filename,128) == 0)
 		{
 			SpriteList[i].refCount++;
 			return &SpriteList[i];
@@ -35,10 +49,34 @@ Sprite *LoadSprite(char* filename,int sizex,int sizey,char*,int fpl)
 		exit(1);
 	}
 	numSprites++;
-	texture.loadFromFile(filename);
-	
-}*/
+	 for(i = 0;i <= MAX_SPRITES;i++)
+	{
+		if(SpriteList[i].refCount <= 0)break;
+	}
+	texture->loadFromFile(filename);
+	SpriteList[i].sfmlSprite = new sf::Sprite;
+	SpriteList[i].sfmlSprite->setTexture(*texture,1);
+	SpriteList[i].refCount +=1 ;
+	strcpy(SpriteList[i].filename,filename);
+	SpriteList[i].fpl = fpl;
 
+	return &SpriteList[i];
+}
+void Sprite::FreeSprite()
+{
+	if(refCount > 0)
+	{
+		refCount--;
+	}
+	if(refCount <= 0)
+	{
+		delete sfmlSprite->getTexture();
+		delete sfmlSprite;
+		strcpy(filename ,"\0");
+		refCount = 0;
+		sfmlSprite = NULL;
+	}
+}
 
 Sprite::~Sprite(void)
 {

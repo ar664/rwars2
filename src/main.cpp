@@ -19,6 +19,7 @@ int main(int argc,char *argv[])
 void Init_All()
 {
 	Init_Graphics(WINDOW_WIDTH,WINDOW_HEIGHT,"RWARS");
+	InitSpriteList();
 	sf::Image image;
 	image.create(75,75,sf::Color::Blue);
 
@@ -42,9 +43,10 @@ void Loop()
 			HandleEvent(gEvent);
 
 			gRenderWindow.clear();		//Clears the window
-			gRenderWindow.draw(ent);
+			ent.Draw(gRenderWindow);
 			ent.setPosition(mouseX,mouseY);
-			std::cout << ent.getPosition().x << " , " << ent.getPosition().y << std::endl;
+			std::cout << ent.getPosition().x << " , " << 
+				ent.getPosition().y << std::endl;
 			gRenderWindow.display();						//Displays whatever is drawn to the window
 		}
 	}

@@ -5,30 +5,27 @@
 struct Cell;
 class Grid;
 
-typedef class Entity :public sf::Transformable , public sf::Drawable
+typedef class Entity: public sf::Transformable
 {
 private:
-	int				speed;
-	Vec2D			position;
-	Vec2D			velocity;
-	Vec2D			dimension;
-	Cell*			mCell;
-	virtual void draw(sf::RenderTarget& target, sf::RenderStates states)const
-	{
-	    states.transform *= getTransform();
-		target.draw(*rSprite->sfmlSprite, states);
-	}
+	int					speed;
+	Vec2D				velocity;
+	Vec2D				dimension;
+	Cell*				mCell;
 public:
-	int				cellIndex;
-	Vec2D			GetPosition();
-	Vec2D			GetDimension();
-	Vec2D			GetVelocity();
+	int					cellIndex;
+	int					frameNum;
+	Vec2D				GetDimension();
+	Vec2D				GetVelocity();
+	Sprite				*rSprite;
 
-
+	void Draw(sf::RenderTarget &target)const
+	{
+		target.draw(*rSprite->sfmlSprite,this->getTransform());
+	}
+	//Getters
 	Cell*			GetCell();
 	Grid*			GetGrid();
-	
-	Sprite			*rSprite;
 	//Setters
 	void			SetCell(Cell* cell);
 	void			SetPosition(Vec2D);

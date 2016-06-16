@@ -12,12 +12,6 @@ Cell* Entity::GetCell()
 {
 	return mCell;
 }
-
-Vec2D Entity::GetPosition()
-{
-	return position;
-
-}
 Vec2D Entity::GetDimension()
 {
 	return dimension;

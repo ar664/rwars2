@@ -6,17 +6,17 @@ const int MAX_SPRITES = 500;
 
 typedef class Sprite 
 {
-
 public:
 	int				refCount;
 	int				fpl;
-	char*			filename;
+	char			filename[128];
 	sf::Sprite		*sfmlSprite;
 	Vec2D			frameBB;
 	~Sprite(void);
+	void FreeSprite();
 
 };
-Sprite *LoadSprite(char* filename,int sizex,int sizey,char*,int fpl);
+Sprite *LoadSprite(char* filename,int sizex,int sizey,int fpl);
 void CloseSpriteList();
 void InitSpriteList();
 #endif
