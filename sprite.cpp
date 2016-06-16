@@ -56,6 +56,8 @@ Sprite *LoadSprite(char* filename,int sizex,int sizey,int fpl)
 	texture->loadFromFile(filename);
 	SpriteList[i].sfmlSprite = new sf::Sprite;
 	SpriteList[i].sfmlSprite->setTexture(*texture,1);
+	SpriteList[i].width = sizex;
+	SpriteList[i].height = sizey;
 	SpriteList[i].refCount +=1 ;
 	strcpy(SpriteList[i].filename,filename);
 	SpriteList[i].fpl = fpl;

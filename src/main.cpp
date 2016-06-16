@@ -28,8 +28,9 @@ void Init_All()
 	sf::Sprite *sprite = new sf::Sprite;
 	sprite->setTexture(*texture,1);
 	sprite->setPosition(mouseX,mouseY);
-	ent.rSprite = (Sprite*)malloc(sizeof(Sprite));
-	ent.rSprite->sfmlSprite = sprite;
+	ent.rSprite = LoadSprite("sprites/Enemies3.png",32,32,2);
+	//ent.rSprite = (Sprite*)malloc(sizeof(Sprite));
+	//ent.rSprite->sfmlSprite = sprite;
 
 }
 
@@ -41,7 +42,6 @@ void Loop()
 		while(gRenderWindow.pollEvent(gEvent))
 		{
 			HandleEvent(gEvent);
-
 			gRenderWindow.clear();		//Clears the window
 			ent.Draw(gRenderWindow);
 			ent.setPosition(mouseX,mouseY);

@@ -9,6 +9,8 @@ typedef class Sprite
 public:
 	int				refCount;
 	int				fpl;
+	int				width;
+	int				height;
 	char			filename[128];
 	sf::Sprite		*sfmlSprite;
 	Vec2D			frameBB;

@@ -21,6 +21,11 @@ public:
 
 	void Draw(sf::RenderTarget &target)const
 	{
+		sf::IntRect rect(frameNum % rSprite->fpl * rSprite->width,
+			frameNum / rSprite->fpl * rSprite->height,
+			rSprite->width,
+			rSprite->height);
+		rSprite->sfmlSprite->setTextureRect(rect);
 		target.draw(*rSprite->sfmlSprite,this->getTransform());
 	}
 	//Getters
