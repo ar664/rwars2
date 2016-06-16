@@ -13,10 +13,10 @@ public:
 	int				height;
 	char			filename[128];
 	sf::Sprite		*sfmlSprite;
-	Vec2D			frameBB;
+	Vec2D*			frameBB;
 	~Sprite(void);
 	void FreeSprite();
-
+	void SetFrameBB();
 };
 Sprite *LoadSprite(char* filename,int sizex,int sizey,int fpl);
 void CloseSpriteList();

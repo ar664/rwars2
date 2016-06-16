@@ -7,7 +7,11 @@ void Entity::SetCell(Cell* cell)
 {
 	mCell = cell;
 }
-
+void Entity::SetDimensions(Vec2D vec)
+{
+	dimension.x = vec.x;
+	dimension.y= vec.y;
+}
 Cell* Entity::GetCell()
 {
 	return mCell;

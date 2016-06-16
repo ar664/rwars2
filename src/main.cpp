@@ -28,7 +28,10 @@ void Init_All()
 	sf::Sprite *sprite = new sf::Sprite;
 	sprite->setTexture(*texture,1);
 	sprite->setPosition(mouseX,mouseY);
-	ent.rSprite = LoadSprite("sprites/Enemies3.png",32,32,2);
+	ent.rSprite = LoadSprite("sprites/Enemies3.png",95,31,3);
+	ent.SetDimensions(CreateVec2D(2,2));
+	ent.rSprite->SetFrameBB();
+	ent.frameNum = 2;
 	//ent.rSprite = (Sprite*)malloc(sizeof(Sprite));
 	//ent.rSprite->sfmlSprite = sprite;
 
