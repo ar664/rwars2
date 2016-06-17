@@ -1,7 +1,7 @@
-
 #include <stdio.h>
-#include <SFML\Graphics.hpp>
-#include <SFML\Window.hpp>
+#include <utility>
+#include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
 #include <iostream>
 #include "entity.h"
 #include "graphics.h"
@@ -26,14 +26,14 @@ void Init_All()
 	ent.rSprite = LoadSprite("sprites/Enemies3.png");
 	ent.SetDimensions(CreateVec2D(2,2));
 	ent.rSprite->SetFrameBB();
-	ent.frameNum = 2;
+	ent.mFrameNum = 2;
 	Animation* anim = new Animation;
 	anim->currentFrame = 0;
 	anim->frameInc = 1;
 	anim->frameRate = 10;
 	anim->maxFrames = 2;
 	anim->oscillate = 1;
-	ent.animations.insert(std::make_pair<char*,Animation*>("idle",anim));
+	ent.animations.insert(std::make_pair<char*,Animation*>((char*)("idle"),anim));
 	ent.SetCurrentAnimation(anim);
 	std::cout << ent.rSprite->sfmlSprite->getTexture()->getSize().x << " "<<
 		ent.rSprite->sfmlSprite->getTexture()->getSize().y <<  std::endl;
@@ -45,8 +45,8 @@ void Init_All()
 void Loop()
 {
 	sf::Image image;
-	image.create(ent.rSprite->frameBB[ent.frameNum].width,
-	ent.rSprite->frameBB[ent.frameNum].height,sf::Color::Blue);
+	image.create(ent.rSprite->frameBB[ent.mFrameNum].width,
+	ent.rSprite->frameBB[ent.mFrameNum].height,sf::Color::Blue);
 
 	sf::Texture *texture = new sf::Texture;
 	texture->loadFromImage(image);

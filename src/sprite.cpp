@@ -1,8 +1,7 @@
 #include "sprite.h"
-
-
-
-#include <SFML\Graphics.hpp>
+#include <SFML/Graphics.hpp>
+#include <malloc.h>
+#include <string.h>
 #include <iostream>
 #include "vectors.h"
 #include "globals.h"

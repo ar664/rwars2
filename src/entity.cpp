@@ -1,4 +1,6 @@
-#include <SFML\Graphics.hpp>
+#include <SFML/Graphics.hpp>
+#include <string.h>
+#include <malloc.h>
 #include "physics.h"
 #include "entity.h"
 
@@ -60,8 +62,8 @@ void Entity::SetCell(Cell* cell)
 }
 void Entity::SetDimensions(Vec2D vec)
 {
-	dimension.x = vec.x;
-	dimension.y= vec.y;
+	mDimension.x = vec.x;
+	mDimension.y= vec.y;
 }
 Cell* Entity::GetCell()
 {

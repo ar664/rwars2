@@ -4,8 +4,8 @@
  * @brief Contains all the globals variables!
 */
 
-extern const int WINDOW_WIDTH;
-extern const int WINDOW_HEIGHT;
+#define WINDOW_WIDTH	800
+#define WINDOW_HEIGHT	600
 extern int numSprites;
 extern sf::RenderWindow gRenderWindow;
 extern sf::Event gEvent;
