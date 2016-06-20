@@ -37,10 +37,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(SFML2)\include;$(SDL2)\include;$(SolutionDir)include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SFML2)\include;$(SolutionDir)include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LibraryPath>$(SFML2)\lib;$(SDL2)\lib\x86;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SFML2)\lib;$(LibraryPath)</LibraryPath>
     <SourcePath>$(SolutionDir)include;$(SolutionDir)src</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -59,7 +59,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>sfml-window.lib;sfml-graphics.lib;sfml-main.lib;sfml-system.lib;openal32.lib;sfml-audio.lib;SDL2.lib;SDL2main.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sfml-window.lib;sfml-graphics.lib;sfml-main.lib;sfml-system.lib;openal32.lib;sfml-audio.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
@@ -81,22 +81,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="entity.cpp" />
-    <ClCompile Include="physics.cpp" />
-    <ClCompile Include="sprite.cpp" />
+    <ClCompile Include="src\entity.cpp" />
     <ClCompile Include="src\globals.cpp" />
     <ClCompile Include="src\graphics.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="vectors.cpp" />
+    <ClCompile Include="src\physics.cpp" />
+    <ClCompile Include="src\sprite.cpp" />
+    <ClCompile Include="src\vectors.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="entity.h" />
+    <ClInclude Include="include\entity.h" />
     <ClInclude Include="include\globals.h" />
     <ClInclude Include="include\graphics.h" />
     <ClInclude Include="include\main.h" />
-    <ClInclude Include="physics.h" />
-    <ClInclude Include="sprite.h" />
-    <ClInclude Include="vectors.h" />
+    <ClInclude Include="include\physics.h" />
+    <ClInclude Include="include\sprite.h" />
+    <ClInclude Include="include\vectors.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

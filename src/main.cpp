@@ -8,7 +8,7 @@
 #include "globals.h"
 #include "main.h"
 
-const char *ANIMATION_IDLE_STR = "idle"
+const char *ANIMATION_IDLE_STR = "idle";
 int gMouseX = 0,gMouseY = 0;
 Entity ent;
 
@@ -34,7 +34,7 @@ void Init_All()
 	anim->frameRate = 10;
 	anim->maxFrames = 2;
 	anim->oscillate = 1;
-	ent.animations.insert(std::make_pair<const char*,Animation*>(ANIMATION_IDLE_STR,anim));
+	//ent.animations.insert(std::make_pair<char*,Animation*>(ANIMATION_IDLE_STR,anim));
 	ent.SetCurrentAnimation(anim);
 	std::cout << ent.rSprite->sfmlSprite->getTexture()->getSize().x << " "<<
 		ent.rSprite->sfmlSprite->getTexture()->getSize().y <<  std::endl;
