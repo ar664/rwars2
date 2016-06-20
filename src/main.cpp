@@ -8,7 +8,8 @@
 #include "globals.h"
 #include "main.h"
 
-int mouseX = 0,mouseY = 0;
+const char *ANIMATION_IDLE_STR = "idle"
+int gMouseX = 0,gMouseY = 0;
 Entity ent;
 
 int main(int argc,char *argv[])
@@ -33,7 +34,7 @@ void Init_All()
 	anim->frameRate = 10;
 	anim->maxFrames = 2;
 	anim->oscillate = 1;
-	ent.animations.insert(std::make_pair<char*,Animation*>((char*)("idle"),anim));
+	ent.animations.insert(std::make_pair<const char*,Animation*>(ANIMATION_IDLE_STR,anim));
 	ent.SetCurrentAnimation(anim);
 	std::cout << ent.rSprite->sfmlSprite->getTexture()->getSize().x << " "<<
 		ent.rSprite->sfmlSprite->getTexture()->getSize().y <<  std::endl;
@@ -52,7 +53,7 @@ void Loop()
 	texture->loadFromImage(image);
 	sf::Sprite *sprite = new sf::Sprite;
 	sprite->setTexture(*texture,1);
-	sprite->setPosition(mouseX,mouseY);
+	sprite->setPosition(gMouseX,gMouseY);
 	while(gRenderWindow.isOpen())
 	{
 		while(gRenderWindow.pollEvent(gEvent))
@@ -61,8 +62,8 @@ void Loop()
 			gRenderWindow.clear();		//Clears the window
 			gRenderWindow.draw(*sprite);
 			ent.Draw(gRenderWindow);
-			sprite->setPosition(mouseX,mouseY);
-			ent.setPosition(mouseX,mouseY);
+			sprite->setPosition(gMouseX,gMouseY);
+			ent.setPosition(gMouseX,gMouseY);
 			std::cout << ent.getPosition().x << " , " << 
 				ent.getPosition().y << std::endl;
 			gRenderWindow.display();						//Displays whatever is drawn to the window
@@ -79,8 +80,8 @@ void HandleEvent(sf::Event Event)
 	}
 	else if(Event.type == sf::Event::EventType::MouseMoved)
 	{
-		mouseX = Event.mouseMove.x;
-		mouseY = Event.mouseMove.y;
+		gMouseX = Event.mouseMove.x;
+		gMouseY = Event.mouseMove.y;
 
 	}
 }
