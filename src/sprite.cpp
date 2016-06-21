@@ -162,6 +162,8 @@ Sprite *LoadSprite(char* filename)
 	sprite->mAnimation.mpf = ANIMATION_DEFAULT_MPF;
 	sprite->mAnimation.oscillate = false;
 
+	sprite->SetFrameBB();
+
 	return &SpriteList[i];
 }
 

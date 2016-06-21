@@ -20,8 +20,10 @@ void Entity::Load(char **SpriteFiles)
 	}
 	mNumSprites = MemoryCount(mSpriteArray, sizeof(Sprite*));				//Counting and saving value
 	mCurrentSprite = mSpriteArray[0];
+	mCurrentFrame = 0;
 	mNextFrameTime = mCurrentSprite->mAnimation.mpf;
 	mLastDrawTime = 0;
+	this->setPosition(0, 0);
 }
 
 void Entity::Free()
@@ -42,6 +44,24 @@ void Entity::Free()
 	memset(this, 0, sizeof(Entity));
 }
 
+Entity* EntityGetFree()
+{
+	int i;
+	if(!gEntities)
+	{
+		return NULL;
+	}
+
+	for(i = 0; i < MAX_ENTITIES; i++)
+	{
+		if(!gEntities[i].mInUse)
+		{
+			return &gEntities[i];
+		}
+	}
+	return NULL;
+}
+
 bool EntitySystemInit()
 {
 	if(gEntities)
@@ -56,6 +76,26 @@ bool EntitySystemInit()
 	memset(gEntities, 0, sizeof(Entity)*MAX_ENTITIES);
 	atexit(EntitySystemShutdown);
 	return true;
+}
+
+void EntitySystemStep()
+{
+	int i, time;
+	if(!gEntities)
+	{
+		return;
+	}
+	time = gClock.getElapsedTime().asMilliseconds();
+	for(i = 0; i < MAX_ENTITIES; i++)
+	{
+		if(gEntities[i].mInUse)
+		{
+			if(gEntities[i].mNextThinkTime < time)
+			{
+				gEntities[i].Think();
+			}
+		}
+	}
 }
 
 void EntitySystemShutdown()
@@ -135,6 +175,11 @@ void Entity::Draw(sf::RenderTarget& target)
 		}
 		mNextFrameTime = mCurrentSprite->mAnimation.mpf;
 	}
+}
+
+void Entity::Think()
+{
+	//Empty Think Should be replaced on inheritance
 }
 
 Cell* Entity::GetCell()

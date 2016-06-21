@@ -8,11 +8,14 @@ struct Cell;
 class Grid;
 
 #define MAX_ENTITIES	1000
-#define MAX_ANIMATIONS	20
+#define MAX_ANIMATIONS	15
 
 /**
  * The Entity class which is used for inheritance. Basic properties.
  * 
+ *	Basic:
+ *		mThinkRate		-	The frequency this entity updates itself.
+ *		mNextThinkTime	-	The next time this entity should update.
  *	Graphics:
  *		mSpriteArray	-	Each sprite in this array represents a different animation.
  *		mCurrentSprite	-	The current sprite that the entity is drawing.
@@ -38,6 +41,7 @@ typedef class Entity: public sf::Transformable
 private:
 	sf::Uint32			mLastDrawTime;
 	int					mNextFrameTime;
+	int					mThinkRate;
 	int					mSpeed;
 	Vec2D				mVelocity;
 	Vec2D				mDimension;
@@ -47,6 +51,7 @@ public:
 	int					mInUse;
 	int					mCellIndex;
 	
+	int					mNextThinkTime;
 	int					mCurrentFrame;
 	int					mNumSprites;
 	Sprite**			mSpriteArray;
@@ -63,6 +68,12 @@ public:
  * @note Graphics timings don't get updated when paused.
  */
 	void Draw(sf::RenderTarget &target);
+
+/**
+ * @breif Empty think function, to be overridden by children who inherit it.
+ *
+ */
+	virtual void Think();
 
 	//Getters
 	Cell*			GetCell();
@@ -84,7 +95,10 @@ public:
 
 extern Entity *gEntities;
 
+Entity *EntityGetFree();
+
 bool EntitySystemInit();
+void EntitySystemStep();
 void EntitySystemShutdown();
 
 
