@@ -30,4 +30,10 @@ void Entity::SetCurrentAnimation(Animation* anim)
 
 }
 
+void Entity::SetVelocity(Vec2D vec)
+{
+	velocity = vec;
+
+}
+
 

@@ -36,6 +36,6 @@ private:
 
 
 int AABB(Entity *ent1, Entity *ent2);
-
+int SweptAABB(Entity *ent1, Entity *ent2, float& normalx, float& normaly);
 
 #endif

@@ -10,7 +10,7 @@ extern int numSprites;
 extern sf::RenderWindow gRenderWindow;
 extern sf::Event gEvent;
 extern sf::Clock gClock;
-
+extern const int gFrameRate;
 
 
 #endif

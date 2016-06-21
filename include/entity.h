@@ -17,8 +17,10 @@ private:
 public:
 	int					cellIndex;
 	int					frameNum;
-	Vec2D				GetDimension();
-	Vec2D				GetVelocity();
+
+	float				mass;
+	float				restitution;
+
 	Sprite				*rSprite;
 	std::unordered_map<char*,Animation*>		animations;	
 
@@ -34,12 +36,14 @@ public:
 	//Getters
 	Cell*			GetCell();
 	Grid*			GetGrid();
+	Vec2D			GetDimension();
+	Vec2D			GetVelocity();
 	//Setters
+	void			SetVelocity(Vec2D vec);
 	void			SetCurrentAnimation(Animation* anim);
 	void			SetCell(Cell* cell);
-	void			SetPosition(Vec2D);
-	void			SetDimensions(Vec2D);
-	void			SetVelocity(Vec2D);
+	void			SetPosition(Vec2D vec);
+	void			SetDimensions(Vec2D vec);
 };
 
 

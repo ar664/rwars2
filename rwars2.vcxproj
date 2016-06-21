@@ -81,22 +81,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="entity.cpp" />
-    <ClCompile Include="physics.cpp" />
-    <ClCompile Include="sprite.cpp" />
+    <ClCompile Include="src\entity.cpp" />
     <ClCompile Include="src\globals.cpp" />
     <ClCompile Include="src\graphics.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="vectors.cpp" />
+    <ClCompile Include="src\physics.cpp" />
+    <ClCompile Include="src\sprite.cpp" />
+    <ClCompile Include="src\vectors.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="entity.h" />
+    <ClInclude Include="include\entity.h" />
     <ClInclude Include="include\globals.h" />
     <ClInclude Include="include\graphics.h" />
     <ClInclude Include="include\main.h" />
-    <ClInclude Include="physics.h" />
-    <ClInclude Include="sprite.h" />
-    <ClInclude Include="vectors.h" />
+    <ClInclude Include="include\physics.h" />
+    <ClInclude Include="include\sprite.h" />
+    <ClInclude Include="include\vectors.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

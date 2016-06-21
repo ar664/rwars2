@@ -70,8 +70,8 @@ Vec2D CreateVec2D(float x , float y);
 /**
  * @brief Macro to get the dot product from a vector.
  *
- * @param a Vect3D component of the dot product
- * @param b Vect3D component of the dot product
+ * @param a Vect2D component of the dot product
+ * @param b Vect2D component of the dot product
  *
  * @return the calculated dot product
  */
