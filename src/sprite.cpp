@@ -27,7 +27,7 @@ void CloseSpriteList()
 	}
 	for (i = 0;i < MAX_SPRITES;i++)
 	{
-		if(SpriteList[i].sfmlSprite != NULL)
+		if(SpriteList[i].mSfSprite != NULL)
 		{
 			SpriteList[i].FreeSprite();
 		}
@@ -38,10 +38,7 @@ void CloseSpriteList()
 
 void Sprite::SetFrameBB()
 {
-	int i = 0;
-	int x = 0;
-	int y = 0;
-	int w = 0,h = 0;
+	int i, j, x, y, w, h;
 	int started = 0;
 	int ended = 0;
 	int startX = 0;
@@ -51,10 +48,10 @@ void Sprite::SetFrameBB()
 	sf::Color spriteMask(255,51,51,255);
 
 	sf::Image image;
-	image = sfmlSprite->getTexture()->copyToImage();
-	for(int j = 0; j <(sfmlSprite->getTexture()->getSize().y / ANIMATION_FRAME_HEIGHT);++j)
+	image = mSfSprite->getTexture()->copyToImage();
+	for(j = 0; j <(mSfSprite->getTexture()->getSize().y / ANIMATION_FRAME_HEIGHT);++j)
 	{
-		for(int i = 0; i < (sfmlSprite->getTexture()->getSize().x / ANIMATION_FRAME_LENGTH);++i)
+		for(i = 0; i < (mSfSprite->getTexture()->getSize().x / ANIMATION_FRAME_LENGTH);++i)
 		{
 			for(y=startY;y < ANIMATION_FRAME_HEIGHT*(j+1);++y)
 			{
@@ -114,7 +111,7 @@ void Sprite::SetFrameBB()
 	image.createMaskFromColor(color);
 	sf::Texture *texture = new sf::Texture;
 	texture->loadFromImage(image);
-	sfmlSprite->setTexture(*texture,1);
+	mSfSprite->setTexture(*texture,1);
 	
 }
 
@@ -142,16 +139,16 @@ Sprite *LoadSprite(char* filename)
 		if(SpriteList[i].mRefCount <= 0)break;
 	}
 	texture->loadFromFile(filename);
-	SpriteList[i].sfmlSprite = new sf::Sprite;
-	SpriteList[i].sfmlSprite->setTexture(*texture,1);
+	SpriteList[i].mSfSprite = new sf::Sprite;
+	SpriteList[i].mSfSprite->setTexture(*texture,1);
 	SpriteList[i].mRefCount +=1;
-	mem = malloc(sizeof(sf::IntRect)*SpriteList[i].sfmlSprite->getTexture()->getSize().x / ANIMATION_FRAME_LENGTH);
+	mem = malloc(sizeof(sf::IntRect)*SpriteList[i].mSfSprite->getTexture()->getSize().x / ANIMATION_FRAME_LENGTH);
 	SpriteList[i].mFrameBB = (sf::IntRect*)mem;
 	memset(SpriteList[i].mFrameBB,0,sizeof(Vec2D));
 	strcpy(SpriteList[i].mFileName,filename);
-	SpriteList[i].mFramesPerLine = SpriteList[i].sfmlSprite->getTexture()->getSize().x / ANIMATION_FRAME_LENGTH;
-	SpriteList[i].mWidth = SpriteList[i].sfmlSprite->getTexture()->getSize().x;
-	SpriteList[i].mHeight = SpriteList[i].sfmlSprite->getTexture()->getSize().y;
+	SpriteList[i].mFramesPerLine = SpriteList[i].mSfSprite->getTexture()->getSize().x / ANIMATION_FRAME_LENGTH;
+	SpriteList[i].mWidth = SpriteList[i].mSfSprite->getTexture()->getSize().x;
+	SpriteList[i].mHeight = SpriteList[i].mSfSprite->getTexture()->getSize().y;
 	return &SpriteList[i];
 }
 
@@ -163,12 +160,12 @@ void Sprite::FreeSprite()
 	}
 	if(mRefCount <= 0)
 	{
-		delete sfmlSprite->getTexture();
-		delete sfmlSprite;
+		delete mSfSprite->getTexture();
+		delete mSfSprite;
 		delete mFrameBB;
 		strcpy(mFileName ,"\0");
 		mRefCount = 0;
-		sfmlSprite = NULL;
+		mSfSprite = NULL;
 	}
 }
 

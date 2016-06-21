@@ -6,14 +6,18 @@
 struct Cell;
 class Grid;
 
-#define MAX_ENTITIES 1000
+#define MAX_ENTITIES	1000
+#define MAX_ANIMATIONS	20
 
 /**
  * The Entity class which is used for inheritance. Basic properties.
  * 
  *	Graphics:
- *		mSprite	-	Used to keep info of current sprite
- *		
+ *		mSpriteArray	-	Each sprite in this array represents a different animation.
+ *		mCurrentSprite	-	The current sprite that the entity is drawing.
+ *		mCurrentFrame	-	The current frame the entity is at.
+ *		mNumSprites		-	The number of sprites in the spritearray.
+ *
  */
 
 
@@ -28,9 +32,9 @@ private:
 public:
 	int					mInUse;
 	int					mCellIndex;
-	Vec2D				GetDimension();
-	Vec2D				GetVelocity();
-	int					mFrameNum;
+	
+	int					mCurrentFrame;
+	int					mNumSprites;
 	Sprite**			mSpriteArray;
 	Sprite*				mCurrentSprite;	
 
@@ -40,9 +44,11 @@ public:
 	//Getters
 	Cell*			GetCell();
 	Grid*			GetGrid();
+	Vec2D			GetDimension();
+	Vec2D			GetVelocity();
 
 	//Setters
-	void			SetCurrentAnimation(Animation* anim);
+	void			SetCurrentAnimation(int anim);
 	void			SetCell(Cell* cell);
 	void			SetPosition(Vec2D vec);
 	void			SetDimensions(Vec2D vec);

@@ -1,15 +1,24 @@
 #include <SFML/Graphics.hpp>
 #include <string.h>
 #include <malloc.h>
+#include "globals.h"
 #include "physics.h"
 #include "entity.h"
 
 Entity *gEntities = NULL;
 
 
-void Entity::Load(char **Sprites)
+void Entity::Load(char **SpriteFiles)
 {
 	//Load Sprites
+	int i;
+	mSpriteArray = (Sprite**) malloc(sizeof(Sprite*)*(MAX_ANIMATIONS+1));
+	memset(mSpriteArray, 0, sizeof(Sprite*)*(MAX_ANIMATIONS+1));			//NULL terminating before hand.
+	for(i = 0; SpriteFiles[i]; i++)
+	{
+		mSpriteArray[i] = LoadSprite(SpriteFiles[i]);
+	}
+	mNumSprites = MemoryCount(mSpriteArray, sizeof(Sprite*));				//Counting and saving value
 }
 
 void Entity::Free()
@@ -87,12 +96,12 @@ void Entity::Draw(sf::RenderTarget& target)
 	{
 		mCurrentSprite = mSpriteArray[0];
 	}
-	sf::IntRect rect(mFrameNum % mCurrentSprite->mFramesPerLine * ANIMATION_FRAME_LENGTH,
-		mFrameNum / mCurrentSprite->mFramesPerLine * ANIMATION_FRAME_LENGTH,
+	sf::IntRect rect(mCurrentFrame % mCurrentSprite->mFramesPerLine * ANIMATION_FRAME_LENGTH,
+		mCurrentFrame / mCurrentSprite->mFramesPerLine * ANIMATION_FRAME_LENGTH,
 		ANIMATION_FRAME_LENGTH,
 		ANIMATION_FRAME_LENGTH);
-	mCurrentSprite->sfmlSprite->setTextureRect(rect);
-	target.draw(*mCurrentSprite->sfmlSprite,this->getTransform());
+	mCurrentSprite->mSfSprite->setTextureRect(rect);
+	target.draw(*mCurrentSprite->mSfSprite,this->getTransform());
 }
 
 Cell* Entity::GetCell()
@@ -110,11 +119,22 @@ Vec2D Entity::GetVelocity()
 	return mVelocity;
 }
 
-void Entity::SetCurrentAnimation(Animation* anim)
+void Entity::SetCurrentAnimation(int anim)
 {
-	if
-	mCurrentAnim = anim;
-
+	if(!mSpriteArray)
+	{
+		return;
+	}
+	if(anim >= mNumSprites)
+	{
+		return;
+	}
+	if(mCurrentSprite == mSpriteArray[anim])
+	{
+		return;
+	}
+	mCurrentSprite = mSpriteArray[anim];
+	mCurrentFrame = 0;
 }
 
 //Empty Functions Tbd (To be defined)

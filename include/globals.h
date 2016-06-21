@@ -18,5 +18,14 @@ enum AnimationCharacter
 	ANIMATION_DOODLE
 };
 
+/**
+ * @breif	Counts the memory of the array of memory that HAS BEEN NULL TERMINATED.
+ *
+ * @param	void *,		The memory to count
+ * @param	size_type,	The size of individual pieces of memory. Use Sizeof.
+ *
+ * @author	Anthony Rios
+ */
+int MemoryCount(void *, int size_type);
 
 #endif

@@ -25,7 +25,7 @@ public:
 	int				mHeight;
 	char			mFileName[128];
 	Animation		mAnimation;
-	sf::Sprite*     sfmlSprite;
+	sf::Sprite*     mSfSprite;
 	sf::IntRect*	mFrameBB;		//Frame Bounding Box
 	~Sprite(void);
 	void FreeSprite();

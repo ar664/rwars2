@@ -10,7 +10,8 @@
 
 const char *ANIMATION_IDLE_STR = "idle";
 int gMouseX = 0,gMouseY = 0;
-Entity ent;
+char *test_files[] = {"sprites/Enemies3.png", 0};
+Entity test_ent;
 
 int main(int argc,char *argv[])
 {
@@ -24,30 +25,22 @@ void Init_All()
 	InitSpriteList();
 	gClock.restart();
 
-	ent.mSprite = LoadSprite("sprites/Enemies3.png");
-	ent.SetDimensions(CreateVec2D(2,2));
-	ent.mSprite->SetFrameBB();
-	ent.mFrameNum = 2;
-	Animation* anim = new Animation;
-	anim->currentFrame = 0;
-	anim->frameInc = 1;
-	anim->frameRate = 10;
-	anim->maxFrames = 2;
-	anim->oscillate = 1;
-	//ent.mAnimations.insert(std::make_pair<char*,Animation*>(ANIMATION_IDLE_STR,anim));
-	ent.SetCurrentAnimation(anim);
-	std::cout << ent.mSprite->sfmlSprite->getTexture()->getSize().x << " "<<
-		ent.mSprite->sfmlSprite->getTexture()->getSize().y <<  std::endl;
-	//ent.mSprite = (Sprite*)malloc(sizeof(Sprite));
-	//ent.mSprite->sfmlSprite = sprite;
+	test_ent.Load(test_files);
+	test_ent.SetDimensions(CreateVec2D(2,2));
+	test_ent.SetCurrentAnimation(0);
+	test_ent.mCurrentSprite->SetFrameBB();
+	test_ent.mCurrentFrame = 2;
+	
+	std::cout << test_ent.mCurrentSprite->mSfSprite->getTexture()->getSize().x << " "<<
+		test_ent.mCurrentSprite->mSfSprite->getTexture()->getSize().y <<  std::endl;
 
 }
 
 void Loop()
 {
 	sf::Image image;
-	image.create(ent.mSprite->mFrameBB[ent.mFrameNum].width,
-	ent.mSprite->mFrameBB[ent.mFrameNum].height,sf::Color::Blue);
+	image.create(test_ent.mCurrentSprite->mFrameBB[test_ent.mCurrentFrame].width,
+	test_ent.mCurrentSprite->mFrameBB[test_ent.mCurrentFrame].height,sf::Color::Blue);
 
 	sf::Texture *texture = new sf::Texture;
 	texture->loadFromImage(image);
@@ -61,11 +54,11 @@ void Loop()
 			HandleEvent(gEvent);
 			gRenderWindow.clear();		//Clears the window
 			gRenderWindow.draw(*sprite);
-			ent.Draw(gRenderWindow);
+			test_ent.Draw(gRenderWindow);
 			sprite->setPosition(gMouseX,gMouseY);
-			ent.setPosition(gMouseX,gMouseY);
-			std::cout << ent.getPosition().x << " , " << 
-				ent.getPosition().y << std::endl;
+			test_ent.setPosition(gMouseX,gMouseY);
+			std::cout << test_ent.getPosition().x << " , " << 
+				test_ent.getPosition().y << std::endl;
 			gRenderWindow.display();						//Displays whatever is drawn to the window
 		}
 	}
