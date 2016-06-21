@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <utility>
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <SFML/Window.hpp>
 #include <iostream>
 #include "entity.h"
@@ -11,6 +12,7 @@
 const char *ANIMATION_IDLE_STR = "idle";
 int gMouseX = 0,gMouseY = 0;
 char *test_files[] = {"sprites/Enemies3.png", 0};
+sf::Music **playlist;
 Entity test_ent;
 
 int main(int argc,char *argv[])

@@ -1,6 +1,7 @@
 #ifndef _ENTITY_H
 #define _ENTITY_H
-#include <unordered_map>
+
+#include <SFML/Audio.hpp>
 #include "vectors.h"
 #include "sprite.h"
 struct Cell;
@@ -26,6 +27,9 @@ class Grid;
  *		mVelocity		-	The normalized 2D vector of their direction.
  *		mDimension		-	The bounding box for the character.
  *
+ *	Audio:
+ *		mSounds			-	This is the sounds from the sfml library along with Sprites they sideload the work we have to do to get them to work.
+ *		*mCallbacks		-	*This may be neccessary for some entities that want to make a specific action happen at the end of certain sounds.
  */
 
 
@@ -46,7 +50,9 @@ public:
 	int					mCurrentFrame;
 	int					mNumSprites;
 	Sprite**			mSpriteArray;
-	Sprite*				mCurrentSprite;	
+	Sprite*				mCurrentSprite;
+
+	sf::Sound*			mSounds;
 
 	//Functions
 /**

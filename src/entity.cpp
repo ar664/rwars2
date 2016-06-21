@@ -26,8 +26,18 @@ void Entity::Load(char **SpriteFiles)
 
 void Entity::Free()
 {
-	//Free Sprites
+	int i;
 
+	//Free Sprites
+	if(mSpriteArray)
+	{
+		for(i = 0; i < mNumSprites; i++)
+		{
+			mSpriteArray[i]->FreeSprite();
+		}
+		free(mSpriteArray);
+	}
+	
 	//Reset you own memory
 	memset(this, 0, sizeof(Entity));
 }

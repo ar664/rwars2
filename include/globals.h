@@ -22,6 +22,13 @@ enum AnimationCharacter
 	ANIMATION_DOODLE
 };
 
+enum SoundCharacter
+{
+	SOUND_IDLE,
+	SOUND_ATTACK,
+	SOUND_DOODLE
+};
+
 /**
  * @breif	Counts the memory of the array of memory that HAS BEEN NULL TERMINATED.
  *
