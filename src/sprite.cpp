@@ -17,6 +17,7 @@ void InitSpriteList()
 	atexit(CloseSpriteList);
 
 }
+
 void CloseSpriteList()
 {
 	int i,j;
@@ -34,6 +35,7 @@ void CloseSpriteList()
 	free(SpriteList);
 	SpriteList = NULL;
 }
+
 void Sprite::SetFrameBB()
 {
 	int i = 0;
@@ -92,10 +94,10 @@ void Sprite::SetFrameBB()
 					rect.width = x - rect.left;
 				}
 			}
-			frameBB[i+j].top = rect.top;
-			frameBB[i+j].left = rect.left;
-			frameBB[i+j].width = rect.width;
-			frameBB[i+j].height = rect.height;
+			mFrameBB[i+j].top = rect.top;
+			mFrameBB[i+j].left = rect.left;
+			mFrameBB[i+j].width = rect.width;
+			mFrameBB[i+j].height = rect.height;
 			std::cout<<"Frame " << i+j <<" :"<< "x: "<< rect.top << " y:" << rect.left << " w:" << rect.width<<
 				" h:" << rect.height << std::endl;
 			startX += ANIMATION_FRAME_LENGTH+1;
@@ -115,6 +117,7 @@ void Sprite::SetFrameBB()
 	sfmlSprite->setTexture(*texture,1);
 	
 }
+
 Sprite *LoadSprite(char* filename)
 {
 	int i;
@@ -122,9 +125,9 @@ Sprite *LoadSprite(char* filename)
 	sf::Texture *texture = new sf::Texture;
 	for(i = 0; i< MAX_SPRITES;i++)
 	{
-		if(strncmp(filename,SpriteList[i].filename,128) == 0)
+		if(strncmp(filename,SpriteList[i].mFileName,128) == 0)
 		{
-			SpriteList[i].refCount++;
+			SpriteList[i].mRefCount++;
 			return &SpriteList[i];
 		}
 	}
@@ -136,98 +139,39 @@ Sprite *LoadSprite(char* filename)
 	numSprites++;
 	 for(i = 0;i <= MAX_SPRITES;i++)
 	{
-		if(SpriteList[i].refCount <= 0)break;
+		if(SpriteList[i].mRefCount <= 0)break;
 	}
 	texture->loadFromFile(filename);
 	SpriteList[i].sfmlSprite = new sf::Sprite;
 	SpriteList[i].sfmlSprite->setTexture(*texture,1);
-	SpriteList[i].refCount +=1;
+	SpriteList[i].mRefCount +=1;
 	mem = malloc(sizeof(sf::IntRect)*SpriteList[i].sfmlSprite->getTexture()->getSize().x / ANIMATION_FRAME_LENGTH);
-	SpriteList[i].frameBB = (sf::IntRect*)mem;
-	memset(SpriteList[i].frameBB,0,sizeof(Vec2D));
-	strcpy(SpriteList[i].filename,filename);
-	SpriteList[i].fpl = SpriteList[i].sfmlSprite->getTexture()->getSize().x / ANIMATION_FRAME_LENGTH;
-	SpriteList[i].width = SpriteList[i].sfmlSprite->getTexture()->getSize().x;
-	SpriteList[i].height = SpriteList[i].sfmlSprite->getTexture()->getSize().y;
+	SpriteList[i].mFrameBB = (sf::IntRect*)mem;
+	memset(SpriteList[i].mFrameBB,0,sizeof(Vec2D));
+	strcpy(SpriteList[i].mFileName,filename);
+	SpriteList[i].mFramesPerLine = SpriteList[i].sfmlSprite->getTexture()->getSize().x / ANIMATION_FRAME_LENGTH;
+	SpriteList[i].mWidth = SpriteList[i].sfmlSprite->getTexture()->getSize().x;
+	SpriteList[i].mHeight = SpriteList[i].sfmlSprite->getTexture()->getSize().y;
 	return &SpriteList[i];
 }
 
 void Sprite::FreeSprite()
 {
-	if(refCount > 0)
+	if(mRefCount > 0)
 	{
-		refCount--;
+		mRefCount--;
 	}
-	if(refCount <= 0)
+	if(mRefCount <= 0)
 	{
 		delete sfmlSprite->getTexture();
 		delete sfmlSprite;
-		delete frameBB;
-		strcpy(filename ,"\0");
-		refCount = 0;
+		delete mFrameBB;
+		strcpy(mFileName ,"\0");
+		mRefCount = 0;
 		sfmlSprite = NULL;
 	}
 }
- /**
-*@brief Increases or decrease the current frame of the animation
-*/
-/*
-void Animate(Animation* animation,int startFrame) {
-	if(animation->oldTime + animation->frameRate > gClock.getElapsedTime().asSeconds()) {
-        return;
-    }
- 
-    animation->oldTime = gClock.getElapsedTime().asSeconds();
-	if(animation->holdFrame == 1)
-	{
-		animation->currentFrame = animation->startFrame + animation->heldFrame - 1;
-		return;
-	}
-    animation->currentFrame += animation->frameInc;
- 
-    if(animation->oscillate) {
-        if(animation->frameInc > 0) {
-			if(animation->currentFrame >= animation->maxFrames-1 + startFrame) 
-			{
-                animation->frameInc = -animation->frameInc;
-            }
-        }else{
-            if(animation->currentFrame <= startFrame) 
-			{
-                animation->frameInc = -animation->frameInc;
-            }
-        }
-    }else{
-        if(animation->currentFrame >= animation->maxFrames + startFrame) {
-            animation->currentFrame = startFrame;
-        }
-    }
-}
-*/
-/**
-*@brief Set framerate of specified animation
-*/
-void SetFrameRate(Animation* animation,int Rate) {
-    animation->frameRate = Rate;
-}
-/**
-*@brief Set current frame of animation
-*/
-void SetCurrentFrame(Animation* animation,int Frame) {
-    if(Frame < 0 || Frame >= animation->maxFrames) return;
- 
-    animation->currentFrame = Frame;
-}
-/**
-*@brief Returns current frame of specified animation
-*/
-int GetCurrentFrame(Animation* animation) {
-    return animation->currentFrame;
-}
-void FreeAnimation(char* key,Animation* animation)
-{
-	free(animation);
-}
+
 Sprite::~Sprite(void)
 {
 	std::cout << "Sprite Deleted"<<std::endl;

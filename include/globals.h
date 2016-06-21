@@ -11,6 +11,12 @@ extern sf::RenderWindow gRenderWindow;
 extern sf::Event gEvent;
 extern sf::Clock gClock;
 
+enum AnimationCharacter
+{
+	ANIMATION_IDLE,
+	ANIMAITON_ATTACK,
+	ANIMATION_DOODLE
+};
 
 
 #endif

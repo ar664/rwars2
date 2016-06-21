@@ -24,9 +24,9 @@ void Init_All()
 	InitSpriteList();
 	gClock.restart();
 
-	ent.rSprite = LoadSprite("sprites/Enemies3.png");
+	ent.mSprite = LoadSprite("sprites/Enemies3.png");
 	ent.SetDimensions(CreateVec2D(2,2));
-	ent.rSprite->SetFrameBB();
+	ent.mSprite->SetFrameBB();
 	ent.mFrameNum = 2;
 	Animation* anim = new Animation;
 	anim->currentFrame = 0;
@@ -34,20 +34,20 @@ void Init_All()
 	anim->frameRate = 10;
 	anim->maxFrames = 2;
 	anim->oscillate = 1;
-	//ent.animations.insert(std::make_pair<char*,Animation*>(ANIMATION_IDLE_STR,anim));
+	//ent.mAnimations.insert(std::make_pair<char*,Animation*>(ANIMATION_IDLE_STR,anim));
 	ent.SetCurrentAnimation(anim);
-	std::cout << ent.rSprite->sfmlSprite->getTexture()->getSize().x << " "<<
-		ent.rSprite->sfmlSprite->getTexture()->getSize().y <<  std::endl;
-	//ent.rSprite = (Sprite*)malloc(sizeof(Sprite));
-	//ent.rSprite->sfmlSprite = sprite;
+	std::cout << ent.mSprite->sfmlSprite->getTexture()->getSize().x << " "<<
+		ent.mSprite->sfmlSprite->getTexture()->getSize().y <<  std::endl;
+	//ent.mSprite = (Sprite*)malloc(sizeof(Sprite));
+	//ent.mSprite->sfmlSprite = sprite;
 
 }
 
 void Loop()
 {
 	sf::Image image;
-	image.create(ent.rSprite->frameBB[ent.mFrameNum].width,
-	ent.rSprite->frameBB[ent.mFrameNum].height,sf::Color::Blue);
+	image.create(ent.mSprite->mFrameBB[ent.mFrameNum].width,
+	ent.mSprite->mFrameBB[ent.mFrameNum].height,sf::Color::Blue);
 
 	sf::Texture *texture = new sf::Texture;
 	texture->loadFromImage(image);
