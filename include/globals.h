@@ -11,6 +11,10 @@ extern sf::RenderWindow gRenderWindow;
 extern sf::Event gEvent;
 extern sf::Clock gClock;
 
+/**
+ * The animation order for characters.
+ *
+ */
 enum AnimationCharacter
 {
 	ANIMATION_IDLE,

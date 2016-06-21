@@ -6,7 +6,7 @@
 #include "entity.h"
 
 Entity *gEntities = NULL;
-
+bool	paused = false;		//temp variable until pause gamestate is a thing
 
 void Entity::Load(char **SpriteFiles)
 {
@@ -19,6 +19,9 @@ void Entity::Load(char **SpriteFiles)
 		mSpriteArray[i] = LoadSprite(SpriteFiles[i]);
 	}
 	mNumSprites = MemoryCount(mSpriteArray, sizeof(Sprite*));				//Counting and saving value
+	mCurrentSprite = mSpriteArray[0];
+	mNextFrameTime = mCurrentSprite->mAnimation.mpf;
+	mLastDrawTime = 0;
 }
 
 void Entity::Free()
@@ -88,6 +91,7 @@ void Entity::SetVelocity(Vec2D vec)
 
 void Entity::Draw(sf::RenderTarget& target)
 {
+	int delta = 0;
 	if(!mSpriteArray)
 	{
 		return;
@@ -102,6 +106,25 @@ void Entity::Draw(sf::RenderTarget& target)
 		ANIMATION_FRAME_LENGTH);
 	mCurrentSprite->mSfSprite->setTextureRect(rect);
 	target.draw(*mCurrentSprite->mSfSprite,this->getTransform());
+
+	//Update Frames for animating
+	if(!paused && mLastDrawTime)
+	{
+		delta = gClock.getElapsedTime().asMilliseconds() - mLastDrawTime;
+	}
+	mLastDrawTime = gClock.getElapsedTime().asMilliseconds();
+	mNextFrameTime -= delta;
+	if(mNextFrameTime <= 0)
+	{
+		if( mCurrentFrame < mCurrentSprite->mAnimation.maxFrames)
+		{
+			mCurrentFrame++;
+		} else
+		{
+			mCurrentFrame = 0;
+		}
+		mNextFrameTime = mCurrentSprite->mAnimation.mpf;
+	}
 }
 
 Cell* Entity::GetCell()

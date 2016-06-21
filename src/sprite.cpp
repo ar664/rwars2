@@ -118,7 +118,8 @@ void Sprite::SetFrameBB()
 Sprite *LoadSprite(char* filename)
 {
 	int i;
-	void *mem;
+	void *rect;
+	Sprite* sprite;
 	sf::Texture *texture = new sf::Texture;
 	for(i = 0; i< MAX_SPRITES;i++)
 	{
@@ -138,17 +139,29 @@ Sprite *LoadSprite(char* filename)
 	{
 		if(SpriteList[i].mRefCount <= 0)break;
 	}
+	sprite = &SpriteList[i];
 	texture->loadFromFile(filename);
-	SpriteList[i].mSfSprite = new sf::Sprite;
-	SpriteList[i].mSfSprite->setTexture(*texture,1);
-	SpriteList[i].mRefCount +=1;
-	mem = malloc(sizeof(sf::IntRect)*SpriteList[i].mSfSprite->getTexture()->getSize().x / ANIMATION_FRAME_LENGTH);
-	SpriteList[i].mFrameBB = (sf::IntRect*)mem;
-	memset(SpriteList[i].mFrameBB,0,sizeof(Vec2D));
-	strcpy(SpriteList[i].mFileName,filename);
-	SpriteList[i].mFramesPerLine = SpriteList[i].mSfSprite->getTexture()->getSize().x / ANIMATION_FRAME_LENGTH;
-	SpriteList[i].mWidth = SpriteList[i].mSfSprite->getTexture()->getSize().x;
-	SpriteList[i].mHeight = SpriteList[i].mSfSprite->getTexture()->getSize().y;
+	sprite->mSfSprite = new sf::Sprite;
+	sprite->mSfSprite->setTexture(*texture,1);
+	sprite->mRefCount +=1;
+
+	//Set Physics Dimensions
+	rect = malloc(sizeof(sf::IntRect)*sprite->mSfSprite->getTexture()->getSize().x / ANIMATION_FRAME_LENGTH);
+	sprite->mFrameBB = (sf::IntRect*)rect;
+	memset(sprite->mFrameBB,0,sizeof(Vec2D));
+	strcpy(sprite->mFileName,filename);
+
+	//Set Animation Dimensions
+	sprite->mFramesPerLine = sprite->mSfSprite->getTexture()->getSize().x / ANIMATION_FRAME_LENGTH;
+	sprite->mWidth = sprite->mSfSprite->getTexture()->getSize().x;
+	sprite->mHeight = sprite->mSfSprite->getTexture()->getSize().y;
+
+	//Setup Animation Data
+	sprite->mAnimation.maxFrames = sprite->mFramesPerLine * (sprite->mHeight / ANIMATION_FRAME_HEIGHT);
+	sprite->mAnimation.heldFrame = 0;
+	sprite->mAnimation.mpf = ANIMATION_DEFAULT_MPF;
+	sprite->mAnimation.oscillate = false;
+
 	return &SpriteList[i];
 }
 
