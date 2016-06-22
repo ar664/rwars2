@@ -115,13 +115,15 @@ void Init_All()
 	InitSpriteList();
 	EntitySystemInit();
 	LoadAssets();
+	CallbackInitSystem();
 	gClock.restart();
 
 }
 
 void Loop()
 {
-	
+	//Start playing songs
+	AudioLoop(0);
 	while(gRenderWindow.isOpen())
 	{
 		while(gRenderWindow.pollEvent(gEvent))
@@ -131,6 +133,7 @@ void Loop()
 			Characters[0]->Draw(gRenderWindow);
 			gRenderWindow.display();	//Displays whatever is drawn to the window
 		}
+		CallbackRunSystem();
 	}
 }
 

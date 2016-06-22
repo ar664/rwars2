@@ -3,4 +3,4 @@ sprites/enemies3.png sprites/enemies3.png
 
 \\Sounds (In Order of Characters, Songs, other)
 sounds/empty.ogg
-songs/empty.ogg
+audio/songs/interstellar.wav audio/songs/thunder.wav
