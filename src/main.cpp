@@ -4,6 +4,7 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Window.hpp>
 #include <iostream>
+#include "audio.h"
 #include "entity.h"
 #include "player.h"
 #include "graphics.h"
@@ -12,8 +13,6 @@
 
 const char *ANIMATION_IDLE_STR = "idle";
 int gMouseX = 0,gMouseY = 0;
-sf::Music **playlist = NULL;
-Entity *Player1;
 
 int main(int argc,char *argv[])
 {
@@ -24,7 +23,7 @@ int main(int argc,char *argv[])
 
 void LoadAssets()
 {
-	int i = 0, j = 0, songs_loaded = 0, characters_loaded = 0;
+	int i = 0, j = 0, songs_loaded = 0, sounds_loaded = 0, characters_loaded = 0;
 	char *temp = (char*) malloc(sizeof(char)*256);
 	char **files = (char**) malloc(sizeof(char*)*16);
 	FILE *file = fopen(ASSET_FILE, "r");
@@ -83,13 +82,23 @@ void LoadAssets()
 				continue;
 			}
 			
-			if(songs_loaded < ASSETS_SONGS)
+			if(sounds_loaded < ASSETS_CHARACTERS)
 			{
-				//Load Songs (Small memory Leak until implemented)
+				Characters[sounds_loaded]->LoadSounds(files);
 				temp = (char*) malloc(sizeof(char)*256);
 				files = (char**) malloc(sizeof(char*)*16);
 				i = 0; j = 0;
-				characters_loaded++;
+				sounds_loaded++;
+				continue;
+			}
+			
+			if(songs_loaded < ASSETS_SONGS)
+			{
+				AudioLoadSongs(files);				
+				temp = (char*) malloc(sizeof(char)*256);
+				files = (char**) malloc(sizeof(char*)*16);
+				i = 0; j = 0;
+				songs_loaded++;
 				continue;
 			}
 		}

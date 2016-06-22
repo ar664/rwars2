@@ -19,5 +19,5 @@ void PlayerLoad(int num, char** sprites)
 	Characters[num] = new Character;
 	player = Characters[num];
 	
-	player->Load(sprites);
+	player->LoadSprites(sprites);
 }

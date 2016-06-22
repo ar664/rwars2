@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <string.h>
 #include <malloc.h>
 #include "globals.h"
@@ -8,12 +9,15 @@
 Entity *gEntities = NULL;
 bool	paused = false;		//temp variable until pause gamestate is a thing
 
-void Entity::Load(char **SpriteFiles)
+void Entity::LoadSprites(char **SpriteFiles)
 {
-	//Load Sprites
 	int i;
 	mSpriteArray = (Sprite**) malloc(sizeof(Sprite*)*(MAX_ANIMATIONS+1));
 	memset(mSpriteArray, 0, sizeof(Sprite*)*(MAX_ANIMATIONS+1));			//NULL terminating before hand.
+	if(!SpriteFiles)
+	{
+		return;
+	}
 	for(i = 0; SpriteFiles[i]; i++)
 	{
 		mSpriteArray[i] = LoadSprite(SpriteFiles[i]);
@@ -24,6 +28,25 @@ void Entity::Load(char **SpriteFiles)
 	mNextFrameTime = mCurrentSprite->mAnimation.mpf;
 	mLastDrawTime = 0;
 	this->setPosition(0, 0);
+}
+
+void Entity::LoadSounds(char** SoundFiles)
+{
+	int i;
+	void *temp_sound;
+	mSounds = (sf::SoundBuffer**) malloc(sizeof(sf::SoundBuffer*)*(MAX_ANIMATIONS+1));
+	memset(mSounds, 0, sizeof(sf::Sound*)*(MAX_ANIMATIONS+1));
+
+	if(!SoundFiles)
+	{
+		return;
+	}
+	for(i = 0; SoundFiles[i]; i++)
+	{
+		mSounds[i] = new sf::SoundBuffer();
+		mSounds[i]->loadFromFile(SoundFiles[i]);
+	}
+	mSounds[i] = NULL;
 }
 
 void Entity::Free()

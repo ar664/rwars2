@@ -57,7 +57,7 @@ public:
 	Sprite**			mSpriteArray;
 	Sprite*				mCurrentSprite;
 
-	sf::Sound*			mSounds;
+	sf::SoundBuffer**	mSounds;
 
 	//Functions
 /**
@@ -89,7 +89,8 @@ public:
 	void			SetVelocity(Vec2D vec);
 
 	//Constructors
-	void	Load(char **Sprites);
+	void	LoadSprites(char **SpriteFiles);
+	void	LoadSounds(char **SoundFiles);
 	void	Free();
 };
 
