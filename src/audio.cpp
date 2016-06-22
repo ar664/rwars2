@@ -25,7 +25,13 @@ void AudioLoadSongs(char **SongFiles)
 	for(i = 0; SongFiles[i]; i++)
 	{
 		gPlaylist[i] = new sf::Music();
-		gPlaylist[i]->openFromFile(SongFiles[i]);
+		if(gPlaylist[i]->openFromFile(SongFiles[i]))
+		{
+			printf("Song #%i : %s loaded successfully \n", i, SongFiles[i]);
+		} else
+		{
+			printf("Song #%i : %s could not be loaded. \n", i, SongFiles[i]);
+		}
 	}
 	gSongs = i;
 	gPlaylist[i] = NULL;
@@ -33,7 +39,7 @@ void AudioLoadSongs(char **SongFiles)
 
 void AudioLoop(int song)
 {
-	sf::Uint32 loop_next;
+	sf::Uint32 loop_next, song_time;
 	if(!gPlaylist)
 	{
 		return;
@@ -43,8 +49,22 @@ void AudioLoop(int song)
 	{
 		return;
 	}
+
+	//Update the status of the songs
+	if(gPlaylist[gCurrentSong]->getStatus() == sf::Music::Playing)
+	{
+		printf("Stopped Playing Song #%i\n", song);
+		gPlaylist[gCurrentSong]->stop();
+	}
+	printf("Started Playing Song #%i \n", song);
 	gPlaylist[song]->play();
-	loop_next = gClock.getElapsedTime().asMilliseconds() + gPlaylist[song]->getDuration().asMilliseconds();
+
+	//Get Song Play Time
+	song_time = gPlaylist[song]->getDuration().asMilliseconds();
+	loop_next = gClock.getElapsedTime().asMilliseconds() + song_time;
+
+	//Add callback when song finishes
+	gCurrentSong = song;
 	if(song+1 < gSongs)
 	{
 		TimedCallback(loop_next, AudioLoop, song+1);

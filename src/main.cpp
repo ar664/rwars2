@@ -126,7 +126,7 @@ void Loop()
 	AudioLoop(0);
 	while(gRenderWindow.isOpen())
 	{
-		while(gRenderWindow.pollEvent(gEvent))
+		if(gRenderWindow.pollEvent(gEvent))
 		{
 			HandleEvent(gEvent);
 			gRenderWindow.clear();		//Clears the window

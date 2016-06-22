@@ -46,6 +46,7 @@ void CallbackRunSystem()
 		}
 		calls++;
 		gCallBacks[i].callback(gCallBacks[i].argument);
+		memset(&gCallBacks[i], 0, sizeof(_time_callback));
 	}
 
 	//Reorder list & update callstacksize
@@ -54,8 +55,7 @@ void CallbackRunSystem()
 		gCallStackSize -= calls;
 		if(gCallStackSize)
 		{
-			memmove(&gCallBacks[i], gCallBacks, sizeof(gCallStackSize));
-			memset(&gCallBacks[i], 0, sizeof(gCallStackSize));
+			memmove( gCallBacks, &gCallBacks[i], sizeof(_time_callback)*gCallStackSize);
 		}
 	}
 }
