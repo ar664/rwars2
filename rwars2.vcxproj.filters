@@ -24,11 +24,8 @@
     <ClCompile Include="src\graphics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-<<<<<<< HEAD
-    <ClCompile Include="src\entity.cpp">
-=======
+
     <ClCompile Include="src\main.cpp">
->>>>>>> 0d7ed605fb6815cb0e681491ccfddb5f415f5946
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\physics.cpp">
@@ -51,27 +48,19 @@
     <ClInclude Include="include\graphics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-<<<<<<< HEAD
-    <ClInclude Include="include\entity.h">
-=======
+
     <ClInclude Include="include\main.h">
->>>>>>> 0d7ed605fb6815cb0e681491ccfddb5f415f5946
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\physics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-<<<<<<< HEAD
-    <ClInclude Include="include\vectors.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\sprite.h">
-=======
+
     <ClInclude Include="include\sprite.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\vectors.h">
->>>>>>> 0d7ed605fb6815cb0e681491ccfddb5f415f5946
+
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

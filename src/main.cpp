@@ -10,10 +10,11 @@
 #include "main.h"
 
 const char *ANIMATION_IDLE_STR = "idle";
+static int gDeltaTime = 1/gFrameRate;
 int gMouseX = 0,gMouseY = 0;
 char *test_files[] = {"sprites/Enemies3.png", 0};
-Entity test_ent;
-
+Entity* ent1;
+Entity test;
 int main(int argc,char *argv[])
 {
 	Init_All();
@@ -23,40 +24,59 @@ int main(int argc,char *argv[])
 void Init_All()
 {
 	Init_Graphics(WINDOW_WIDTH,WINDOW_HEIGHT,"RWARS");
-	InitSpriteList();
-	test_ent.Load(test_files);
-	test_ent.SetDimensions(CreateVec2D(2,2));
-	test_ent.SetCurrentAnimation(0);
-	test_ent.mCurrentSprite->SetFrameBB();
-	test_ent.mCurrentFrame = 2;
-	
-	std::cout << test_ent.mCurrentSprite->mSfSprite->getTexture()->getSize().x << " "<<
-		test_ent.mCurrentSprite->mSfSprite->getTexture()->getSize().y <<  std::endl;
+	SpriteListInit();
+	EntitySystemInit();
+	ent1 = CreateEntity();
+	test.Load(test_files);
+	test.SetDimensions(CreateVec2D(2,2));
+	test.SetCurrentAnimation(0);
+	test.mCurrentSprite->SetFrameBB();
+	test.mCurrentFrame = 1;
+	test.SetVelocity(CreateVec2D(2,0));
 
 }
-
 void Loop()
 {
-	//First Entity FrameBB
+	float accumulator = 0;				//For Physics Update
+	//Entitys First FrameBB
 	sf::Image image;
-	image.create(test_ent.mCurrentSprite->mFrameBB[test_ent.mCurrentFrame].width,
-	test_ent.mCurrentSprite->mFrameBB[test_ent.mCurrentFrame].height,sf::Color::Blue);
+	//image.create(test.mCurrentSprite->mFrameBB[test.mCurrentFrame].width,
+	//test.mCurrentSprite->mFrameBB[test.mCurrentFrame].height,sf::Color::Blue);
+
+	image.create(ent1->mCurrentSprite->mFrameBB[ent1->mCurrentFrame].width,
+	ent1->mCurrentSprite->mFrameBB[ent1->mCurrentFrame].height,sf::Color::Blue);
 
 	sf::Texture *texture = new sf::Texture;
 	texture->loadFromImage(image);
 	sf::Sprite *sprite = new sf::Sprite;
 	sprite->setTexture(*texture,1);
 	sprite->setPosition(gMouseX,gMouseY);
+	gClock.restart();
+
+	float frameStart = gClock.getElapsedTime().asSeconds();
 	while(gRenderWindow.isOpen())
 	{
-			gRenderWindow.clear();		//Clears the window
-			gRenderWindow.draw(*sprite);
-			test_ent.Draw(gRenderWindow);
-			sprite->setPosition(gMouseX,gMouseY);
-			test_ent.setPosition(gMouseX,gMouseY);
-			std::cout << test_ent.getPosition().x << " , " << 
-				test_ent.getPosition().y << std::endl;
-			gRenderWindow.display();						//Displays whatever is drawn to the window
+		gRenderWindow.clear();		//Clears the window
+
+		//	Handle Physics -- This is so that there is a fixed update for physics
+
+		accumulator += gClock.getElapsedTime().asSeconds() - frameStart; // Store Time of last frame
+		frameStart = gClock.getElapsedTime().asSeconds();				// Store Time of new frame
+		if(accumulator > 0.2f)
+			accumulator = 0.2f;
+		if(accumulator > gDeltaTime)
+		{
+			std::cout << "Physics Update Goes here" << std::endl;
+			accumulator -= gDeltaTime;
+		}
+		// Remeber to handle the discrete jump in time every 6th frames or so with linear interpolation! To: Jason
+		
+		gRenderWindow.draw(*sprite);
+		test.Draw(gRenderWindow);
+		test.move(test.GetVelocity().x,test.GetVelocity().y);
+		test.setPosition(gMouseX,gMouseY);
+		sprite->setPosition(gMouseX,gMouseY);
+		gRenderWindow.display();						//Displays whatever is drawn to the window
 		while(gRenderWindow.pollEvent(gEvent))
 		{
 			HandleEvent(gEvent);

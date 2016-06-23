@@ -1,10 +1,15 @@
 #include <SFML\Graphics.hpp>
 #include <iostream>
+#include "globals.h"
 #include "vectors.h"
 #include "physics.h"
 
 
+void UpdatePhysics(float deltaTime)
+{
+	int i;
 
+}
 int AABB(Entity *ent1, Entity *ent2)
 {
 	Vec2D rv;

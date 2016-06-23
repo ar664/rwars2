@@ -34,16 +34,21 @@ struct RigidBody
 {
 	// We are assuming for now that all Rigidbody shapes are rectangles
 	float		mass;
+	Vec2D		velocity;
+	Vec2D		force;			/*<-- Used to find acceleration, also is applied to the object every physics update until it eventually dies out */
+
+	// Material Structure 
 	float		restitution;
+	float		density;		/*<-- Use density* volume to determine the currect mass of an object */
+
 };
 
-typedef class Entity: public sf::Transformable
+typedef class Entity: public sf::Transformable 
 {
 private:
 	sf::Uint32			mLastDrawTime;
 	int					mNextFrameTime;
 	int					mSpeed;
-	Vec2D				mVelocity;
 	Vec2D				mDimension;
 	Cell*				mCell;
 	
@@ -90,7 +95,7 @@ extern Entity *gEntities;
 
 bool EntitySystemInit();
 void EntitySystemShutdown();
-
+Entity* CreateEntity();
 
 #endif
 

@@ -31,6 +31,19 @@ void Entity::Free()
 	//Reset you own memory
 	memset(this, 0, sizeof(Entity));
 }
+Entity* CreateEntity()
+{
+	int i;
+	for( i = 0;i < MAX_ENTITIES;i++)
+	{
+		if(gEntities[i].mInUse)
+			continue;
+		gEntities[i].mInUse = 1;
+		return &gEntities[i];
+
+	}
+
+}
 
 bool EntitySystemInit()
 {
@@ -86,7 +99,7 @@ void Entity::SetDimensions(Vec2D vec)
 
 void Entity::SetVelocity(Vec2D vec)
 {
-	mVelocity = vec;
+	mBody.velocity = vec;
 }
 
 void Entity::Draw(sf::RenderTarget& target)
@@ -139,7 +152,7 @@ Vec2D Entity::GetDimension()
 
 Vec2D Entity::GetVelocity()
 {
-	return mVelocity;
+	return mBody.velocity;
 }
 
 void Entity::SetCurrentAnimation(int anim)

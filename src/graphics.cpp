@@ -3,8 +3,6 @@
 #include "graphics.h"
 sf::RenderWindow gRenderWindow;
 sf::Clock gClock;
-static const int WINDOW_WIDTH = 800;
-static const int WINDOW_HEIGHT = 600;
 static const int gFrameRate = 45;
 
 
