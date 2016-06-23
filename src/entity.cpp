@@ -2,7 +2,15 @@
 #include "physics.h"
 #include "entity.h"
 
-
+void Entity::Draw(sf::RenderTarget &target)
+	{
+		sf::IntRect rect(frameNum % rSprite->fpl * ANIMATION_FRAME_LENGTH,
+			frameNum / rSprite->fpl * ANIMATION_FRAME_LENGTH,
+			ANIMATION_FRAME_LENGTH,
+			ANIMATION_FRAME_LENGTH);
+		rSprite->sfmlSprite->setTextureRect(rect);
+		target.draw(*rSprite->sfmlSprite,this->getTransform());
+	}
 void Entity::SetCell(Cell* cell)
 {
 	mCell = cell;

@@ -6,8 +6,6 @@
 
 int AABB(Entity *ent1, Entity *ent2)
 {
-	float colNormalx;
-	float colNormaly;
 	Vec2D rv;
 		/*
 	Checks if the boxes intersect by comparing the boxes (x and widths) and (y and heights)
@@ -24,29 +22,20 @@ int AABB(Entity *ent1, Entity *ent2)
 			ent2->getPosition().y + (ent2->GetDimension().y/2));
 		Vec2D normal;
 		Vec2DSub(normal,center1,center2);
-
-		if(ent1->GetVelocity().x == 0 &&
-			ent1->GetVelocity().y == 0 && 
-			ent2->GetVelocity().x == 0 &&
-			ent2->GetVelocity().y == 0 )
-		{
-
-
-		}
 		Vec2DNormalize(&normal);
 		Vec2DSub(rv,ent1->GetVelocity(),ent2->GetVelocity());
 
 		float velAlongNormal = Vec2DDotProduct(rv,normal);
 		float invMass1;
 		float invMass2;
-		if(ent1->mass == 0)					//Check for infinite Mass
+		if(ent1->body.mass == 0)					//Check for infinite Mass
 			invMass1 = 0;
 		else
-			invMass1 = (1/ent1->mass);
-		if(ent2->mass == 0)
+			invMass1 = (1/ent1->body.mass);
+		if(ent2->body.mass == 0)
 			invMass2 = 0;
 		else
-			invMass2 = (1/ent2->mass);
+			invMass2 = (1/ent2->body.mass);
 		if(velAlongNormal >= 0)
 		{
 
@@ -61,7 +50,7 @@ int AABB(Entity *ent1, Entity *ent2)
 			ent2->setPosition(ent2->getPosition().x - (correction.x*invMass1),ent2->getPosition().y - (correction.y*invMass1));
 			return 0;
 		}
-		float e = 10;
+		float e = std::min(ent1->body.restitution,ent1->body.restitution);			//Restitution
 		float j = -(1+e) * velAlongNormal;
 
 		j = (j/(invMass1+invMass2));

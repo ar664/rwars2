@@ -3,36 +3,34 @@
 #include <unordered_map>
 #include "vectors.h"
 #include "sprite.h"
+struct RigidBody;
 struct Cell;
 class Grid;
+
+struct RigidBody
+{
+	// We are assuming for now that all Rigidbody shapes are rectangles
+	float		mass;
+	float		restitution;
+};
 
 typedef class Entity: public sf::Transformable
 {
 private:
-	int					speed;
+	int					mSpeed;
 	Vec2D				velocity;
 	Vec2D				dimension;
 	Cell*				mCell;
 	Animation*			curAnim;	
 public:
-	int					cellIndex;
-	int					frameNum;
-
-	float				mass;
-	float				restitution;
+	int					mCellIndex;
+	int					mFrameNum;
+	
+	RigidBody			mBody;
 
 	Sprite				*rSprite;
 	std::unordered_map<char*,Animation*>		animations;	
-
-	void Draw(sf::RenderTarget &target)const
-	{
-		sf::IntRect rect(frameNum % rSprite->fpl * ANIMATION_FRAME_LENGTH,
-			frameNum / rSprite->fpl * ANIMATION_FRAME_LENGTH,
-			ANIMATION_FRAME_LENGTH,
-			ANIMATION_FRAME_LENGTH);
-		rSprite->sfmlSprite->setTextureRect(rect);
-		target.draw(*rSprite->sfmlSprite,this->getTransform());
-	}
+	void Draw(sf::RenderTarget &target);
 	//Getters
 	Cell*			GetCell();
 	Grid*			GetGrid();

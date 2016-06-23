@@ -2,6 +2,8 @@
 #define __PHYSICS_H
 #include <vector>
 #include "entity.h"
+
+
 struct Cell{
 	
 	std::vector<Entity*> entities;

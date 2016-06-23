@@ -27,8 +27,9 @@ void Init_All()
 	ent.rSprite = LoadSprite("sprites/Enemies3.png");
 	ent.SetDimensions(CreateVec2D(127,127));
 	ent.rSprite->SetFrameBB();
-	ent.frameNum = 2;
-	ent.mass = 2;
+	ent.mFrameNum = 2;
+	ent.mBody.mass = 2;
+	ent.mBody.restitution = 20;
 	Animation* anim = new Animation;
 	anim->currentFrame = 0;
 	anim->frameInc = 1;
@@ -48,8 +49,9 @@ void Init_All()
 
 	ent2.rSprite = LoadSprite("sprites/Enemies3.png");
 	ent2.SetDimensions(CreateVec2D(127,127));
-	ent2.frameNum = 2;
-	ent2.mass = 15;
+	ent2.mFrameNum = 2;
+	ent2.mBody.mass = 15;
+	ent2.mBody.restitution = 50;
 	ent2.animations.insert(std::make_pair<char*,Animation*>("idle",anim));
 	ent2.SetCurrentAnimation(anim);
 	//ent2.setPosition(300,300);
@@ -66,8 +68,8 @@ void Loop()
 {
 	//First Entity FrameBB
 	sf::Image image;
-	image.create(ent.rSprite->frameBB[ent.frameNum].width,
-	ent.rSprite->frameBB[ent.frameNum].height,sf::Color::Blue);
+	image.create(ent.rSprite->frameBB[ent.mFrameNum].width,
+	ent.rSprite->frameBB[ent.mFrameNum].height,sf::Color::Blue);
 
 	sf::Texture *texture = new sf::Texture;
 	texture->loadFromImage(image);
@@ -76,8 +78,8 @@ void Loop()
 	sprite->setPosition(mouseX,mouseY);
 	//Second Entity FrameBB	
 	sf::Image image2;
-	image2.create(ent2.rSprite->frameBB[ent2.frameNum].width,
-	ent2.rSprite->frameBB[ent2.frameNum].height,sf::Color::Blue);
+	image2.create(ent2.rSprite->frameBB[ent2.mFrameNum].width,
+	ent2.rSprite->frameBB[ent2.mFrameNum].height,sf::Color::Blue);
 
 	sf::Texture *texture2 = new sf::Texture;
 	texture2->loadFromImage(image2);
