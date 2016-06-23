@@ -53,7 +53,7 @@ void AudioLoop(int song)
 	//Update the status of the songs
 	if(gPlaylist[gCurrentSong]->getStatus() == sf::Music::Playing)
 	{
-		printf("Stopped Playing Song #%i\n", song);
+		printf("Stopped Playing Song #%i\n", gCurrentSong);
 		gPlaylist[gCurrentSong]->stop();
 	}
 	printf("Started Playing Song #%i \n", song);

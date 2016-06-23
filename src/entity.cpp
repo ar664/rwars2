@@ -36,7 +36,7 @@ void Entity::LoadSounds(char** SoundFiles)
 	int i;
 	void *temp_sound;
 	mSounds = (sf::SoundBuffer**) malloc(sizeof(sf::SoundBuffer*)*(MAX_ANIMATIONS+1));
-	memset(mSounds, 0, sizeof(sf::Sound*)*(MAX_ANIMATIONS+1));
+	memset(mSounds, 0, sizeof(sf::SoundBuffer*)*(MAX_ANIMATIONS+1));
 
 	if(!SoundFiles)
 	{
