@@ -4,8 +4,8 @@
 
 void Entity::Draw(sf::RenderTarget &target)
 	{
-		sf::IntRect rect(frameNum % rSprite->fpl * ANIMATION_FRAME_LENGTH,
-			frameNum / rSprite->fpl * ANIMATION_FRAME_LENGTH,
+		sf::IntRect rect(mFrameNum % rSprite->fpl * ANIMATION_FRAME_LENGTH,
+			mFrameNum / rSprite->fpl * ANIMATION_FRAME_LENGTH,
 			ANIMATION_FRAME_LENGTH,
 			ANIMATION_FRAME_LENGTH);
 		rSprite->sfmlSprite->setTextureRect(rect);

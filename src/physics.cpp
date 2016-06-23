@@ -4,6 +4,7 @@
 #include "physics.h"
 
 
+
 int AABB(Entity *ent1, Entity *ent2)
 {
 	Vec2D rv;
@@ -28,14 +29,14 @@ int AABB(Entity *ent1, Entity *ent2)
 		float velAlongNormal = Vec2DDotProduct(rv,normal);
 		float invMass1;
 		float invMass2;
-		if(ent1->body.mass == 0)					//Check for infinite Mass
+		if(ent1->mBody.mass == 0)					//Check for infinite Mass
 			invMass1 = 0;
 		else
-			invMass1 = (1/ent1->body.mass);
-		if(ent2->body.mass == 0)
+			invMass1 = (1/ent1->mBody.mass);
+		if(ent2->mBody.mass == 0)
 			invMass2 = 0;
 		else
-			invMass2 = (1/ent2->body.mass);
+			invMass2 = (1/ent2->mBody.mass);
 		if(velAlongNormal >= 0)
 		{
 
@@ -50,7 +51,7 @@ int AABB(Entity *ent1, Entity *ent2)
 			ent2->setPosition(ent2->getPosition().x - (correction.x*invMass1),ent2->getPosition().y - (correction.y*invMass1));
 			return 0;
 		}
-		float e = std::min(ent1->body.restitution,ent1->body.restitution);			//Restitution
+		float e = std::min(ent1->mBody.restitution,ent1->mBody.restitution);			//Restitution
 		float j = -(1+e) * velAlongNormal;
 
 		j = (j/(invMass1+invMass2));
@@ -164,7 +165,7 @@ void Grid::addEntity(Entity* ent)
 	Cell* cell = getCell(CreateVec2D(ent->getPosition().x,ent->getPosition().y));
 	cell->entities.push_back(ent);
 	ent->SetCell(cell);
-	ent->cellIndex = cell->entities.size() - 1;
+	ent->mCellIndex = cell->entities.size() - 1;
 	printf("Added to new cell,CellSize:%d",cell->entities.size());
 }
 
@@ -177,7 +178,7 @@ void Grid::addEntity(Entity* ent,Cell* cell)
 {
 	cell->entities.push_back(ent);
 	ent->SetCell(cell);
-	ent->cellIndex = cell->entities.size() - 1;
+	ent->mCellIndex = cell->entities.size() - 1;
 	printf("Added to new cell,CellSize:%d",cell->entities.size());
 
 }
@@ -190,16 +191,16 @@ void Grid::removeEntityFromCell(Entity* ent)
 	std::vector<Entity*> & ents = ent->GetCell()->entities;
 	
 	//Vector swap, Need to check for 0 or else get error because you cant pop_back from an empty vector
-	ents[ent->cellIndex] = ents.back();					//Setting one vectors index to the last element in the other vector
+	ents[ent->mCellIndex] = ents.back();					//Setting one vectors index to the last element in the other vector
 	ents.pop_back();									//Deletes last element
 	//update vector index
-	if(ent->cellIndex < ents.size())
+	if(ent->mCellIndex < ents.size())
 	{
-		ents[ent->cellIndex]->cellIndex = ent->cellIndex;
+		ents[ent->mCellIndex]->mCellIndex = ent->mCellIndex;
 	}
 	
 	//Set index of ent to 1
-	ent->cellIndex = -1;
+	ent->mCellIndex = -1;
 	ent->SetCell(nullptr);
 	printf("Removed from old cell\n");
 }
