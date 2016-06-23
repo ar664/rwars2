@@ -1,4 +1,7 @@
-#include <SFML\Graphics.hpp>
+#include "sprite.h"
+#include <SFML/Graphics.hpp>
+#include <malloc.h>
+#include <string.h>
 #include <iostream>
 #include "vectors.h"
 #include "globals.h"
@@ -14,6 +17,7 @@ void InitSpriteList()
 	atexit(CloseSpriteList);
 
 }
+
 void CloseSpriteList()
 {
 	int i,j;
@@ -23,7 +27,7 @@ void CloseSpriteList()
 	}
 	for (i = 0;i < MAX_SPRITES;i++)
 	{
-		if(SpriteList[i].sfmlSprite != NULL)
+		if(SpriteList[i].mSfSprite != NULL)
 		{
 			SpriteList[i].FreeSprite();
 		}
@@ -31,12 +35,10 @@ void CloseSpriteList()
 	free(SpriteList);
 	SpriteList = NULL;
 }
+
 void Sprite::SetFrameBB()
 {
-	int i = 0;
-	int x = 0;
-	int y = 0;
-	int w = 0,h = 0;
+	int i, j, x, y, w, h;
 	int started = 0;
 	int ended = 0;
 	int startX = 0;
@@ -46,10 +48,10 @@ void Sprite::SetFrameBB()
 	sf::Color spriteMask(255,51,51,255);
 
 	sf::Image image;
-	image = sfmlSprite->getTexture()->copyToImage();
-	for(int j = 0; j <(sfmlSprite->getTexture()->getSize().y / ANIMATION_FRAME_HEIGHT);++j)
+	image = mSfSprite->getTexture()->copyToImage();
+	for(j = 0; j <(mSfSprite->getTexture()->getSize().y / ANIMATION_FRAME_HEIGHT);++j)
 	{
-		for(int i = 0; i < (sfmlSprite->getTexture()->getSize().x / ANIMATION_FRAME_LENGTH);++i)
+		for(i = 0; i < (mSfSprite->getTexture()->getSize().x / ANIMATION_FRAME_LENGTH);++i)
 		{
 			for(y=startY;y < ANIMATION_FRAME_HEIGHT*(j+1);++y)
 			{
@@ -89,10 +91,10 @@ void Sprite::SetFrameBB()
 					rect.width = x - rect.left;
 				}
 			}
-			frameBB[i+j].top = rect.top;
-			frameBB[i+j].left = rect.left;
-			frameBB[i+j].width = rect.width;
-			frameBB[i+j].height = rect.height;
+			mFrameBB[i+j].top = rect.top;
+			mFrameBB[i+j].left = rect.left;
+			mFrameBB[i+j].width = rect.width;
+			mFrameBB[i+j].height = rect.height;
 			std::cout<<"Frame " << i+j <<" :"<< "x: "<< rect.top << " y:" << rect.left << " w:" << rect.width<<
 				" h:" << rect.height << std::endl;
 			startX += ANIMATION_FRAME_LENGTH+1;
@@ -109,19 +111,21 @@ void Sprite::SetFrameBB()
 	image.createMaskFromColor(color);
 	sf::Texture *texture = new sf::Texture;
 	texture->loadFromImage(image);
-	sfmlSprite->setTexture(*texture,1);
+	mSfSprite->setTexture(*texture,1);
 	
 }
+
 Sprite *LoadSprite(char* filename)
 {
 	int i;
-	void *mem;
+	void *rect;
+	Sprite* sprite;
 	sf::Texture *texture = new sf::Texture;
 	for(i = 0; i< MAX_SPRITES;i++)
 	{
-		if(strncmp(filename,SpriteList[i].filename,128) == 0)
+		if(strncmp(filename,SpriteList[i].mFileName,128) == 0)
 		{
-			SpriteList[i].refCount++;
+			SpriteList[i].mRefCount++;
 			return &SpriteList[i];
 		}
 	}
@@ -133,98 +137,51 @@ Sprite *LoadSprite(char* filename)
 	numSprites++;
 	 for(i = 0;i <= MAX_SPRITES;i++)
 	{
-		if(SpriteList[i].refCount <= 0)break;
+		if(SpriteList[i].mRefCount <= 0)break;
 	}
+	sprite = &SpriteList[i];
 	texture->loadFromFile(filename);
-	SpriteList[i].sfmlSprite = new sf::Sprite;
-	SpriteList[i].sfmlSprite->setTexture(*texture,1);
-	SpriteList[i].refCount +=1;
-	mem = malloc(sizeof(sf::IntRect)*SpriteList[i].sfmlSprite->getTexture()->getSize().x / ANIMATION_FRAME_LENGTH);
-	SpriteList[i].frameBB = (sf::IntRect*)mem;
-	memset(SpriteList[i].frameBB,0,sizeof(Vec2D));
-	strcpy(SpriteList[i].filename,filename);
-	SpriteList[i].fpl = SpriteList[i].sfmlSprite->getTexture()->getSize().x / ANIMATION_FRAME_LENGTH;
-	SpriteList[i].width = SpriteList[i].sfmlSprite->getTexture()->getSize().x;
-	SpriteList[i].height = SpriteList[i].sfmlSprite->getTexture()->getSize().y;
+	sprite->mSfSprite = new sf::Sprite;
+	sprite->mSfSprite->setTexture(*texture,1);
+	sprite->mRefCount +=1;
+
+	//Set Physics Dimensions
+	rect = malloc(sizeof(sf::IntRect)*sprite->mSfSprite->getTexture()->getSize().x / ANIMATION_FRAME_LENGTH);
+	sprite->mFrameBB = (sf::IntRect*)rect;
+	memset(sprite->mFrameBB,0,sizeof(Vec2D));
+	strcpy(sprite->mFileName,filename);
+
+	//Set Animation Dimensions
+	sprite->mFramesPerLine = sprite->mSfSprite->getTexture()->getSize().x / ANIMATION_FRAME_LENGTH;
+	sprite->mWidth = sprite->mSfSprite->getTexture()->getSize().x;
+	sprite->mHeight = sprite->mSfSprite->getTexture()->getSize().y;
+
+	//Setup Animation Data
+	sprite->mAnimation.maxFrames = sprite->mFramesPerLine * (sprite->mHeight / ANIMATION_FRAME_HEIGHT);
+	sprite->mAnimation.heldFrame = 0;
+	sprite->mAnimation.mpf = ANIMATION_DEFAULT_MPF;
+	sprite->mAnimation.oscillate = false;
+
 	return &SpriteList[i];
 }
 
 void Sprite::FreeSprite()
 {
-	if(refCount > 0)
+	if(mRefCount > 0)
 	{
-		refCount--;
+		mRefCount--;
 	}
-	if(refCount <= 0)
+	if(mRefCount <= 0)
 	{
-		delete sfmlSprite->getTexture();
-		delete sfmlSprite;
-		delete frameBB;
-		strcpy(filename ,"\0");
-		refCount = 0;
-		sfmlSprite = NULL;
+		delete mSfSprite->getTexture();
+		delete mSfSprite;
+		delete mFrameBB;
+		strcpy(mFileName ,"\0");
+		mRefCount = 0;
+		mSfSprite = NULL;
 	}
 }
- /**
-*@brief Increases or decrease the current frame of the animation
-*/
-/*
-void Animate(Animation* animation,int startFrame) {
-	if(animation->oldTime + animation->frameRate > gClock.getElapsedTime().asSeconds()) {
-        return;
-    }
- 
-    animation->oldTime = gClock.getElapsedTime().asSeconds();
-	if(animation->holdFrame == 1)
-	{
-		animation->currentFrame = animation->startFrame + animation->heldFrame - 1;
-		return;
-	}
-    animation->currentFrame += animation->frameInc;
- 
-    if(animation->oscillate) {
-        if(animation->frameInc > 0) {
-			if(animation->currentFrame >= animation->maxFrames-1 + startFrame) 
-			{
-                animation->frameInc = -animation->frameInc;
-            }
-        }else{
-            if(animation->currentFrame <= startFrame) 
-			{
-                animation->frameInc = -animation->frameInc;
-            }
-        }
-    }else{
-        if(animation->currentFrame >= animation->maxFrames + startFrame) {
-            animation->currentFrame = startFrame;
-        }
-    }
-}
-*/
-/**
-*@brief Set framerate of specified animation
-*/
-void SetFrameRate(Animation* animation,int Rate) {
-    animation->frameRate = Rate;
-}
-/**
-*@brief Set current frame of animation
-*/
-void SetCurrentFrame(Animation* animation,int Frame) {
-    if(Frame < 0 || Frame >= animation->maxFrames) return;
- 
-    animation->currentFrame = Frame;
-}
-/**
-*@brief Returns current frame of specified animation
-*/
-int GetCurrentFrame(Animation* animation) {
-    return animation->currentFrame;
-}
-void FreeAnimation(char* key,Animation* animation)
-{
-	free(animation);
-}
+
 Sprite::~Sprite(void)
 {
 	std::cout << "Sprite Deleted"<<std::endl;

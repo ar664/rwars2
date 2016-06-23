@@ -1,5 +1,5 @@
 IDIR=include
-CC=gcc
+CC=g++ -std=c++11
 CFLAGS=-I$(IDIR)
 
 SRCDIR=src
@@ -7,22 +7,22 @@ ODIR=obj
 LDIR=lib
 
 #Libs are included without the lib prefix because -l does that for you
-LIBS=-lm 
+LIBS=-lm -lSFML 
 
 #H files go here
-_DEPS = main.h
+_DEPS = sprite.h globals.h graphics.h vectors.h entity.h main.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
 #Target object files go here (There basically the c files)
-_OBJ = main.o
+_OBJ = sprite.o globals.o graphics.o vectors.o entity.o main.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 
 $(ODIR)/%.o : $(SRCDIR)/%.cpp $(DEPS)
-	$(CC) -c -o $@ $< $(CFLAGS)
+	$(CC) -c -o $@ $< $(CFLAGS) $(LIBS)
 
 #The end program results name
-program_name : $(OBJ)
+rwars : $(OBJ)
 	gcc -o $@ $^ $(CFLAGS) $(LIBS)
 
 .PHONY: clean

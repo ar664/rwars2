@@ -1,47 +1,39 @@
-#ifndef _SPRITE_H
-#define _SPRITE_H
+#ifndef __SPRITE_H
+#define __SPRITE_H
 
-#include "vectors.h"
+#include <SFML/Graphics.hpp>
 const int MAX_SPRITES = 500;
-#define ANIMATION_FRAME_LENGTH 128
-#define ANIMATION_FRAME_HEIGHT 128
+#define ANIMATION_FRAME_LENGTH	128
+#define ANIMATION_FRAME_HEIGHT	128
+#define ANIMATION_DEFAULT_MPF	300
+#include "vectors.h"
 
 typedef struct AnimationData{
-	char			name[20];
-	int				startFrame;
-	int				currentFrame;
-	int				frameInc;
-	int				frameRate;
+	int				mpf;		//milliseconds per frame
 	int				heldFrame;
-	long			oldTime;
 	int				maxFrames;
-	int				oscillate;
 	int				holdFrame;
+	bool			oscillate;
 }Animation;
 
 typedef class Sprite 
 {
 public:
-	int				refCount;
-	int				fpl;
-	int				width;
-	int				height;
-	char			filename[128];
-	sf::Sprite*     sfmlSprite;
-	sf::IntRect*	frameBB;
+	int				mRefCount;
+	int				mFramesPerLine;
+	int				mWidth;
+	int				mHeight;
+	char			mFileName[128];
+	Animation		mAnimation;
+	sf::Sprite*     mSfSprite;
+	sf::IntRect*	mFrameBB;		//Frame Bounding Box
 	~Sprite(void);
 	void FreeSprite();
 	void SetFrameBB();
 };
+
 Sprite *LoadSprite(char* filename);
 void CloseSpriteList();
 void InitSpriteList();
-/**
-* @brief steps through an animation by its frameInc
-*/
-void		Animate(Animation* animation,int startFrame);
-void		SetCurrentFrame(Animation* animation,int Frame);
-void		FreeAnimation(char* key,Animation* animation);
-void		SetFrameRate(Animation* animation);
-int			GetCurrentFrame(Animation* animation);
+
 #endif
