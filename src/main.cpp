@@ -1,10 +1,13 @@
 #include <stdio.h>
 #include <utility>
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <SFML/Window.hpp>
 #include <iostream>
 #include "physics.h"
+#include "audio.h"
 #include "entity.h"
+#include "player.h"
 #include "graphics.h"
 #include "globals.h"
 #include "main.h"
@@ -21,18 +24,110 @@ int main(int argc,char *argv[])
 	Loop();
 	return 0;
 }
+
+void LoadAssets()
+{
+	int i = 0, j = 0, songs_loaded = 0, sounds_loaded = 0, characters_loaded = 0;
+	char *temp = (char*) malloc(sizeof(char)*256);
+	char **files = (char**) malloc(sizeof(char*)*16);
+	FILE *file = fopen(ASSET_FILE, "r");
+
+	//First line is expected to be a comment, we get it and ignore it.
+	fgets(temp, 255, file);							
+	memset(temp, 0, 255);
+
+	while(!feof(file))
+	{
+		temp[i] = fgetc(file);
+		if(i > 255 || j > 15)
+		{
+			printf("Loading Assets went wrong, format invalid! Exiting...");
+			std::cin.get(temp, 0);
+			exit(0);
+		}
+
+		//Check if commented line
+		if(temp[i] == '\\')
+		{
+			fgets(temp, 255, file);							
+			memset(temp, 0, 255);
+			continue;
+		}
+
+		//Files of one character are seperated by spaces
+		if(temp[i] == ' ')
+		{
+			temp[i] = NULL;
+			files[j] = temp;
+			temp = (char*) malloc(sizeof(char)*256);
+			i = 0;
+			j++;
+			continue;
+		}
+
+		if(temp[i] == '\n')
+		{
+			//Check for blank line
+			if(i == 0)
+			{
+				temp[0] = 0;
+				continue;
+			}
+			temp[i] = NULL;
+			files[j] = temp;
+			files[j+1] = NULL;
+			if(characters_loaded < ASSETS_CHARACTERS)
+			{
+				PlayerLoad(characters_loaded, files);
+				temp = (char*) malloc(sizeof(char)*256);
+				files = (char**) malloc(sizeof(char*)*16);
+				i = 0; j = 0;
+				characters_loaded++;
+				continue;
+			}
+			
+			if(sounds_loaded < ASSETS_CHARACTERS)
+			{
+				Characters[sounds_loaded]->LoadSounds(files);
+				temp = (char*) malloc(sizeof(char)*256);
+				files = (char**) malloc(sizeof(char*)*16);
+				i = 0; j = 0;
+				sounds_loaded++;
+				continue;
+			}
+			
+			if(songs_loaded < ASSETS_SONGS)
+			{
+				AudioLoadSongs(files);				
+				temp = (char*) malloc(sizeof(char)*256);
+				files = (char**) malloc(sizeof(char*)*16);
+				i = 0; j = 0;
+				songs_loaded++;
+				continue;
+			}
+		}
+
+		i++;
+	}
+
+
+}
+
 void Init_All()
 {
 	Init_Graphics(WINDOW_WIDTH,WINDOW_HEIGHT,"RWARS");
 	SpriteListInit();
 	EntitySystemInit();
 	ent1 = CreateEntity();
-	test.Load(test_files);
+	test.LoadSprites(test_files);
 	test.SetDimensions(CreateVec2D(2,2));
 	test.SetCurrentAnimation(0);
 	test.mCurrentSprite->SetFrameBB();
 	test.mCurrentFrame = 1;
 	test.SetVelocity(CreateVec2D(2,0));
+	LoadAssets();
+	CallbackInitSystem();
+	gClock.restart();
 
 }
 void Loop()
@@ -80,9 +175,12 @@ void Loop()
 		while(gRenderWindow.pollEvent(gEvent))
 		{
 			HandleEvent(gEvent);
+			AudioLoop(0);
 		}
+		CallbackRunSystem();
 	}
 }
+
 void HandleEvent(sf::Event Event)
 {
 	//Close window

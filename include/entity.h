@@ -1,6 +1,7 @@
 #ifndef _ENTITY_H
 #define _ENTITY_H
-#include <unordered_map>
+
+#include <SFML/Audio.hpp>
 #include "vectors.h"
 #include "sprite.h"
 struct RigidBody;
@@ -9,11 +10,14 @@ class Grid;
 
 
 #define MAX_ENTITIES	1000
-#define MAX_ANIMATIONS	20
+#define MAX_ANIMATIONS	15
 
 /**
  * The Entity class which is used for inheritance. Basic properties.
  * 
+ *	Basic:
+ *		mThinkRate		-	The frequency this entity updates itself.
+ *		mNextThinkTime	-	The next time this entity should update.
  *	Graphics:
  *		mSpriteArray	-	Each sprite in this array represents a different animation.
  *		mCurrentSprite	-	The current sprite that the entity is drawing.
@@ -28,6 +32,9 @@ class Grid;
  *		mVelocity		-	The normalized 2D vector of their direction.
  *		mDimension		-	The bounding box for the character.
  *
+ *	Audio:
+ *		mSounds			-	This is the sounds from the sfml library along with Sprites they sideload the work we have to do to get them to work.
+ *		*mCallbacks		-	*This may be neccessary for some entities that want to make a specific action happen at the end of certain sounds.
  */
 
 struct RigidBody
@@ -48,6 +55,7 @@ typedef class Entity: public sf::Transformable
 private:
 	sf::Uint32			mLastDrawTime;
 	int					mNextFrameTime;
+	int					mThinkRate;
 	int					mSpeed;
 	Vec2D				mDimension;
 	Cell*				mCell;
@@ -57,11 +65,14 @@ public:
 	int					mInUse;
 	int					mCellIndex;
 	
+	int					mNextThinkTime;
 	int					mCurrentFrame;
 	int					mNumSprites;
 	Sprite**			mSpriteArray;
+
 	Sprite*				mCurrentSprite;	
 	RigidBody			mBody;
+	sf::SoundBuffer**	mSounds;
 
 	//Functions
 /**
@@ -72,6 +83,12 @@ public:
  * @note Graphics timings don't get updated when paused.
  */
 	void Draw(sf::RenderTarget &target);
+
+/**
+ * @breif Empty think function, to be overridden by children who inherit it.
+ *
+ */
+	virtual void Think();
 
 	//Getters
 	Cell*			GetCell();
@@ -87,13 +104,17 @@ public:
 	void			SetVelocity(Vec2D vec);
 
 	//Constructors
-	void	Load(char **Sprites);
+	void	LoadSprites(char **SpriteFiles);
+	void	LoadSounds(char **SoundFiles);
 	void	Free();
 };
 
 extern Entity *gEntities;
 
+Entity *EntityGetFree();
+
 bool EntitySystemInit();
+void EntitySystemStep();
 void EntitySystemShutdown();
 Entity* CreateEntity();
 

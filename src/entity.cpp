@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <string.h>
 #include <malloc.h>
 #include "globals.h"
@@ -8,26 +9,61 @@
 Entity *gEntities = NULL;
 bool	paused = false;		//temp variable until pause gamestate is a thing
 
-void Entity::Load(char **SpriteFiles)
+void Entity::LoadSprites(char **SpriteFiles)
 {
-	//Load Sprites
 	int i;
 	mSpriteArray = (Sprite**) malloc(sizeof(Sprite*)*(MAX_ANIMATIONS+1));
 	memset(mSpriteArray, 0, sizeof(Sprite*)*(MAX_ANIMATIONS+1));			//NULL terminating before hand.
+	if(!SpriteFiles)
+	{
+		return;
+	}
 	for(i = 0; SpriteFiles[i]; i++)
 	{
 		mSpriteArray[i] = LoadSprite(SpriteFiles[i]);
 	}
 	mNumSprites = MemoryCount(mSpriteArray, sizeof(Sprite*));				//Counting and saving value
 	mCurrentSprite = mSpriteArray[0];
+	mCurrentFrame = 0;
 	mNextFrameTime = mCurrentSprite->mAnimation.mpf;
 	mLastDrawTime = 0;
+	this->setPosition(0, 0);
+	this->setScale(1, 1);
+}
+
+void Entity::LoadSounds(char** SoundFiles)
+{
+	int i;
+	void *temp_sound;
+	mSounds = (sf::SoundBuffer**) malloc(sizeof(sf::SoundBuffer*)*(MAX_ANIMATIONS+1));
+	memset(mSounds, 0, sizeof(sf::Sound*)*(MAX_ANIMATIONS+1));
+
+	if(!SoundFiles)
+	{
+		return;
+	}
+	for(i = 0; SoundFiles[i]; i++)
+	{
+		mSounds[i] = new sf::SoundBuffer();
+		mSounds[i]->loadFromFile(SoundFiles[i]);
+	}
+	mSounds[i] = NULL;
 }
 
 void Entity::Free()
 {
-	//Free Sprites
+	int i;
 
+	//Free Sprites
+	if(mSpriteArray)
+	{
+		for(i = 0; i < mNumSprites; i++)
+		{
+			mSpriteArray[i]->FreeSprite();
+		}
+		free(mSpriteArray);
+	}
+	
 	//Reset you own memory
 	memset(this, 0, sizeof(Entity));
 }
@@ -45,6 +81,24 @@ Entity* CreateEntity()
 
 }
 
+Entity* EntityGetFree()
+{
+	int i;
+	if(!gEntities)
+	{
+		return NULL;
+	}
+
+	for(i = 0; i < MAX_ENTITIES; i++)
+	{
+		if(!gEntities[i].mInUse)
+		{
+			return &gEntities[i];
+		}
+	}
+	return NULL;
+}
+
 bool EntitySystemInit()
 {
 	if(gEntities)
@@ -59,6 +113,26 @@ bool EntitySystemInit()
 	memset(gEntities, 0, sizeof(Entity)*MAX_ENTITIES);
 	atexit(EntitySystemShutdown);
 	return true;
+}
+
+void EntitySystemStep()
+{
+	int i, time;
+	if(!gEntities)
+	{
+		return;
+	}
+	time = gClock.getElapsedTime().asMilliseconds();
+	for(i = 0; i < MAX_ENTITIES; i++)
+	{
+		if(gEntities[i].mInUse)
+		{
+			if(gEntities[i].mNextThinkTime < time)
+			{
+				gEntities[i].Think();
+			}
+		}
+	}
 }
 
 void EntitySystemShutdown()
@@ -138,6 +212,11 @@ void Entity::Draw(sf::RenderTarget& target)
 		}
 		mNextFrameTime = mCurrentSprite->mAnimation.mpf;
 	}
+}
+
+void Entity::Think()
+{
+	//Empty Think Should be replaced on inheritance
 }
 
 Cell* Entity::GetCell()
