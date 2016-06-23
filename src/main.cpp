@@ -13,6 +13,8 @@
 
 const char *ANIMATION_IDLE_STR = "idle";
 int gMouseX = 0,gMouseY = 0;
+char *test_sprites[] = {"sprites/Enemies3.png", 0};
+Entity *test_ent;
 
 int main(int argc,char *argv[])
 {
@@ -122,6 +124,8 @@ void Init_All()
 
 void Loop()
 {
+	test_ent = EntityGetFree();
+	test_ent->LoadSprites(test_sprites);
 	//Start playing songs
 	AudioLoop(0);
 	while(gRenderWindow.isOpen())
@@ -130,7 +134,8 @@ void Loop()
 		{
 			HandleEvent(gEvent);
 			gRenderWindow.clear();		//Clears the window
-			Characters[0]->Draw(gRenderWindow);
+			//Characters[0]->Draw(gRenderWindow);
+			test_ent->Draw(gRenderWindow);
 			gRenderWindow.display();	//Displays whatever is drawn to the window
 		}
 		CallbackRunSystem();

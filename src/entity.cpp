@@ -28,6 +28,7 @@ void Entity::LoadSprites(char **SpriteFiles)
 	mNextFrameTime = mCurrentSprite->mAnimation.mpf;
 	mLastDrawTime = 0;
 	this->setPosition(0, 0);
+	this->setScale(1, 1);
 }
 
 void Entity::LoadSounds(char** SoundFiles)
