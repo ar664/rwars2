@@ -43,11 +43,14 @@ struct RigidBody
 	float		mass;
 	Vec2D		velocity;
 	Vec2D		force;			/*<-- Used to find acceleration, also is applied to the object every physics update until it eventually dies out */
-
 	// Material Structure 
+	float		staticFriction;
+	float		dynamicFriction;
 	float		restitution;
 	float		density;		/*<-- Use density* volume to determine the currect mass of an object */
 
+
+	void AddForce(float amount);
 };
 
 typedef class Entity: public sf::Transformable 

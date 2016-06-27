@@ -3,7 +3,7 @@
 #include <vector>
 #include "entity.h"
 
-
+const float Gravity = .2;
 struct Cell{
 	
 	std::vector<Entity*> entities;
@@ -38,6 +38,10 @@ private:
 
 
 int AABB(Entity *ent1, Entity *ent2);
+int CollisionResponse(Entity* ent1,Entity *ent2);
+void FrictionResponse(Entity* ent1, Entity* ent2);
 int SweptAABB(Entity *ent1, Entity *ent2, float& normalx, float& normaly);
+void UpdatePhysics(float deltaTime);
+
 
 #endif

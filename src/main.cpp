@@ -13,11 +13,11 @@
 #include "main.h"
 
 const char *ANIMATION_IDLE_STR = "idle";
-static int gDeltaTime = 1/gFrameRate;
+float gDeltaTime = (float)1/(float)gFrameRate;
 int gMouseX = 0,gMouseY = 0;
 char *test_files[] = {"sprites/Enemies3.png", 0};
 Entity* ent1;
-Entity test;
+Entity test, test2;
 int main(int argc,char *argv[])
 {
 	Init_All();
@@ -118,13 +118,30 @@ void Init_All()
 	Init_Graphics(WINDOW_WIDTH,WINDOW_HEIGHT,"RWARS");
 	SpriteListInit();
 	EntitySystemInit();
-	ent1 = CreateEntity();
+	
 	test.LoadSprites(test_files);
-	test.SetDimensions(CreateVec2D(2,2));
+	test.SetDimensions(CreateVec2D(127,127));
 	test.SetCurrentAnimation(0);
 	test.mCurrentSprite->SetFrameBB();
 	test.mCurrentFrame = 1;
-	test.SetVelocity(CreateVec2D(2,0));
+	test.SetVelocity(CreateVec2D(9,-3));
+	test.mBody.mass = 30;
+	test.mBody.restitution = 10;
+	test.mBody.staticFriction = .3;
+	test.mBody.dynamicFriction = .5;
+
+	test2.LoadSprites(test_files);
+	test2.SetDimensions(CreateVec2D(127,127));
+	test2.SetCurrentAnimation(0);
+	test2.mCurrentSprite->SetFrameBB();
+	test2.mCurrentFrame = 1;
+	test2.SetVelocity(CreateVec2D(0,-3));
+	test2.setPosition(400,0);
+	test2.mBody.mass = 60;
+	test2.mBody.restitution = 20;
+	test2.mBody.staticFriction = .3;
+	test2.mBody.dynamicFriction = .5;
+
 	LoadAssets();
 	CallbackInitSystem();
 	gClock.restart();
@@ -134,18 +151,25 @@ void Loop()
 {
 	float accumulator = 0;				//For Physics Update
 	//Entitys First FrameBB
-	sf::Image image;
-	//image.create(test.mCurrentSprite->mFrameBB[test.mCurrentFrame].width,
-	//test.mCurrentSprite->mFrameBB[test.mCurrentFrame].height,sf::Color::Blue);
+	sf::Image image,image2;
+	image.create(test.mCurrentSprite->mFrameBB[test.mCurrentFrame].width,
+	test.mCurrentSprite->mFrameBB[test.mCurrentFrame].height,sf::Color::Blue);
 
-	image.create(ent1->mCurrentSprite->mFrameBB[ent1->mCurrentFrame].width,
-	ent1->mCurrentSprite->mFrameBB[ent1->mCurrentFrame].height,sf::Color::Blue);
+	image2.create(test2.mCurrentSprite->mFrameBB[test2.mCurrentFrame].width,
+	test2.mCurrentSprite->mFrameBB[test2.mCurrentFrame].height,sf::Color::Blue);
 
 	sf::Texture *texture = new sf::Texture;
 	texture->loadFromImage(image);
 	sf::Sprite *sprite = new sf::Sprite;
 	sprite->setTexture(*texture,1);
 	sprite->setPosition(gMouseX,gMouseY);
+
+	sf::Texture *texture2 = new sf::Texture;
+	texture2->loadFromImage(image2);
+	sf::Sprite *sprite2 = new sf::Sprite;
+	sprite2->setTexture(*texture2,1);
+	sprite2->setPosition(gMouseX,gMouseY);
+
 	gClock.restart();
 
 	float frameStart = gClock.getElapsedTime().asSeconds();
@@ -161,26 +185,48 @@ void Loop()
 			accumulator = 0.2f;
 		if(accumulator > gDeltaTime)
 		{
+			UpdatePhysics(frameStart);
 			std::cout << "Physics Update Goes here" << std::endl;
 			accumulator -= gDeltaTime;
 		}
 		// Remeber to handle the discrete jump in time every 6th frames or so with linear interpolation! To: Jason
 		
 		gRenderWindow.draw(*sprite);
+		gRenderWindow.draw(*sprite2);
 		test.Draw(gRenderWindow);
-		test.move(test.GetVelocity().x,test.GetVelocity().y);
-		test.setPosition(gMouseX,gMouseY);
-		sprite->setPosition(gMouseX,gMouseY);
+		test2.Draw(gRenderWindow);
+		sprite->setPosition(test.getPosition().x,test.getPosition().y);
+		sprite2->setPosition(test2.getPosition().x,test2.getPosition().y);
 		gRenderWindow.display();						//Displays whatever is drawn to the window
 		while(gRenderWindow.pollEvent(gEvent))
 		{
 			HandleEvent(gEvent);
-			AudioLoop(0);
+			//AudioLoop(0);
 		}
-		CallbackRunSystem();
+		//CallbackRunSystem();
 	}
 }
+void UpdatePhysics(float deltaTime)
+{
+	int i;
+	Vec2D someOfForces;
+	//PrePhysics
+	someOfForces.y = test.GetVelocity().y*(gClock.getElapsedTime().asSeconds() /deltaTime) + ((Gravity*(gClock.getElapsedTime().asSeconds() /deltaTime)));
+	someOfForces.x = test.GetVelocity().x*(gClock.getElapsedTime().asSeconds() /deltaTime);
+	test.SetVelocity(someOfForces);
+	test.move(someOfForces.x,someOfForces.y);
 
+	someOfForces.y = test2.GetVelocity().y*(gClock.getElapsedTime().asSeconds() /deltaTime) + ((Gravity*(gClock.getElapsedTime().asSeconds() /deltaTime)));
+	someOfForces.x = test2.GetVelocity().x*(gClock.getElapsedTime().asSeconds() /deltaTime);
+	test2.SetVelocity(someOfForces);
+	test2.move(someOfForces.x,someOfForces.y);
+	
+	//Post Physics;
+	if(AABB(&test,&test2))
+	{
+		CollisionResponse(&test,&test2);
+	}
+}
 void HandleEvent(sf::Event Event)
 {
 	//Close window
