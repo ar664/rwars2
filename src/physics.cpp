@@ -6,7 +6,7 @@
 #include "physics.h"
 
 
-int AABB(Entity *ent1, Entity *ent2)
+Manifold* AABB(Entity *ent1, Entity *ent2)
 {
 		/*
 	Checks if the boxes intersect by comparing the boxes (x and widths) and (y and heights)
@@ -16,157 +16,175 @@ int AABB(Entity *ent1, Entity *ent2)
 		&& (ent1->getPosition().y + ent1->GetDimension().y) > ent2->getPosition().y 
 		&& (ent2->getPosition().y + ent2->GetDimension().y) > ent1->getPosition().y)
 	{
+		Vec2D center1 = CreateVec2D(ent1->getPosition().x + (ent1->GetDimension().x/2),
+			ent1->getPosition().y + (ent1->GetDimension().y/2));
+		Vec2D center2 = CreateVec2D(ent2->getPosition().x + (ent2->GetDimension().x/2),
+			ent2->getPosition().y + (ent2->GetDimension().y/2));
+		Manifold* m = new Manifold;
+		m->A = ent1;
+		m->B = ent2;
+		int w,h,dx,dy,wy,hx;
+		w = .5*(ent1->GetDimension().x + ent2->GetDimension().x);
+		h = .5*(ent1->GetDimension().y + ent2->GetDimension().y);
+		dx = center1.x - center2.x;
+		dy = center1.y - center2.y;
+		wy = w *dy;
+		hx = h*dx;
+			if(wy > hx)
+				if(wy > -hx){
+					//Top Collision
+					m->penetration.y = (ent2->getPosition().y + ent2->GetDimension().y) - ent1->getPosition().y;
+					m->normal.y = 1; 
+				}
+				else{
+					//Right Collision
+					m->penetration.x = (ent1->getPosition().x + ent1->GetDimension().x) - ent2->getPosition().x;
+					m->normal.x = 1;
+				}
+			else
+				if(wy > -hx)
+				{
+					//Left Collision
+					m->penetration.x = (ent2->getPosition().x + ent2->GetDimension().x) - ent1->getPosition().x;
+					m->normal.y = -1;
+				}
+				else{
+					//Bottom Collisions
+					m->penetration.y = (ent1->getPosition().y + ent1->GetDimension().y) - ent2->getPosition().y;
+					m->normal.y = -1;
+				}
 		std::cout << "Collision Detected" << std::endl;
-		return 1;
+		return m;
 	}
-	return 0;
+	return nullptr;
 }
 
-void FrictionResponse(Entity* ent1, Entity* ent2)
+void FrictionResponse(Entity* ent1, Entity* ent2,Manifold* m)
 {
-		Vec2D rv,tangent,velAlongNormal,frictionImpulse;
-		float jt,mu,dynamicFriction,invMass1,invMass2;
+	Vec2D rv,tangent,frictionImpulse;
+	float jt,mu,dynamicFriction,invMass1,invMass2,velAlongNormal;
 
-		Vec2D center1 = CreateVec2D(ent1->getPosition().x + (ent1->GetDimension().x/2),
-			ent1->getPosition().y + (ent1->GetDimension().y/2));
-		Vec2D center2 = CreateVec2D(ent2->getPosition().x + (ent2->GetDimension().x/2),
-			ent2->getPosition().y + (ent2->GetDimension().y/2));
-		Vec2D normal;
-		Vec2DSub(normal,center1,center2);
-		Vec2DNormalize(&normal);
-
-		if(ent1->mBody.mass == 0)					//Check for infinite Mass
-			invMass1 = 0;
-		else
-			invMass1 = (1/ent1->mBody.mass);
-		if(ent2->mBody.mass == 0)
-			invMass2 = 0;
-		else
-			invMass2 = (1/ent2->mBody.mass);
+	if(ent1->mBody.mass == 0)					//Check for infinite Mass
+		invMass1 = 0;
+	else
+		invMass1 = (1/ent1->mBody.mass);
+	if(ent2->mBody.mass == 0)
+		invMass2 = 0;
+	else
+		invMass2 = (1/ent2->mBody.mass);
 
 
-		//Find resolution Vector
-		Vec2DSub(rv,ent1->GetVelocity(),ent2->GetVelocity());
-		//Solve for tangent Vector
-		velAlongNormal = CreateVec2D(Vec2DDotProduct(rv,normal),Vec2DDotProduct(rv,normal));
-		tangent = CreateVec2D(velAlongNormal.x * normal.x,velAlongNormal.y * normal.y);
+	//Find resolution Vector
+	Vec2DSub(rv,ent2->GetVelocity(),ent1->GetVelocity());
+	//Solve for tangent Vector
+	velAlongNormal = Vec2DDotProduct(rv,m->normal);
+	tangent = CreateVec2D(rv.x - velAlongNormal * m->normal.x,rv.y - velAlongNormal * m->normal.y);
 
-		Vec2DSub(tangent,rv,tangent);
-		Vec2DNormalize(&tangent);
+	Vec2DNormalize(&tangent);
 
-		// Solve for magnitude to apply along the friction vector
-		jt = -Vec2DDotProduct( rv, tangent);
-		jt = jt / (1 / ent1->mBody.mass + 1 / ent2->mBody.mass);
-		//Use pythag to solve for mu (Doing Coulumbs law)
-		mu = sqrt(pow(ent1->mBody.staticFriction,(float)2) + pow(ent2->mBody.staticFriction,(float)2));
+	// Solve for magnitude to apply along the friction vector
+	jt = -Vec2DDotProduct( rv, tangent);
+	jt = jt / (invMass1 + invMass2);
+	//Use pythag to solve for mu (Doing Coulumbs law)
+	mu = sqrt(pow(ent1->mBody.staticFriction,(float)2) + pow(ent2->mBody.staticFriction,(float)2));
 
-		float e = std::min(ent1->mBody.restitution,ent1->mBody.restitution);			//Restitution
-		float j = -(1+e) * velAlongNormal.x;
+	float e = std::min(ent1->mBody.restitution,ent2->mBody.restitution);			//Restitution
+	float j = -(1+e) * velAlongNormal;
 
-		j = (j/(invMass1+invMass2));
+	j = (j/(invMass1+invMass2));
 
-		if(abs(jt) < j * mu)
-			//Assuming the object is at rest, this code will execute
-			frictionImpulse = CreateVec2D(tangent.x * jt,tangent.y * jt);
-		else
-		{
-			dynamicFriction =sqrt(pow(ent1->mBody.dynamicFriction,(float)2) + pow(ent2->mBody.dynamicFriction,(float)2));
-			frictionImpulse = CreateVec2D(-j*tangent.x*dynamicFriction,-j*tangent.y*dynamicFriction);
-		}
+	if(abs(jt) < j * mu)
+		//Assuming the object is at rest, this code will execute
+		frictionImpulse = CreateVec2D(tangent.x * jt,tangent.y * jt);
+	else
+	{
+		dynamicFriction =sqrt(pow(ent1->mBody.dynamicFriction,(float)2) + pow(ent2->mBody.dynamicFriction,(float)2));
+		frictionImpulse = CreateVec2D(-j*tangent.x*dynamicFriction,-j*tangent.y*dynamicFriction);
+	}
+	frictionImpulse.x = frictionImpulse.x /10;
+	frictionImpulse.y = frictionImpulse.y /10;
 
-		ent1->SetVelocity(
-			CreateVec2D(ent1->GetVelocity().x - invMass1 *frictionImpulse.x,ent1->GetVelocity().y - invMass1 *frictionImpulse.y));
-		ent2->SetVelocity(
-			CreateVec2D(ent2->GetVelocity().x + invMass2 *frictionImpulse.x,ent2->GetVelocity().y + invMass2 *frictionImpulse.y));
+	ent1->SetVelocity(
+		CreateVec2D(ent1->GetVelocity().x - invMass1 *frictionImpulse.x,ent1->GetVelocity().y - invMass1 *frictionImpulse.y));
+	ent2->SetVelocity(
+		CreateVec2D(ent2->GetVelocity().x + invMass2 *frictionImpulse.x,ent2->GetVelocity().y + invMass2 *frictionImpulse.y));
 
 }
-int CollisionResponse(Entity* ent1,Entity *ent2)
+int CollisionResponse(Entity* ent1,Entity *ent2,Manifold *m)
 {
-		Vec2D rv;
+	Vec2D rv;
 
-		Vec2D center1 = CreateVec2D(ent1->getPosition().x + (ent1->GetDimension().x/2),
-			ent1->getPosition().y + (ent1->GetDimension().y/2));
-		Vec2D center2 = CreateVec2D(ent2->getPosition().x + (ent2->GetDimension().x/2),
-			ent2->getPosition().y + (ent2->GetDimension().y/2));
-		Vec2D normal;
-		Vec2DSub(normal,center1,center2);
-		Vec2DNormalize(&normal);
-		Vec2DSub(rv,ent1->GetVelocity(),ent2->GetVelocity());
+	Vec2DSub(rv,ent1->GetVelocity(),ent2->GetVelocity());
 
-		float velAlongNormal = Vec2DDotProduct(rv,normal);
-		float invMass1;
-		float invMass2;
-		if(ent1->mBody.mass == 0)					//Check for infinite Mass
-			invMass1 = 0;
-		else
-			invMass1 = (1/ent1->mBody.mass);
-		if(ent2->mBody.mass == 0)
-			invMass2 = 0;
-		else
-			invMass2 = (1/ent2->mBody.mass);
-		if(velAlongNormal >= 0)
-		{
-			//If our two objects are already Intersecting, Seperate them and return;
-			Vec2D penetration = CreateVec2D(
-				(ent1->getPosition().x + ent1->GetDimension().x) - (ent2->getPosition().x + ent2->GetDimension().x),
-			 (ent1->getPosition().y + ent1->GetDimension().y) - (ent2->getPosition().y + ent2->GetDimension().y));
-			const float k_slop = 0.1f;
-			const float percent= .2f;
-			Vec2D correction = CreateVec2D((std::max(penetration.x - k_slop,0.0f)/(invMass1 + invMass2)*percent*normal.x),
-				(std::max(penetration.y - k_slop,0.0f)/(invMass1 + invMass2)*percent*normal.y)) ;
-			ent1->setPosition(ent1->getPosition().x - (correction.x*invMass1),ent1->getPosition().y - (correction.y*invMass1));
-			ent2->setPosition(ent2->getPosition().x + (correction.x*invMass2),ent2->getPosition().y + (correction.y*invMass2));
-			return 0;
-		}
-		float e = std::min(ent1->mBody.restitution,ent1->mBody.restitution);			//Restitution
-		float j = -(1+e) * velAlongNormal;
+	float velAlongNormal = Vec2DDotProduct(rv,m->normal);
+	float invMass1;
+	float invMass2;
+	//Check for infinite mass...Objects with Infinite Mass wont move, Good for platforms
+	if(ent1->mBody.mass == 0)					
+		invMass1 = 0;
+	else
+		invMass1 = (1/ent1->mBody.mass);
+	if(ent2->mBody.mass == 0)
+		invMass2 = 0;
+	else
+		invMass2 = (1/ent2->mBody.mass);
+	
+	//This is to make sure we dont resolve collisions if they will be resolved on the next frame anyways
+	if(velAlongNormal > 0)
+	{
+		return 0;
+	}
 
-		j = (j/(invMass1+invMass2));
+	float e = std::min(ent1->mBody.restitution,ent2->mBody.restitution);			//Restitution
+	float j = -(1+e) * velAlongNormal;
 
-		Vec2D impulse = CreateVec2D(normal.x * j,normal.y * j);
-		Vec2D result1,result2;
-		impulse.y = impulse.y/10;
-		impulse.x = impulse.x/10;
-		if(impulse.x == 0)
-		{
-			result1.x = 0;
-			result2.x = 0;
-		}
-		else
-		{
-			result1.x = invMass1  * impulse.x;
-			result2.x = invMass2  * impulse.x;
-		}
-		if(impulse.y == 0)
-		{
-			result1.y = 0;
-			result2.y = 0;
-		}
-		else
-		{
-			result1.y = invMass1 * impulse.y;
-			result2.y = invMass2 * impulse.y;
-		}
- 		ent1->SetVelocity(CreateVec2D(ent1->GetVelocity().x + result1.x,
-			ent1->GetVelocity().y + result1.y));
-		ent2->SetVelocity(CreateVec2D(ent2->GetVelocity().x - result2.x,
-			ent2->GetVelocity().y - result2.y));
-		//Solve for floating point errors and such(Linear Projection)
+	j = (j/(invMass1+invMass2));
 
-		Vec2D penetration = CreateVec2D((
-			ent1->getPosition().x + ent1->GetDimension().x) - (ent2->getPosition().x + ent2->GetDimension().x),
-			 (ent1->getPosition().y + ent1->GetDimension().y) - (ent2->getPosition().y + ent2->GetDimension().y));
-		const float k_slop = 0.1;
-		const float percent= .2f;
-		Vec2D correction = CreateVec2D((std::max(penetration.x - k_slop,0.0f)/(invMass1 + invMass2))*percent*normal.x,
-			(std::max(penetration.y - k_slop,0.0f)/(invMass1 + invMass2))*percent*normal.y) ;
-		ent1->setPosition(ent1->getPosition().x - (correction.x*invMass1),ent1->getPosition().y - (correction.y*invMass1));
-		ent2->setPosition(ent2->getPosition().x + (correction.x*invMass2),ent2->getPosition().y + (correction.y*invMass2));
-		
-		//Solve for friction
-		FrictionResponse(ent1,ent2);
+	Vec2D impulse = CreateVec2D(m->normal.x * j,m->normal.y * j);
+	Vec2D result1,result2;
+	impulse.y = impulse.y/10;
+	impulse.x = impulse.x/10;
+	if(impulse.x == 0)
+	{
+		result1.x = 0;
+		result2.x = 0;
+	}
+	else
+	{
+		result1.x = invMass1  * impulse.x;
+		result2.x = invMass2  * impulse.x;
+	}
+	if(impulse.y == 0)
+	{
+		result1.y = 0;
+		result2.y = 0;
+	}
+	else
+	{
+		result1.y = invMass1 * impulse.y;
+		result2.y = invMass2 * impulse.y;
+	}
+	float mass_sum = ent1->mBody.mass + ent2->mBody.mass;
+	float ratio = ent1->mBody.mass / mass_sum;
+ 	ent1->SetVelocity(CreateVec2D(ent1->GetVelocity().x + result1.x*ratio,
+		ent1->GetVelocity().y + result1.y*ratio));
+	
+	ratio = ent2->mBody.mass / mass_sum;
 
-		return 1;
+	ent2->SetVelocity(CreateVec2D(ent2->GetVelocity().x - result2.x*ratio,
+		ent2->GetVelocity().y - result2.y*ratio));
+	
+	//Solve for friction
+		FrictionResponse(ent1,ent2,m);
+	//Solve for floating point errors and such(Linear Projection) due to gravity
+	const float slop = .1;
+	const float percent= .6f;
+	Vec2D correction = CreateVec2D(std::max(m->penetration.x-slop , 0.0f)/(invMass1 + invMass2)*percent*m->normal.x,
+		std::max(m->penetration.y-slop,0.0f)/(invMass1 + invMass2)*percent*m->normal.y) ;
+	ent1->setPosition(ent1->getPosition().x - (correction.x*invMass1),ent1->getPosition().y + (correction.y*invMass1));
+	ent2->setPosition(ent2->getPosition().x + (correction.x*invMass2),ent2->getPosition().y + (correction.y*invMass2));
+	
+	return 1;
 	}
 /**
  * @brief Constructer for Grid
@@ -306,7 +324,7 @@ int Grid::getM_Height()
 	return m_height;
 }
 
-void RigidBody::AddForce(float amount)
+void RigidBody::AddForce(Vec2D amount)
 {
-
+	Vec2DAdd(force,force,amount);
 }

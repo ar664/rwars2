@@ -4,6 +4,19 @@
 #include "entity.h"
 
 const float Gravity = .2;
+
+/**
+*This struct stores information about 2 entities that collided and is used to 
+*physics updates
+*/
+struct Manifold
+{
+	Entity* A;
+	Entity* B;
+	Vec2D penetration;		//How much A is penetrating B.... *wink* *wink*
+	Vec2D normal;			//Vector along the normal
+};
+
 struct Cell{
 	
 	std::vector<Entity*> entities;
@@ -37,9 +50,9 @@ private:
 };
 
 
-int AABB(Entity *ent1, Entity *ent2);
-int CollisionResponse(Entity* ent1,Entity *ent2);
-void FrictionResponse(Entity* ent1, Entity* ent2);
+Manifold* AABB(Entity *ent1, Entity *ent2);
+int CollisionResponse(Entity* ent1,Entity *ent2,Manifold* m);
+void FrictionResponse(Entity* ent1, Entity* ent2,Manifold* m);
 int SweptAABB(Entity *ent1, Entity *ent2, float& normalx, float& normaly);
 void UpdatePhysics(float deltaTime);
 

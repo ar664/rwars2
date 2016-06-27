@@ -124,23 +124,23 @@ void Init_All()
 	test.SetCurrentAnimation(0);
 	test.mCurrentSprite->SetFrameBB();
 	test.mCurrentFrame = 1;
-	test.SetVelocity(CreateVec2D(9,-3));
-	test.mBody.mass = 30;
-	test.mBody.restitution = 10;
+	test.SetVelocity(CreateVec2D(.1,0));
+	test.mBody.mass = 50;
+	test.mBody.restitution = 16;
 	test.mBody.staticFriction = .3;
-	test.mBody.dynamicFriction = .5;
+	test.mBody.dynamicFriction = .7;
 
 	test2.LoadSprites(test_files);
 	test2.SetDimensions(CreateVec2D(127,127));
 	test2.SetCurrentAnimation(0);
 	test2.mCurrentSprite->SetFrameBB();
 	test2.mCurrentFrame = 1;
-	test2.SetVelocity(CreateVec2D(0,-3));
-	test2.setPosition(400,0);
-	test2.mBody.mass = 60;
-	test2.mBody.restitution = 20;
-	test2.mBody.staticFriction = .3;
-	test2.mBody.dynamicFriction = .5;
+	test2.SetVelocity(CreateVec2D(0,0));
+	test2.setPosition(0,300);
+	test2.mBody.mass = 0;
+	test2.mBody.restitution = 1000;
+	test2.mBody.staticFriction = 0;
+	test2.mBody.dynamicFriction = 0;
 
 	LoadAssets();
 	CallbackInitSystem();
@@ -216,15 +216,16 @@ void UpdatePhysics(float deltaTime)
 	test.SetVelocity(someOfForces);
 	test.move(someOfForces.x,someOfForces.y);
 
-	someOfForces.y = test2.GetVelocity().y*(gClock.getElapsedTime().asSeconds() /deltaTime) + ((Gravity*(gClock.getElapsedTime().asSeconds() /deltaTime)));
-	someOfForces.x = test2.GetVelocity().x*(gClock.getElapsedTime().asSeconds() /deltaTime);
-	test2.SetVelocity(someOfForces);
-	test2.move(someOfForces.x,someOfForces.y);
+	//someOfForces.y = test2.GetVelocity().y*(gClock.getElapsedTime().asSeconds() /deltaTime) + ((Gravity*(gClock.getElapsedTime().asSeconds() /deltaTime)));
+	//someOfForces.x = test2.GetVelocity().x*(gClock.getElapsedTime().asSeconds() /deltaTime);
+	//test2.SetVelocity(someOfForces);
+	//test2.move(someOfForces.x,someOfForces.y);
 	
 	//Post Physics;
-	if(AABB(&test,&test2))
+	Manifold *m = AABB(&test,&test2);
+	if(m != nullptr)
 	{
-		CollisionResponse(&test,&test2);
+		CollisionResponse(&test,&test2,m);
 	}
 }
 void HandleEvent(sf::Event Event)

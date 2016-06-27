@@ -37,6 +37,19 @@ class Grid;
  *		*mCallbacks		-	*This may be neccessary for some entities that want to make a specific action happen at the end of certain sounds.
  */
 
+/**
+* RigidBody struct used for physics calculations
+*	float		mass 
+*	Vec2D		velocity		-	Every physics update, this will be used in conjunction with other forces to move the body
+*	Vec2D		force			-	This is the amount of force applied to the object by external forces
+*	float		staticFriction
+*	float		dynamicFriction
+*	*Note that rigidBodys have two frictions. One is for when the object is at rest and the other is used when the 
+*		object is in motion
+*	float		restitution		-	Used for Bounce(higher the value,the higher the bounce)
+*	float		density			-	Not being used at the moment but may switch to it inorder to determine mass
+*/
+
 struct RigidBody
 {
 	// We are assuming for now that all Rigidbody shapes are rectangles
@@ -50,7 +63,7 @@ struct RigidBody
 	float		density;		/*<-- Use density* volume to determine the currect mass of an object */
 
 
-	void AddForce(float amount);
+	void AddForce(Vec2D amount);
 };
 
 typedef class Entity: public sf::Transformable 
