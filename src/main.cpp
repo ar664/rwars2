@@ -124,11 +124,12 @@ void Init_All()
 	test.SetCurrentAnimation(0);
 	test.mCurrentSprite->SetFrameBB();
 	test.mCurrentFrame = 1;
-	test.SetVelocity(CreateVec2D(.1,0));
-	test.mBody.mass = 50;
-	test.mBody.restitution = 16;
-	test.mBody.staticFriction = .3;
-	test.mBody.dynamicFriction = .7;
+	test.SetVelocity(CreateVec2D(0,0));
+	test.mBody.mass = 10;
+	test.mBody.restitution = 17.5;
+	test.mBody.staticFriction = .5;
+	test.mBody.dynamicFriction = .5;
+	//test.mBody.AddForce(CreateVec2D(6,0));
 
 	test2.LoadSprites(test_files);
 	test2.SetDimensions(CreateVec2D(127,127));
@@ -139,8 +140,8 @@ void Init_All()
 	test2.setPosition(0,300);
 	test2.mBody.mass = 0;
 	test2.mBody.restitution = 1000;
-	test2.mBody.staticFriction = 0;
-	test2.mBody.dynamicFriction = 0;
+	test2.mBody.staticFriction = 1;
+	test2.mBody.dynamicFriction = 1;
 
 	LoadAssets();
 	CallbackInitSystem();
@@ -210,22 +211,28 @@ void UpdatePhysics(float deltaTime)
 {
 	int i;
 	Vec2D someOfForces;
+	Manifold *m = nullptr;
 	//PrePhysics
-	someOfForces.y = test.GetVelocity().y*(gClock.getElapsedTime().asSeconds() /deltaTime) + ((Gravity*(gClock.getElapsedTime().asSeconds() /deltaTime)));
+	test.mBody.acceleration.x += (test.mBody.force.x / test.mBody.mass)*gDeltaTime;
+	test.mBody.acceleration.y += (test.mBody.force.y / test.mBody.mass)*gDeltaTime;
+
+	someOfForces.y = test.GetVelocity().y*(gClock.getElapsedTime().asSeconds() /deltaTime)+ ((test.mBody.mass*Gravity*(gClock.getElapsedTime().asSeconds() /deltaTime)));
 	someOfForces.x = test.GetVelocity().x*(gClock.getElapsedTime().asSeconds() /deltaTime);
 	test.SetVelocity(someOfForces);
 	test.move(someOfForces.x,someOfForces.y);
 
+	test.mBody.force.x = 0;
 	//someOfForces.y = test2.GetVelocity().y*(gClock.getElapsedTime().asSeconds() /deltaTime) + ((Gravity*(gClock.getElapsedTime().asSeconds() /deltaTime)));
 	//someOfForces.x = test2.GetVelocity().x*(gClock.getElapsedTime().asSeconds() /deltaTime);
 	//test2.SetVelocity(someOfForces);
 	//test2.move(someOfForces.x,someOfForces.y);
 	
 	//Post Physics;
-	Manifold *m = AABB(&test,&test2);
+	m = AABB(&test,&test2);
 	if(m != nullptr)
 	{
 		CollisionResponse(&test,&test2,m);
+		delete(m);
 	}
 }
 void HandleEvent(sf::Event Event)

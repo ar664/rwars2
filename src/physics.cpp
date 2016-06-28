@@ -21,6 +21,8 @@ Manifold* AABB(Entity *ent1, Entity *ent2)
 		Vec2D center2 = CreateVec2D(ent2->getPosition().x + (ent2->GetDimension().x/2),
 			ent2->getPosition().y + (ent2->GetDimension().y/2));
 		Manifold* m = new Manifold;
+		m->normal.x = 0;
+		m->normal.y = 0;
 		m->A = ent1;
 		m->B = ent2;
 		int w,h,dx,dy,wy,hx;
@@ -46,7 +48,7 @@ Manifold* AABB(Entity *ent1, Entity *ent2)
 				{
 					//Left Collision
 					m->penetration.x = (ent2->getPosition().x + ent2->GetDimension().x) - ent1->getPosition().x;
-					m->normal.y = -1;
+					m->normal.x = -1;
 				}
 				else{
 					//Bottom Collisions

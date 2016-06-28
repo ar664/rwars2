@@ -29,7 +29,6 @@ class Grid;
  *	Physics:
  *		sf::Transformable-	This is a use of the sfml library where they provide us with some useful functions for position
  *		mSpeed			-	The speed that the entity is going.
- *		mVelocity		-	The normalized 2D vector of their direction.
  *		mDimension		-	The bounding box for the character.
  *
  *	Audio:
@@ -39,14 +38,14 @@ class Grid;
 
 /**
 * RigidBody struct used for physics calculations
-*	float		mass 
+*	float		mass			-	Entities with infinite mass have a mass of 0
 *	Vec2D		velocity		-	Every physics update, this will be used in conjunction with other forces to move the body
 *	Vec2D		force			-	This is the amount of force applied to the object by external forces
 *	float		staticFriction
 *	float		dynamicFriction
 *	*Note that rigidBodys have two frictions. One is for when the object is at rest and the other is used when the 
 *		object is in motion
-*	float		restitution		-	Used for Bounce(higher the value,the higher the bounce)
+*	float		restitution		-	Used for Bounce(higher the value,the higher the bounce).Values over 20 start to get wierd bounce behavior
 *	float		density			-	Not being used at the moment but may switch to it inorder to determine mass
 */
 
@@ -56,6 +55,7 @@ struct RigidBody
 	float		mass;
 	Vec2D		velocity;
 	Vec2D		force;			/*<-- Used to find acceleration, also is applied to the object every physics update until it eventually dies out */
+	Vec2D		acceleration;
 	// Material Structure 
 	float		staticFriction;
 	float		dynamicFriction;
