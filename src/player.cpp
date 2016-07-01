@@ -1,5 +1,5 @@
 #include <SFML/Graphics.hpp>
-
+#include <iostream>
 #include "player.h"
 #include "globals.h"
 
@@ -40,7 +40,7 @@ void Character::HandleInput(sf::Event Event)
 			//move right
 			break;
 		case KEY_ATTACK :
-			ChangeState(P_State_Held_Att);
+			ChangeState(P_State_Charge_Atk);
 			break;
 		default:
 			break;
@@ -51,7 +51,7 @@ void Character::HandleInput(sf::Event Event)
 		switch(Event.key.code)
 		{
 			case KEY_ATTACK :
-			ChangeState(P_State_Attack);
+				ChangeState(P_State_Attack);
 			break;
 		}
 	}
@@ -63,8 +63,10 @@ int Character::GetState()
 
 void Character::ChangeState(PlayerState state)
 {
-	int delta = 0;
-	int curr_time = gClock.getElapsedTime().asMilliseconds();
+
+	int delta		= 0;
+	int atk_delta	= 0;
+	int curr_time	= gClock.getElapsedTime().asMilliseconds();
 
 	delta = curr_time - mLastStateChange;
 	mNextStateChange -= delta;
@@ -76,30 +78,38 @@ void Character::ChangeState(PlayerState state)
 		//testing purpose
 		//should be fixed later to manually unset state
 		mState = 0;
-		
 		mCurrState = P_State_Neutral;
 	}
 	//can only change states when we are in neutral state
 	if(mCurrState != P_State_Neutral)	return;
-	if(state == P_State_Held_Att)
+
+	if(state == P_State_Charge_Atk)
 	{
-		int atk_delta;
-
-		mAtkPressTime	= mAtkPressTime <= 0 ? curr_time : mAtkPressTime;
-		atk_delta		= curr_time - mAtkPressTime;
-
-		//hard coding 400 miliseconds as time btn needs to be held
-		if(atk_delta >= 400)
+		if(mAtkPressTime == 0)
 		{
-			mState		|= PlayerState::P_State_Held_Att;
-			mCurrState	= PlayerState::P_State_Held_Att;
-			mAtkPressTime = 0;
+			mAtkPressTime = curr_time;
+			return;
 		}
-		return;
-	}
 
-	mLastStateChange = gClock.getElapsedTime().asMilliseconds();
-	mNextStateChange = 500;//hard coded 500 miliseconds for now
+		atk_delta		= curr_time - mAtkPressTime;
+		std::cout<<"Atk delta is: " << atk_delta << std::endl;
+		//hard coding 400 miliseconds as time btn needs to be held
+		if(atk_delta < 400)
+		{
+			return;
+		}
+	}
+	std:: cout <<"Last change time " << mLastStateChange << " Next change time " << mNextStateChange << std::endl;
+	
+	mAtkPressTime		= 0;
+
+	mState				|=state;
+	mCurrState			= state;
+
+	mLastStateChange	= gClock.getElapsedTime().asMilliseconds();
+	mNextStateChange	= 500;//hard coded 500 miliseconds for now
+
+	std::cout <<"Character State is " << mCurrState << std::endl;
 }
 //incomplete. Created to set up state changes
 void Character::Update()

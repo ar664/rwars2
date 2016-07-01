@@ -9,8 +9,9 @@ typedef enum PlayerState
 {
 	P_State_Neutral = 0,
 	P_State_Fall = 1,
+
 	P_State_Attack = 2,
-	P_State_Held_Att = 4,
+	P_State_Charge_Atk = 4,
 	P_State_Hurt = 8,
 	P_State_Lane_Switch = 16,
 	P_State_Jump = 32,
@@ -35,12 +36,12 @@ private:
 	int					mState;
 	PlayerState			mCurrState; //flag of all states
 	
-	sf::Uint32			mAtkPressTime; //Timer to track how long atk button is held
-
+	sf::Uint32			mAtkPressTime; //Time atk btn was pressed
+	sf::Uint32			mAtkHoldTime; // Amount of time atk btn was held
 	//currently using timers for state changes
 	//might change and use priority system
 	sf::Uint32			mLastStateChange;
-	sf::Uint32			mNextStateChange;
+	int					mNextStateChange;
 public:
 	Character();
 

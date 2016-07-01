@@ -254,10 +254,9 @@ void HandleEvent(sf::Event Event)
 		gMouseY = Event.mouseMove.y;
 	}
 	//double Garry test code
-	else if(Event.type == sf::Event::EventType::KeyPressed)
+	else if((Event.type == sf::Event::EventType::KeyPressed) || (Event.type == sf::Event::EventType::KeyReleased))
 	{
 		test_p->HandleInput(Event);
-		std::cout <<"Character State is " << test_p->GetState() << std::endl;
 	}
 	// end
 }
