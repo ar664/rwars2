@@ -7,6 +7,7 @@
 #include "entity.h"
 
 Entity *gEntities = NULL;
+int numEntities = 0;
 bool	paused = false;		//temp variable until pause gamestate is a thing
 
 void Entity::LoadSprites(char **SpriteFiles)
@@ -75,6 +76,7 @@ Entity* CreateEntity()
 		if(gEntities[i].mInUse)
 			continue;
 		gEntities[i].mInUse = 1;
+		numEntities +=1;
 		return &gEntities[i];
 
 	}
@@ -217,6 +219,7 @@ void Entity::Draw(sf::RenderTarget& target)
 void Entity::Think()
 {
 	//Empty Think Should be replaced on inheritance
+	
 }
 
 Cell* Entity::GetCell()
@@ -263,7 +266,3 @@ void			SetDimensions(Vec2D)
 	
 }
 
-void			SetVelocity(Vec2D)
-{
-	
-}

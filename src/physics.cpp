@@ -5,7 +5,7 @@
 #include "vectors.h"
 #include "physics.h"
 
-
+Grid* gGrid;
 Manifold* AABB(Entity *ent1, Entity *ent2)
 {
 		/*
@@ -91,20 +91,21 @@ void FrictionResponse(Entity* ent1, Entity* ent2,Manifold* m)
 	mu = sqrt(pow(ent1->mBody.staticFriction,(float)2) + pow(ent2->mBody.staticFriction,(float)2));
 
 	float e = std::min(ent1->mBody.restitution,ent2->mBody.restitution);			//Restitution
-	float j = -(1+e) * velAlongNormal;
-
+	float j = -(1+e) * jt;
 	j = (j/(invMass1+invMass2));
 
 	if(abs(jt) < j * mu)
 		//Assuming the object is at rest, this code will execute
+	{
 		frictionImpulse = CreateVec2D(tangent.x * jt,tangent.y * jt);
+	}
 	else
 	{
 		dynamicFriction =sqrt(pow(ent1->mBody.dynamicFriction,(float)2) + pow(ent2->mBody.dynamicFriction,(float)2));
 		frictionImpulse = CreateVec2D(-j*tangent.x*dynamicFriction,-j*tangent.y*dynamicFriction);
 	}
-	frictionImpulse.x = frictionImpulse.x /10;
-	frictionImpulse.y = frictionImpulse.y /10;
+	frictionImpulse.x = frictionImpulse.x;
+	frictionImpulse.y = frictionImpulse.y;
 
 	ent1->SetVelocity(
 		CreateVec2D(ent1->GetVelocity().x - invMass1 *frictionImpulse.x,ent1->GetVelocity().y - invMass1 *frictionImpulse.y));
@@ -184,7 +185,7 @@ int CollisionResponse(Entity* ent1,Entity *ent2,Manifold *m)
 	Vec2D correction = CreateVec2D(std::max(m->penetration.x-slop , 0.0f)/(invMass1 + invMass2)*percent*m->normal.x,
 		std::max(m->penetration.y-slop,0.0f)/(invMass1 + invMass2)*percent*m->normal.y) ;
 	ent1->setPosition(ent1->getPosition().x - (correction.x*invMass1),ent1->getPosition().y + (correction.y*invMass1));
-	ent2->setPosition(ent2->getPosition().x + (correction.x*invMass2),ent2->getPosition().y + (correction.y*invMass2));
+	ent2->setPosition(ent2->getPosition().x + (correction.x*invMass2),ent2->getPosition().y - (correction.y*invMass2));
 	
 	return 1;
 	}
@@ -329,4 +330,63 @@ int Grid::getM_Height()
 void RigidBody::AddForce(Vec2D amount)
 {
 	Vec2DAdd(force,force,amount);
+}
+void UpdateCollision()
+{
+	
+	for(int i = 0; i < gGrid->getM_Cells().size();i++)
+	{
+		//printf("Mcells Size%d \n",gGrid->getM_Cells().size());
+		int x = i % gGrid->getM_NumXCells();
+		int y = i / gGrid->getM_NumXCells();
+
+		Cell cell = gGrid->getM_Cells()[i];
+		//Loop through Entities in Cell
+		for(int j = 0;j < cell.entities.size();j++)
+		{
+			Entity* ent = cell.entities[j];
+			//Do collision checks in the current cell than update
+			CheckCollision(cell.entities[j],cell.entities,j+1);
+			
+			//Update Collision with neighbor cells
+			if(x > 0)
+			{	//Left
+				CheckCollision(ent,gGrid->getCell(x-1,y)->entities,0);
+				if(y > 0)
+				{	
+					//TopLeft
+					CheckCollision(ent,gGrid->getCell(x-1,y-1)->entities,0);
+				}
+				if(y < gGrid->getM_NumYCells() -1)
+				{
+					//Bottom left
+					CheckCollision(ent,gGrid->getCell(x-1,y+1)->entities,0);
+				}
+			}
+			if(y > 0){
+				//Top
+				CheckCollision(ent,gGrid->getCell(x,y-1)->entities,0);
+			}
+		}
+		
+		}
+	
+}
+
+void CheckCollision(Entity* ent, std::vector<Entity*>& ents, int startIndex)
+{
+	Manifold *m = nullptr;
+
+	for (int i = 0; i < ents.size();i++)
+	{
+		if(ents[i] != ent){										//Make sure player isnt checking collision with self
+
+			m = AABB(ent,ents[i]);
+			if(m != nullptr)
+			{
+				CollisionResponse(ent,ents[i],m);
+			}
+		}
+	}
+	delete(m);
 }

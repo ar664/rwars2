@@ -16,7 +16,7 @@ const char *ANIMATION_IDLE_STR = "idle";
 float gDeltaTime = (float)1/(float)gFrameRate;
 int gMouseX = 0,gMouseY = 0;
 char *test_files[] = {"sprites/Enemies3.png", 0};
-Entity* ent1;
+Entity* ent1, *ent2,*ent3;
 Entity test, test2;
 int main(int argc,char *argv[])
 {
@@ -118,30 +118,47 @@ void Init_All()
 	Init_Graphics(WINDOW_WIDTH,WINDOW_HEIGHT,"RWARS");
 	SpriteListInit();
 	EntitySystemInit();
-	
-	test.LoadSprites(test_files);
-	test.SetDimensions(CreateVec2D(127,127));
-	test.SetCurrentAnimation(0);
-	test.mCurrentSprite->SetFrameBB();
-	test.mCurrentFrame = 1;
-	test.SetVelocity(CreateVec2D(0,0));
-	test.mBody.mass = 10;
-	test.mBody.restitution = 17.5;
-	test.mBody.staticFriction = .5;
-	test.mBody.dynamicFriction = .5;
+	gGrid = new Grid(6,6,100);
+
+	ent1 = CreateEntity();	
+	ent1->LoadSprites(test_files);
+	ent1->SetDimensions(CreateVec2D(127,127));
+	ent1->SetCurrentAnimation(0);
+	ent1->mCurrentSprite->SetFrameBB();
+	ent1->mCurrentFrame = 1;
+	ent1->setPosition(0,0);
+	ent1->SetVelocity(CreateVec2D(2,0));
+	ent1->mBody.mass = 10;
+	ent1->mBody.restitution = 17.5;
+	ent1->mBody.staticFriction = .0001;
+	ent1->mBody.dynamicFriction = .0002;
 	//test.mBody.AddForce(CreateVec2D(6,0));
 
-	test2.LoadSprites(test_files);
-	test2.SetDimensions(CreateVec2D(127,127));
-	test2.SetCurrentAnimation(0);
-	test2.mCurrentSprite->SetFrameBB();
-	test2.mCurrentFrame = 1;
-	test2.SetVelocity(CreateVec2D(0,0));
-	test2.setPosition(0,300);
-	test2.mBody.mass = 0;
-	test2.mBody.restitution = 1000;
-	test2.mBody.staticFriction = 1;
-	test2.mBody.dynamicFriction = 1;
+	ent2 =CreateEntity();
+	ent2->LoadSprites(test_files);
+	ent2->SetDimensions(CreateVec2D(127,127));
+	ent2->SetCurrentAnimation(0);
+	ent2->mCurrentSprite->SetFrameBB();
+	ent2->mCurrentFrame = 1;
+	ent2->SetVelocity(CreateVec2D(0,0));
+	ent2->setPosition(0,400);
+	ent2->mBody.mass = 0;
+	ent2->mBody.restitution = 20;
+	ent2->mBody.staticFriction =0.5;
+	ent2->mBody.dynamicFriction = 0.5;
+
+	ent3 = CreateEntity();	
+	ent3->LoadSprites(test_files);
+	ent3->SetDimensions(CreateVec2D(127,127));
+	ent3->SetCurrentAnimation(0);
+	ent3->mCurrentSprite->SetFrameBB();
+	ent3->mCurrentFrame = 1;
+	ent3->SetVelocity(CreateVec2D(0,0));
+	ent3->setPosition(0,273-100);
+	ent3->mBody.mass =50;
+	ent3->mBody.restitution = 10;
+	ent3->mBody.staticFriction = .0003;
+	ent3->mBody.dynamicFriction = 0;
 
 	LoadAssets();
 	CallbackInitSystem();
@@ -153,11 +170,11 @@ void Loop()
 	float accumulator = 0;				//For Physics Update
 	//Entitys First FrameBB
 	sf::Image image,image2;
-	image.create(test.mCurrentSprite->mFrameBB[test.mCurrentFrame].width,
-	test.mCurrentSprite->mFrameBB[test.mCurrentFrame].height,sf::Color::Blue);
+	image.create(ent1->mCurrentSprite->mFrameBB[ent1->mCurrentFrame].width,
+	ent1->mCurrentSprite->mFrameBB[ent1->mCurrentFrame].height,sf::Color::Blue);
 
-	image2.create(test2.mCurrentSprite->mFrameBB[test2.mCurrentFrame].width,
-	test2.mCurrentSprite->mFrameBB[test2.mCurrentFrame].height,sf::Color::Blue);
+	image2.create(ent2->mCurrentSprite->mFrameBB[ent2->mCurrentFrame].width,
+	ent2->mCurrentSprite->mFrameBB[ent2->mCurrentFrame].height,sf::Color::Blue);
 
 	sf::Texture *texture = new sf::Texture;
 	texture->loadFromImage(image);
@@ -194,10 +211,11 @@ void Loop()
 		
 		gRenderWindow.draw(*sprite);
 		gRenderWindow.draw(*sprite2);
-		test.Draw(gRenderWindow);
-		test2.Draw(gRenderWindow);
-		sprite->setPosition(test.getPosition().x,test.getPosition().y);
-		sprite2->setPosition(test2.getPosition().x,test2.getPosition().y);
+		ent1->Draw(gRenderWindow);
+		ent2->Draw(gRenderWindow);
+		ent3->Draw(gRenderWindow);
+		sprite->setPosition(ent1->getPosition().x,ent1->getPosition().y);
+		sprite2->setPosition(ent2->getPosition().x,ent2->getPosition().y);
 		gRenderWindow.display();						//Displays whatever is drawn to the window
 		while(gRenderWindow.pollEvent(gEvent))
 		{
@@ -205,34 +223,6 @@ void Loop()
 			//AudioLoop(0);
 		}
 		//CallbackRunSystem();
-	}
-}
-void UpdatePhysics(float deltaTime)
-{
-	int i;
-	Vec2D someOfForces;
-	Manifold *m = nullptr;
-	//PrePhysics
-	test.mBody.acceleration.x += (test.mBody.force.x / test.mBody.mass)*gDeltaTime;
-	test.mBody.acceleration.y += (test.mBody.force.y / test.mBody.mass)*gDeltaTime;
-
-	someOfForces.y = test.GetVelocity().y*(gClock.getElapsedTime().asSeconds() /deltaTime)+ ((test.mBody.mass*Gravity*(gClock.getElapsedTime().asSeconds() /deltaTime)));
-	someOfForces.x = test.GetVelocity().x*(gClock.getElapsedTime().asSeconds() /deltaTime);
-	test.SetVelocity(someOfForces);
-	test.move(someOfForces.x,someOfForces.y);
-
-	test.mBody.force.x = 0;
-	//someOfForces.y = test2.GetVelocity().y*(gClock.getElapsedTime().asSeconds() /deltaTime) + ((Gravity*(gClock.getElapsedTime().asSeconds() /deltaTime)));
-	//someOfForces.x = test2.GetVelocity().x*(gClock.getElapsedTime().asSeconds() /deltaTime);
-	//test2.SetVelocity(someOfForces);
-	//test2.move(someOfForces.x,someOfForces.y);
-	
-	//Post Physics;
-	m = AABB(&test,&test2);
-	if(m != nullptr)
-	{
-		CollisionResponse(&test,&test2,m);
-		delete(m);
 	}
 }
 void HandleEvent(sf::Event Event)
@@ -249,5 +239,42 @@ void HandleEvent(sf::Event Event)
 		gMouseY = Event.mouseMove.y;
 
 	}
+}
+void UpdatePhysics(float deltaTime)
+{
+	int i;
+	Entity* ent;
+	Vec2D someOfForces;
+	for(i = 0;i < numEntities;i++ )
+	{
+		ent = &gEntities[i];
+		//PrePhysics
+		ent->mBody.acceleration.x += (ent->mBody.force.x / ent->mBody.mass)*gDeltaTime;
+		ent->mBody.acceleration.y += (ent->mBody.force.y / ent->mBody.mass)*gDeltaTime;
+
+		someOfForces.y = ent->GetVelocity().y*(gClock.getElapsedTime().asSeconds() /deltaTime)+ ((ent->mBody.mass*Gravity*(gClock.getElapsedTime().asSeconds() /deltaTime)));
+		someOfForces.x = ent->GetVelocity().x*(gClock.getElapsedTime().asSeconds() /deltaTime);
+		ent->SetVelocity(someOfForces);
+		ent->move(someOfForces.x,someOfForces.y);
+
+		ent->mBody.force.x = 0;
+
+		//Grid Detection via Cells
+		Cell *newCell = gGrid->getCell(CreateVec2D(ent->getPosition().x,ent->getPosition().y));
+		if(newCell != ent->GetCell())
+			{
+				if(ent->GetCell() == NULL)
+			{
+				gGrid->addEntity(ent,newCell);
+			}
+			else if(newCell != ent->GetCell())
+			{
+				gGrid->removeEntityFromCell(ent);
+				gGrid->addEntity(ent,newCell);
+			}
+		}
+	}
+	//Post Physics;
+	UpdateCollision();
 }
 

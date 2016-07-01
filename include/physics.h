@@ -55,6 +55,8 @@ int CollisionResponse(Entity* ent1,Entity *ent2,Manifold* m);
 void FrictionResponse(Entity* ent1, Entity* ent2,Manifold* m);
 int SweptAABB(Entity *ent1, Entity *ent2, float& normalx, float& normaly);
 void UpdatePhysics(float deltaTime);
+void UpdateCollision();
+void CheckCollision(Entity* ent, std::vector<Entity*>& ents, int startIndex);
 
 
 #endif

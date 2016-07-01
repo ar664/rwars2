@@ -13,11 +13,14 @@
 
 #define WINDOW_WIDTH		800
 #define WINDOW_HEIGHT		600
-extern int numSprites;
-
 
 //Whenever ssing an external type include the file before you use it to reduce errors.
 #include <SFML\Graphics.hpp>
+#include "physics.h"
+extern int numSprites;
+extern int numEntities;
+extern float gDeltaTime;
+extern Grid* gGrid;
 extern sf::RenderWindow gRenderWindow;
 extern sf::Event gEvent;
 extern sf::Clock gClock;
