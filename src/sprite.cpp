@@ -9,7 +9,7 @@
 Sprite *SpriteList = NULL;
 int numSprites = 0;
 
-void InitSpriteList()
+void SpriteListInit()
 {
 	int x,j;
 	SpriteList = (Sprite*)malloc(sizeof(Sprite) * MAX_SPRITES);
@@ -46,73 +46,75 @@ void Sprite::SetFrameBB()
 	int numFrame = 1;
 	sf::IntRect rect(ANIMATION_FRAME_LENGTH,-1,-1,-1);
 	sf::Color spriteMask(255,51,51,255);
-
 	sf::Image image;
-	image = mSfSprite->getTexture()->copyToImage();
-	for(j = 0; j <(mSfSprite->getTexture()->getSize().y / ANIMATION_FRAME_HEIGHT);++j)
+	if(!mFrameBBSet)
 	{
-		for(i = 0; i < (mSfSprite->getTexture()->getSize().x / ANIMATION_FRAME_LENGTH);++i)
+		image = mSfSprite->getTexture()->copyToImage();
+		for(j = 0; j <(mSfSprite->getTexture()->getSize().y / ANIMATION_FRAME_HEIGHT);++j)
 		{
-			for(y=startY;y < ANIMATION_FRAME_HEIGHT*(j+1);++y)
+			for(i = 0; i < (mSfSprite->getTexture()->getSize().x / ANIMATION_FRAME_LENGTH);++i)
 			{
-				for(x=startX;x < ANIMATION_FRAME_LENGTH*(i+1);++x)
+				for(y=startY;y < ANIMATION_FRAME_HEIGHT*(j+1);++y)
 				{
-					if(image.getPixel(x,y).a == spriteMask.a &&
-						image.getPixel(x,y).r == spriteMask.r &&
-						image.getPixel(x,y).g == spriteMask.g &&
-						image.getPixel(x,y).b == spriteMask.b)
+					for(x=startX;x < ANIMATION_FRAME_LENGTH*(i+1);++x)
 					{
-						rect.height = y;
-						if(x < rect.left)
+						if(image.getPixel(x,y).a == spriteMask.a &&
+							image.getPixel(x,y).r == spriteMask.r &&
+							image.getPixel(x,y).g == spriteMask.g &&
+							image.getPixel(x,y).b == spriteMask.b)
 						{
-							started = 1;
-							rect.left = x;
-							if(rect.top == -1)
+							rect.height = y;
+							if(x < rect.left)
 							{
-								rect.top = y;
+								started = 1;
+								rect.left = x;
+								if(rect.top == -1)
+								{
+									rect.top = y;
+								}
 							}
+						} 
+						if(started == 1 &&
+							((image.getPixel(x,y).a != 255) || (x+1 == ANIMATION_FRAME_LENGTH*(i+1))))
+						{
+							started = 0;
+							rect.width = x+i - rect.left;
+							break;
 						}
-					} 
-					if(started == 1 &&
-						((image.getPixel(x,y).a != 255) || (x+1 == ANIMATION_FRAME_LENGTH*(i+1))))
+						if(x > rect.left && started != 1)
+						{
+							break;
+						}
+					}
+					if(started == 1)
 					{
 						started = 0;
-						rect.width = x+i - rect.left;
-						break;
-					}
-					if(x > rect.left && started != 1)
-					{
-						break;
+						rect.width = x - rect.left;
 					}
 				}
-				if(started == 1)
-				{
-					started = 0;
-					rect.width = x - rect.left;
-				}
+				mFrameBB[i+j].top = rect.top;
+				mFrameBB[i+j].left = rect.left;
+				mFrameBB[i+j].width = rect.width;
+				mFrameBB[i+j].height = rect.height;
+				std::cout<<"Frame " << i+j <<" :"<< "x: "<< rect.top << " y:" << rect.left << " w:" << rect.width<<
+					" h:" << rect.height << std::endl;
+				startX += ANIMATION_FRAME_LENGTH+1;
+				rect.left = ANIMATION_FRAME_LENGTH*(i+2);
+				rect.top = -1;
+				rect.width = -1;
+				rect.height = -1;
 			}
-			mFrameBB[i+j].top = rect.top;
-			mFrameBB[i+j].left = rect.left;
-			mFrameBB[i+j].width = rect.width;
-			mFrameBB[i+j].height = rect.height;
-			std::cout<<"Frame " << i+j <<" :"<< "x: "<< rect.top << " y:" << rect.left << " w:" << rect.width<<
-				" h:" << rect.height << std::endl;
-			startX += ANIMATION_FRAME_LENGTH+1;
-			rect.left = ANIMATION_FRAME_LENGTH*(i+2);
-			rect.top = -1;
-			rect.width = -1;
-			rect.height = -1;
+			startY += ANIMATION_FRAME_HEIGHT+1;
 		}
-		startY += ANIMATION_FRAME_HEIGHT+1;
+		
+		//Creates color mask
+		sf::Color color(255,51,51,255);
+		image.createMaskFromColor(color);
+		sf::Texture *texture = new sf::Texture;
+		texture->loadFromImage(image);
+		mSfSprite->setTexture(*texture,1);
+		mFrameBBSet = 1;
 	}
-	
-	//Creates color mask
-	sf::Color color(255,51,51,255);
-	image.createMaskFromColor(color);
-	sf::Texture *texture = new sf::Texture;
-	texture->loadFromImage(image);
-	mSfSprite->setTexture(*texture,1);
-	
 }
 
 Sprite *LoadSprite(char* filename)

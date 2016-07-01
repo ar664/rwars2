@@ -4,6 +4,6 @@
  * @brief Initializes the renderWindow
 */
 void Init_Graphics(int WindowWidth,int WindowHeight,char* WindowName);
-
+float GetFrameRate();
 #endif
 

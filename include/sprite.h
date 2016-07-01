@@ -23,6 +23,7 @@ public:
 	int				mFramesPerLine;
 	int				mWidth;
 	int				mHeight;
+	int				mFrameBBSet;
 	char			mFileName[128];
 	Animation		mAnimation;
 	sf::Sprite*     mSfSprite;
@@ -34,6 +35,6 @@ public:
 
 Sprite *LoadSprite(char* filename);
 void CloseSpriteList();
-void InitSpriteList();
+void SpriteListInit();
 
 #endif
