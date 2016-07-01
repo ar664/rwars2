@@ -1,7 +1,7 @@
 #ifndef __AUDIO_H
 #define __AUDIO_H
 
-#include <SFML\Audio.hpp>
+#include <SFML/Audio.hpp>
 
 #define MAX_SONGS	10
 

@@ -17,7 +17,7 @@ extern int numSprites;
 
 
 //Whenever ssing an external type include the file before you use it to reduce errors.
-#include <SFML\Graphics.hpp>
+#include <SFML/Graphics.hpp>
 extern sf::RenderWindow gRenderWindow;
 extern sf::Event gEvent;
 extern sf::Clock gClock;
