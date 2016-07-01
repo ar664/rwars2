@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include "globals.h"
+#include <string.h>
 sf::Event gEvent;
 _time_callback *gCallBacks = NULL;
 int gCallStackSize = 0;

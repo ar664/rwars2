@@ -1,5 +1,6 @@
 #include "audio.h"
-#include <globals.h>
+#include "globals.h"
+#include <string.h>
 
 sf::Music **gPlaylist = NULL;
 sf::Sound gSound;

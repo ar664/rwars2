@@ -1,5 +1,5 @@
 IDIR=include
-CC=g++ -std=c++11
+CC=g++ -std=c++11 --debug
 CFLAGS=-I$(IDIR)
 
 SRCDIR=src
@@ -7,14 +7,14 @@ ODIR=obj
 LDIR=lib
 
 #Libs are included without the lib prefix because -l does that for you
-LIBS=-lm -lSFML 
+LIBS=-lm -lsfml-system -lsfml-audio -lsfml-window -lsfml-graphics -lsfml-audio 
 
 #H files go here
-_DEPS = sprite.h globals.h graphics.h vectors.h entity.h main.h
+_DEPS = audio.h physics.h player.h sprite.h globals.h graphics.h vectors.h entity.h main.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
 #Target object files go here (There basically the c files)
-_OBJ = sprite.o globals.o graphics.o vectors.o entity.o main.o
+_OBJ = audio.o physics.o player.o sprite.o globals.o graphics.o vectors.o entity.o main.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 
@@ -23,7 +23,7 @@ $(ODIR)/%.o : $(SRCDIR)/%.cpp $(DEPS)
 
 #The end program results name
 rwars : $(OBJ)
-	gcc -o $@ $^ $(CFLAGS) $(LIBS)
+	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
 .PHONY: clean
 

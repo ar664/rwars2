@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include <utility>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
