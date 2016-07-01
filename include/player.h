@@ -1,38 +1,44 @@
 #ifndef _PLAYER_H_
 #define _PLAYER_H_
 #include "entity.h"
-
 /**
  *	Different player states depending on player input and interaction with different players & entities
  *	can be used as a flag for multiple states
  */
 typedef enum PlayerState
 {
-	Neutral = 0,
-	Fall = 2,
-	Attack = 4,
-	Hurt = 8,
-	Lane_Switch = 16,
-	Jump = 32,
-	Running = 64,
+	P_State_Neutral = 0,
+	P_State_Fall = 1,
+	P_State_Attack = 2,
+	P_State_Held_Att = 4,
+	P_State_Hurt = 8,
+	P_State_Lane_Switch = 16,
+	P_State_Jump = 32,
+	P_State_Running = 64,
 };
 
 /**
  * The Player class that handles in game inputs and state changes
  *
  *	States:
- *		mState				-	The current state Player is in
+ *		mHealth				-	Amount of life this character has left
+ *		mState				-	flag of all States applicable to this character
+ *		mCurrState			-	Current state of player that is treated with highest priority
  *		mLastStateChange	-	The last sf time State was changed
  *		mNextStateChange	-	The next sf time State returns to Neutral and can be changed
  */
-
 
 class Character : public Entity
 {
 private:
 	int					mHealth;
 	int					mState;
+	PlayerState			mCurrState; //flag of all states
+	
+	sf::Uint32			mAtkPressTime; //Timer to track how long atk button is held
 
+	//currently using timers for state changes
+	//might change and use priority system
 	sf::Uint32			mLastStateChange;
 	sf::Uint32			mNextStateChange;
 public:
@@ -42,7 +48,7 @@ public:
 	 * @brief Handles movement, lane switch, jump, and attack inputs
 	 * @param Event, player input to handle event
 	 */
-	void Input(sf::Event Event);
+	void HandleInput(sf::Event Event);
 	/**
 	 * @brief Changes player state if enough time has passed since last state change
 	 * @param state, state player must change to
@@ -64,10 +70,19 @@ public:
 	 */
 	void Touch(Entity *other);
 
+	int GetState();
+
 };
 
 extern Character **Characters;
 
-void PlayerLoad(int num, char **sprites);
+Character * PlayerLoad(int num, char **sprites);
+
+#define KEY_ATTACK		sf::Keyboard::E
+#define KEY_JUMP		sf::Keyboard::Space
+#define KEY_MOVE_LEFT	sf::Keyboard::A
+#define KEY_MOVE_RIGHT	sf::Keyboard::D
+#define KEY_MOVE_UP		sf::Keyboard::W
+#define	KEY_MOVE_DOWN	sf::Keyboard::S
 
 #endif

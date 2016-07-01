@@ -81,6 +81,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\AI.cpp" />
     <ClCompile Include="src\audio.cpp" />
     <ClCompile Include="src\entity.cpp" />
     <ClCompile Include="src\globals.cpp" />
@@ -92,6 +93,7 @@
     <ClCompile Include="src\vectors.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\AI.h" />
     <ClInclude Include="include\audio.h" />
     <ClInclude Include="include\entity.h" />
     <ClInclude Include="include\globals.h" />

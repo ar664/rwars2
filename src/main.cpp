@@ -18,6 +18,7 @@ int gMouseX = 0,gMouseY = 0;
 char *test_files[] = {"sprites/Enemies3.png", 0};
 Entity* ent1;
 Entity test, test2;
+Character *test_p;
 int main(int argc,char *argv[])
 {
 	Init_All();
@@ -143,6 +144,9 @@ void Init_All()
 	test2.mBody.staticFriction = 1;
 	test2.mBody.dynamicFriction = 1;
 
+	//DoubleG testing code for player
+	test_p = PlayerLoad(0, test_files);
+	//end
 	LoadAssets();
 	CallbackInitSystem();
 	gClock.restart();
@@ -187,11 +191,11 @@ void Loop()
 		if(accumulator > gDeltaTime)
 		{
 			UpdatePhysics(frameStart);
-			std::cout << "Physics Update Goes here" << std::endl;
+			//std::cout << "Physics Update Goes here" << std::endl;
 			accumulator -= gDeltaTime;
 		}
 		// Remeber to handle the discrete jump in time every 6th frames or so with linear interpolation! To: Jason
-		
+
 		gRenderWindow.draw(*sprite);
 		gRenderWindow.draw(*sprite2);
 		test.Draw(gRenderWindow);
@@ -202,6 +206,7 @@ void Loop()
 		while(gRenderWindow.pollEvent(gEvent))
 		{
 			HandleEvent(gEvent);
+			//doubleg
 			//AudioLoop(0);
 		}
 		//CallbackRunSystem();
@@ -247,7 +252,13 @@ void HandleEvent(sf::Event Event)
 	{
 		gMouseX = Event.mouseMove.x;
 		gMouseY = Event.mouseMove.y;
-
 	}
+	//double Garry test code
+	else if(Event.type == sf::Event::EventType::KeyPressed)
+	{
+		test_p->HandleInput(Event);
+		std::cout <<"Character State is " << test_p->GetState() << std::endl;
+	}
+	// end
 }
 

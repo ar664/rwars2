@@ -55,7 +55,7 @@ Manifold* AABB(Entity *ent1, Entity *ent2)
 					m->penetration.y = (ent1->getPosition().y + ent1->GetDimension().y) - ent2->getPosition().y;
 					m->normal.y = -1;
 				}
-		std::cout << "Collision Detected" << std::endl;
+		//std::cout << "Collision Detected" << std::endl;
 		return m;
 	}
 	return nullptr;
