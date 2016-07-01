@@ -3,14 +3,16 @@
 #include "player.h"
 #include "globals.h"
 
-Player::Player()
+Character **Characters = (Character**) malloc(sizeof(Character*)*ASSETS_CHARACTERS);
+
+Character::Character()
 {
 	this->mState				= PlayerState::Neutral;
 	this->mLastStateChange		= 0;
 	this->mNextStateChange		= 0;
 }
 
-void Player::Input(sf::Event Event)
+void Character::Input(sf::Event Event)
 {
 	if(Event.type == sf::Event::EventType::KeyPressed)
 	{
@@ -43,7 +45,7 @@ void Player::Input(sf::Event Event)
 	}
 }
 
-void Player::ChangeState(PlayerState state)
+void Character::ChangeState(PlayerState state)
 {
 	int delta = 0;
 
@@ -60,7 +62,7 @@ void Player::ChangeState(PlayerState state)
 	mNextStateChange = 500;//hard coded 500 miliseconds for now
 }
 //incomplete. Created to set up state changes
-void Player::Update()
+void Character::Update()
 {
 	if(this->GetVelocity().y < 0)
 	{
@@ -69,8 +71,27 @@ void Player::Update()
 }
 //needs to be completed
 //only changes states so far
-void Player::Touch(Entity *other)
+void Character::Touch(Entity *other)
 {
 	//needs a team check so ally doesn't hurt 
 	this->ChangeState(Hurt);
+}
+
+void Character::Think()
+{
+	//Yeah I'm not doing this right now.
+}
+
+void PlayerLoad(int num, char** sprites)
+{
+	Character *player;
+	if(num > ASSETS_CHARACTERS || !Characters)
+	{
+		return;
+	}
+
+	Characters[num] = new Character;
+	player = Characters[num];
+	
+	player->LoadSprites(sprites);
 }

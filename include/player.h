@@ -25,16 +25,18 @@ typedef enum PlayerState
  *		mLastStateChange	-	The last sf time State was changed
  *		mNextStateChange	-	The next sf time State returns to Neutral and can be changed
  */
- 
 
-class Player : public Entity
+
+class Character : public Entity
 {
 private:
+	int					mHealth;
 	int					mState;
+
 	sf::Uint32			mLastStateChange;
 	sf::Uint32			mNextStateChange;
 public:
-	Player();
+	Character();
 
 	/**
 	 * @brief Handles movement, lane switch, jump, and attack inputs
@@ -50,12 +52,22 @@ public:
 	 * @brief Handles updating player status and state
 	 */
 	void Update();
+
+	/**
+	  *@brief Handles updating player actions / interaction with world
+	*/
+	void Think();
+
 	/**
 	 * @brief Handles Collision Events with other entities
 	 * @param other, entity that touched this player
 	 */
 	void Touch(Entity *other);
+
 };
 
+extern Character **Characters;
+
+void PlayerLoad(int num, char **sprites);
 
 #endif
