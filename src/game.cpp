@@ -12,6 +12,6 @@ int Game::getState()
 
 void Game::setState(int newState)
 {
-
+    state_ = newState;
 }
 
