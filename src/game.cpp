@@ -2,6 +2,18 @@
 
 int Game::update()
 {
+    switch (state_)
+    {
+        case STATE_PLAYING:
+            // Code for playing state
+
+            break;
+
+        case STATE_QUITING:
+            // Code for quitting state
+
+            break;
+    }
 
 }
 
