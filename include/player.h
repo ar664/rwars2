@@ -8,14 +8,16 @@
 typedef enum PlayerState
 {
 	P_State_Neutral = 0,
-	P_State_Fall = 1,
-
 	P_State_Attack = 2,
-	P_State_Charge_Atk = 4,
-	P_State_Hurt = 8,
-	P_State_Lane_Switch = 16,
-	P_State_Jump = 32,
-	P_State_Running = 64,
+	P_State_Jump = 4,
+	P_State_Running = 8,
+	P_State_Death = 16,
+
+	P_State_Charge_Atk = 0x20,
+	P_State_Hurt = 0x10,
+	P_State_Lane_Switch = 0x40,
+	P_State_Fall = 0x80
+
 };
 
 /**

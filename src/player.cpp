@@ -1,5 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <math.h>
+
 #include "player.h"
 #include "globals.h"
 
@@ -105,6 +107,8 @@ void Character::ChangeState(PlayerState state)
 
 	mState				|=state;
 	mCurrState			= state;
+
+	this->SetCurrentAnimation( (int)log((double)mCurrState) / log(2.0));
 
 	mLastStateChange	= gClock.getElapsedTime().asMilliseconds();
 	mNextStateChange	= 500;//hard coded 500 miliseconds for now
