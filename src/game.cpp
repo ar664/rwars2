@@ -10,7 +10,7 @@ int Game::getState()
     return state_;
 }
 
-void Game::setState()
+void Game::setState(int newState)
 {
 
 }

@@ -3,7 +3,7 @@ class Game
     public:
         int update();
         int getState();
-        void setState();
+        void setState(int newState);
     private:
         int state_;
 
