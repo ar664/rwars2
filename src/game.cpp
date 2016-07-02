@@ -7,7 +7,7 @@ int Game::update()
 
 int Game::getState()
 {
-
+    return state_;
 }
 
 void Game::setState()
