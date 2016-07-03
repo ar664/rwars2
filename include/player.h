@@ -77,7 +77,7 @@ public:
 
 };
 
-extern Character **Characters;
+extern Character **gCharacters;
 
 Character * PlayerLoad(int num, char **sprites);
 

@@ -5,7 +5,7 @@
 #include "player.h"
 #include "globals.h"
 
-Character **Characters = (Character**) malloc(sizeof(Character*)*ASSETS_CHARACTERS);
+Character **gCharacters = (Character**) malloc(sizeof(Character*)*ASSETS_CHARACTERS);
 
 Character::Character()
 {
@@ -139,13 +139,13 @@ void Character::Think()
 Character * PlayerLoad(int num, char** sprites)
 {
 	Character *player;
-	if(num > ASSETS_CHARACTERS || !Characters)
+	if(num > ASSETS_CHARACTERS || !gCharacters)
 	{
 		return NULL;
 	}
 
-	Characters[num] = new Character;
-	player = Characters[num];
+	gCharacters[num] = new Character;
+	player = gCharacters[num];
 	
 	player->LoadSprites(sprites);
 

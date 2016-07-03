@@ -19,7 +19,7 @@ int gMouseX = 0,gMouseY = 0;
 char *test_files[] = {"sprites/Enemies3.png", 0};
 Entity* ent1;
 Entity test, test2;
-Character *test_p;
+Character *test_char;
 int main(int argc,char *argv[])
 {
 	Init_All();
@@ -90,7 +90,7 @@ void LoadAssets()
 			
 			if(sounds_loaded < ASSETS_CHARACTERS)
 			{
-				Characters[sounds_loaded]->LoadSounds(files);
+				gCharacters[sounds_loaded]->LoadSounds(files);
 				temp = (char*) malloc(sizeof(char)*256);
 				files = (char**) malloc(sizeof(char*)*16);
 				i = 0; j = 0;
@@ -121,34 +121,31 @@ void Init_All()
 	SpriteListInit();
 	EntitySystemInit();
 	
-	test.LoadSprites(test_files);
-	test.SetDimensions(CreateVec2D(127,127));
-	test.SetCurrentAnimation(0);
-	test.mCurrentSprite->SetFrameBB();
-	test.mCurrentFrame = 1;
-	test.SetVelocity(CreateVec2D(0,0));
-	test.mBody.mass = 10;
-	test.mBody.restitution = 17.5;
-	test.mBody.staticFriction = .5;
-	test.mBody.dynamicFriction = .5;
+	LoadAssets();
+
+	test_char = gCharacters[0];
+	test_char->SetDimensions(CreateVec2D(127,127));
+	test_char->SetCurrentAnimation(0);
+	test_char->mCurrentSprite->SetFrameBB();
+	test_char->mCurrentFrame = 1;
+	test_char->SetVelocity(CreateVec2D(0,0));
+	test_char->mBody.mass = 10;
+	test_char->mBody.restitution = 17.5;
+	test_char->mBody.staticFriction = .5;
+	test_char->mBody.dynamicFriction = .5;
 	//test.mBody.AddForce(CreateVec2D(6,0));
 
-	test2.LoadSprites(test_files);
-	test2.SetDimensions(CreateVec2D(127,127));
-	test2.SetCurrentAnimation(0);
-	test2.mCurrentSprite->SetFrameBB();
-	test2.mCurrentFrame = 1;
-	test2.SetVelocity(CreateVec2D(0,0));
-	test2.setPosition(0,300);
-	test2.mBody.mass = 0;
-	test2.mBody.restitution = 1000;
-	test2.mBody.staticFriction = 1;
-	test2.mBody.dynamicFriction = 1;
-
-	//DoubleG testing code for player
-	test_p = PlayerLoad(0, test_files);
-	//end
-	LoadAssets();
+	test_char = gCharacters[1];
+	test_char->SetDimensions(CreateVec2D(127,127));
+	test_char->SetCurrentAnimation(0);
+	test_char->mCurrentSprite->SetFrameBB();
+	test_char->mCurrentFrame = 1;
+	test_char->SetVelocity(CreateVec2D(0,0));
+	test_char->setPosition(0,300);
+	test_char->mBody.mass = 0;
+	test_char->mBody.restitution = 1000;
+	test_char->mBody.staticFriction = 1;
+	test_char->mBody.dynamicFriction = 1;
 	CallbackInitSystem();
 	gClock.restart();
 
@@ -156,26 +153,7 @@ void Init_All()
 void Loop()
 {
 	float accumulator = 0;				//For Physics Update
-	//Entitys First FrameBB
-	sf::Image image,image2;
-	image.create(test.mCurrentSprite->mFrameBB[test.mCurrentFrame].width,
-	test.mCurrentSprite->mFrameBB[test.mCurrentFrame].height,sf::Color::Blue);
-
-	image2.create(test2.mCurrentSprite->mFrameBB[test2.mCurrentFrame].width,
-	test2.mCurrentSprite->mFrameBB[test2.mCurrentFrame].height,sf::Color::Blue);
-
-	sf::Texture *texture = new sf::Texture;
-	texture->loadFromImage(image);
-	sf::Sprite *sprite = new sf::Sprite;
-	sprite->setTexture(*texture,1);
-	sprite->setPosition(gMouseX,gMouseY);
-
-	sf::Texture *texture2 = new sf::Texture;
-	texture2->loadFromImage(image2);
-	sf::Sprite *sprite2 = new sf::Sprite;
-	sprite2->setTexture(*texture2,1);
-	sprite2->setPosition(gMouseX,gMouseY);
-
+	int i;
 	gClock.restart();
 
 	float frameStart = gClock.getElapsedTime().asSeconds();
@@ -197,12 +175,11 @@ void Loop()
 		}
 		// Remeber to handle the discrete jump in time every 6th frames or so with linear interpolation! To: Jason
 
-		gRenderWindow.draw(*sprite);
-		gRenderWindow.draw(*sprite2);
-		test.Draw(gRenderWindow);
-		test2.Draw(gRenderWindow);
-		sprite->setPosition(test.getPosition().x,test.getPosition().y);
-		sprite2->setPosition(test2.getPosition().x,test2.getPosition().y);
+		for(i = 0; i < ASSETS_CHARACTERS; i++)
+		{
+			gCharacters[i]->Draw(gRenderWindow);
+
+		}
 		gRenderWindow.display();						//Displays whatever is drawn to the window
 		while(gRenderWindow.pollEvent(gEvent))
 		{
@@ -257,7 +234,7 @@ void HandleEvent(sf::Event Event)
 	//double Garry test code
 	else if((Event.type == sf::Event::EventType::KeyPressed) || (Event.type == sf::Event::EventType::KeyReleased))
 	{
-		test_p->HandleInput(Event);
+		test_char->HandleInput(Event);
 	}
 	// end
 }
