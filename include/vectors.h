@@ -1,11 +1,56 @@
 #ifndef __VECTORS_H_
 #define __VECTORS_H_
 
-typedef struct
+struct Vec2D;
+
+Vec2D CreateVec2D(float x , float y);
+
+struct Vec2D
 {
 	union {float x;	float w;};
 	union {float y;	float h;};
-}Vec2D;
+
+	//Scale a vector
+	void operator*=(const float value)
+	{
+		x *=value;
+		y *=value;
+	}
+
+	Vec2D operator*(const float value)const
+	{
+		return CreateVec2D(x*value,y*value);
+	}
+	//Dot Product
+	float operator*(const Vec2D& v)const
+	{
+		return x*v.x +y*v.y;
+	}
+	
+	//Add Vectors
+	void operator+=(const Vec2D &v)
+	{
+		x += v.x;
+		y += v.y;
+	}
+
+	Vec2D operator+(const Vec2D &v)const
+	{
+		return CreateVec2D(x+v.x,y +v.y);
+	}
+	//Subtract Vectors
+	void operator-=(const Vec2D &v)
+	{
+		x -= v.x;
+		y -= v.y;
+	}
+
+	Vec2D operator-(const Vec2D &v)const
+	{
+		return CreateVec2D(x-v.x,y - v.y);
+	}
+
+};
 
 
 typedef struct
@@ -62,7 +107,6 @@ typedef struct
 *@brief Methods to create Vecs
 */
 
-Vec2D CreateVec2D(float x , float y);
 #define MAX(a,b) (a>b?a:b)
 #define MIN(a,b) (a<b?a:b)
 
@@ -119,7 +163,11 @@ Vec2D CreateVec2D(float x , float y);
  */
 #define Vec2DScale(dst,src,factor) (dst.x = src.x *factor,\
                                          dst.y = src.y *factor)
-/**
+
+#define Vec2DComponentProduct(dst,src,src2) (dst.x = src.x * src2.x,\
+												dst.y = src.y * src2.y)
+
+ /**
  * @brief Macro that sets vector to zero.
  * @param a Vect[2D|3D|4D] input
  */
@@ -202,6 +250,7 @@ int DistanceBetweenGreaterThan2D(Vec2D p1,Vec2D p2,float size);
  * @return a random float between -1.0 and 1.0
  */
 #define crandom() (((float)((rand()%1000)/(float)1000.0) * 2.0) - 1.0)
+
 
 
 //GetLength

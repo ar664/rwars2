@@ -21,42 +21,54 @@ Manifold* AABB(Entity *ent1, Entity *ent2)
 		Vec2D center2 = CreateVec2D(ent2->getPosition().x + (ent2->GetDimension().x/2),
 			ent2->getPosition().y + (ent2->GetDimension().y/2));
 		Manifold* m = new Manifold;
+		
+		
 		m->normal.x = 0;
 		m->normal.y = 0;
 		m->A = ent1;
 		m->B = ent2;
-		int w,h,dx,dy,wy,hx;
-		w = .5*(ent1->GetDimension().x + ent2->GetDimension().x);
-		h = .5*(ent1->GetDimension().y + ent2->GetDimension().y);
-		dx = center1.x - center2.x;
-		dy = center1.y - center2.y;
-		wy = w *dy;
-		hx = h*dx;
-			if(wy > hx)
-				if(wy > -hx){
-					//Top Collision
-					m->penetration.y = (ent2->getPosition().y + ent2->GetDimension().y) - ent1->getPosition().y;
-					m->normal.y = 1; 
-				}
-				else{
-					//Right Collision
-					m->penetration.x = (ent1->getPosition().x + ent1->GetDimension().x) - ent2->getPosition().x;
-					m->normal.x = 1;
-				}
-			else
-				if(wy > -hx)
-				{
-					//Left Collision
-					m->penetration.x = (ent2->getPosition().x + ent2->GetDimension().x) - ent1->getPosition().x;
-					m->normal.x = -1;
-				}
-				else{
-					//Bottom Collisions
-					m->penetration.y = (ent1->getPosition().y + ent1->GetDimension().y) - ent2->getPosition().y;
-					m->normal.y = -1;
-				}
-		std::cout << "Collision Detected" << std::endl;
-		return m;
+		float a_extent = (ent1->getPosition().x + ent1->GetDimension().x - ent1->getPosition().x) / 2 ;
+		float b_extent = (ent2->getPosition().x + ent2->GetDimension().x - ent2->getPosition().x) / 2;
+  
+		// Calculate overlap on x axis
+		float x_overlap = a_extent + b_extent - abs( ent2->getPosition().x - ent1->getPosition().x );
+  
+	// SAT test on x axis
+	  if(x_overlap > 0)
+	  {
+	    // Calculate half extents along x axis for each object
+		a_extent = (ent1->getPosition().y + ent1->GetDimension().y - ent1->getPosition().y) / 2 ;
+		b_extent = (ent2->getPosition().y + ent2->GetDimension().y - ent2->getPosition().y) / 2;
+	  
+	    // Calculate overlap on y axis
+	    float y_overlap = a_extent + b_extent - abs( ent2->getPosition().y - ent1->getPosition().y );
+	  
+	    // SAT test on y axis
+	    if(y_overlap > 0)
+	    {
+	      // Find out which axis is axis of least penetration
+	      if(x_overlap < y_overlap)
+	      {
+	        // Point towards B knowing that n points from A to B
+	        if(ent2->getPosition().x - ent1->getPosition().x < 0)
+	          m->normal = CreateVec2D( -1, 0 );
+	        else
+	          m->normal = CreateVec2D( 0, 0 );
+	        m->penetration = CreateVec2D( x_overlap, 0 );
+			return m;
+	      }
+	      else
+	      {
+	        // Point toward B knowing that n points from A to B
+	        if(ent2->getPosition().y - ent1->getPosition().y< 0)
+	          m->normal = CreateVec2D( 0, -1 );
+	        else
+	          m->normal = CreateVec2D( 0, 1 );
+	        m->penetration = CreateVec2D(0,y_overlap);
+			return m;
+	      }
+	    }
+	  }
 	}
 	return nullptr;
 }
@@ -115,6 +127,7 @@ void FrictionResponse(Entity* ent1, Entity* ent2,Manifold* m)
 }
 int CollisionResponse(Entity* ent1,Entity *ent2,Manifold *m)
 {
+	/*
 	Vec2D rv;
 
 	Vec2DSub(rv,ent1->GetVelocity(),ent2->GetVelocity());
@@ -178,15 +191,79 @@ int CollisionResponse(Entity* ent1,Entity *ent2,Manifold *m)
 		ent2->GetVelocity().y - result2.y*ratio));
 	
 	//Solve for friction
-		FrictionResponse(ent1,ent2,m);
+		//FrictionResponse(ent1,ent2,m);
 	//Solve for floating point errors and such(Linear Projection) due to gravity
+	
 	const float slop = .1;
 	const float percent= .6f;
 	Vec2D correction = CreateVec2D(std::max(m->penetration.x-slop , 0.0f)/(invMass1 + invMass2)*percent*m->normal.x,
 		std::max(m->penetration.y-slop,0.0f)/(invMass1 + invMass2)*percent*m->normal.y) ;
 	ent1->setPosition(ent1->getPosition().x - (correction.x*invMass1),ent1->getPosition().y + (correction.y*invMass1));
 	ent2->setPosition(ent2->getPosition().x + (correction.x*invMass2),ent2->getPosition().y - (correction.y*invMass2));
+	*/
+		Vec2D rv;
+		Vec2DSub(rv,ent2->GetVelocity(),ent1->GetVelocity());
+
+		float velAlongNormal = Vec2DDotProduct(rv,m->normal);
+		float invMass1;
+		float invMass2;
+		if(ent1->mBody.mass == 0)					//Check for infinite Mass
+			invMass1 = 0;
+		else
+			invMass1 = (1/ent1->mBody.mass);
+		if(ent2->mBody.mass == 0)
+			invMass2 = 0;
+		else
+			invMass2 = (1/ent2->mBody.mass);
+		if(velAlongNormal >= 0)
+		{
+			return 0;
+		}
+		float e = std::min(ent1->mBody.restitution,ent2->mBody.restitution);			//Restitution
+		float j = -(1+e) * velAlongNormal;
+
+		j = (j/(invMass1+invMass2));
+
+		Vec2D impulse = CreateVec2D(m->normal.x * j,m->normal.y * j);
+		Vec2D result1,result2;
+		impulse.y = impulse.y/10;
+		impulse.x = impulse.x/10;
+		if(impulse.x == 0)
+		{
+			result1.x = 0;
+			result2.x = 0;
+		}
+		else
+		{
+			result1.x = invMass1  * impulse.x;
+			result2.x = invMass2  * impulse.x;
+		}
+		if(impulse.y == 0)
+		{
+			result1.y = 0;
+			result2.y = 0;
+		}
+		else
+		{
+			result1.y = invMass1 * impulse.y;
+			result2.y = invMass2 * impulse.y;
+		}
+ 		ent1->SetVelocity(CreateVec2D(ent1->GetVelocity().x - result1.x,
+			ent1->GetVelocity().y - result1.y));
+		ent2->SetVelocity(CreateVec2D(ent2->GetVelocity().x + result2.x,
+			ent2->GetVelocity().y + result2.y));
+		//Solve for friction
+		FrictionResponse(ent1,ent2,m);
+
+		//Solve for floating point errors and such(Linear Projection)
+		const float k_slop = 0.1;
+		const float percent= .8f;
+		Vec2D correction = CreateVec2D((std::max(m->penetration.x - k_slop,0.0f)/(invMass1 + invMass2))*percent*m->normal.x,
+			(std::max(m->penetration.y - k_slop,0.0f)/(invMass1 + invMass2))*percent*m->normal.y) ;
+		ent1->setPosition(ent1->getPosition().x - (correction.x*invMass1),ent1->getPosition().y - (correction.y*invMass1));
+		ent2->setPosition(ent2->getPosition().x + (correction.x*invMass2),ent2->getPosition().y + (correction.y*invMass2));
 	
+
 	return 1;
 	}
 /**

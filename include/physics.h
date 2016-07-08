@@ -3,7 +3,7 @@
 #include <vector>
 #include "entity.h"
 
-const float Gravity = .2;
+const float Gravity = 6.3;
 
 /**
 *This struct stores information about 2 entities that collided and is used to 

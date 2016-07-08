@@ -128,10 +128,10 @@ void Init_All()
 	ent1->mCurrentFrame = 1;
 	ent1->setPosition(0,0);
 	ent1->SetVelocity(CreateVec2D(2,0));
-	ent1->mBody.mass = 10;
-	ent1->mBody.restitution = 17.5;
-	ent1->mBody.staticFriction = .0001;
-	ent1->mBody.dynamicFriction = .0002;
+	ent1->mBody.mass = 20;
+	ent1->mBody.restitution = 17.4;
+	ent1->mBody.staticFriction = 0.002;
+	ent1->mBody.dynamicFriction = 0.002;
 	//test.mBody.AddForce(CreateVec2D(6,0));
 
 	ent2 =CreateEntity();
@@ -144,8 +144,8 @@ void Init_All()
 	ent2->setPosition(0,400);
 	ent2->mBody.mass = 0;
 	ent2->mBody.restitution = 20;
-	ent2->mBody.staticFriction =0.5;
-	ent2->mBody.dynamicFriction = 0.5;
+	ent2->mBody.staticFriction =.002;
+	ent2->mBody.dynamicFriction = .002;
 
 	ent3 = CreateEntity();	
 	ent3->LoadSprites(test_files);
@@ -155,15 +155,14 @@ void Init_All()
 	ent3->mCurrentFrame = 1;
 	ent3->SetVelocity(CreateVec2D(0,0));
 	ent3->setPosition(0,273-100);
-	ent3->mBody.mass =50;
-	ent3->mBody.restitution = 10;
-	ent3->mBody.staticFriction = .0003;
-	ent3->mBody.dynamicFriction = 0;
+	ent3->mBody.mass = 20;
+	ent3->mBody.restitution = 17.5;
+	ent3->mBody.staticFriction = .002;
+	ent3->mBody.dynamicFriction = .002;
 
 	LoadAssets();
 	CallbackInitSystem();
 	gClock.restart();
-
 }
 void Loop()
 {
@@ -203,7 +202,7 @@ void Loop()
 			accumulator = 0.2f;
 		if(accumulator > gDeltaTime)
 		{
-			UpdatePhysics(frameStart);
+			UpdatePhysics(gClock.getElapsedTime().asSeconds() /frameStart);
 			std::cout << "Physics Update Goes here" << std::endl;
 			accumulator -= gDeltaTime;
 		}
@@ -244,37 +243,9 @@ void UpdatePhysics(float deltaTime)
 {
 	int i;
 	Entity* ent;
-	Vec2D someOfForces;
 	for(i = 0;i < numEntities;i++ )
 	{
-		ent = &gEntities[i];
-		//PrePhysics
-		ent->mBody.acceleration.x += (ent->mBody.force.x / ent->mBody.mass)*gDeltaTime;
-		ent->mBody.acceleration.y += (ent->mBody.force.y / ent->mBody.mass)*gDeltaTime;
-
-		someOfForces.y = ent->GetVelocity().y*(gClock.getElapsedTime().asSeconds() /deltaTime)+ ((ent->mBody.mass*Gravity*(gClock.getElapsedTime().asSeconds() /deltaTime)));
-		someOfForces.x = ent->GetVelocity().x*(gClock.getElapsedTime().asSeconds() /deltaTime);
-		ent->SetVelocity(someOfForces);
-		ent->move(someOfForces.x,someOfForces.y);
-
-		ent->mBody.force.x = 0;
-
-		//Grid Detection via Cells
-		Cell *newCell = gGrid->getCell(CreateVec2D(ent->getPosition().x,ent->getPosition().y));
-		if(newCell != ent->GetCell())
-			{
-				if(ent->GetCell() == NULL)
-			{
-				gGrid->addEntity(ent,newCell);
-			}
-			else if(newCell != ent->GetCell())
-			{
-				gGrid->removeEntityFromCell(ent);
-				gGrid->addEntity(ent,newCell);
-			}
-		}
+		gEntities[i].PhysicsUpdate(deltaTime);
 	}
-	//Post Physics;
-	UpdateCollision();
 }
 

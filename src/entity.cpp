@@ -226,6 +226,35 @@ Cell* Entity::GetCell()
 {
 	return mCell;
 }
+//initially this is going to be a void virtual because different entities will different physics behaviors
+void Entity::PhysicsUpdate(float deltaTime)
+{
+		//PrePhysics
+		mBody.acceleration.y = mBody.mass != 0 ?Gravity*deltaTime*deltaTime*.5:
+			mBody.acceleration.y*deltaTime*deltaTime*.5;
+
+		mBody.acceleration.x *= deltaTime;
+		SetVelocity(mBody.velocity*deltaTime + mBody.acceleration);
+		move(mBody.velocity.x,mBody.velocity.y);
+
+		//Grid Detection via Cells
+		Cell *newCell = gGrid->getCell(CreateVec2D(getPosition().x,getPosition().y));
+		if(newCell != GetCell())
+			{
+				if(GetCell() == NULL)
+			{
+				gGrid->addEntity(this,newCell);
+			}
+			else if(newCell != GetCell())
+			{
+				gGrid->removeEntityFromCell(this);
+				gGrid->addEntity(this,newCell);
+			}
+		}
+	//Post Physics;
+	UpdateCollision();
+}
+
 
 Vec2D Entity::GetDimension()
 {

@@ -99,12 +99,14 @@ public:
  * @note Graphics timings don't get updated when paused.
  */
 	void Draw(sf::RenderTarget &target);
+	void PhysicsUpdate(float deltaTime);
 
 /**
  * @breif Empty think function, to be overridden by children who inherit it.
  *
  */
 	virtual void Think();
+
 
 	//Getters
 	Cell*			GetCell();

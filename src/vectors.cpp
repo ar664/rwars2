@@ -22,7 +22,7 @@ Vec2D CreateVec2D(float x, float y)
 */
 float Vec2DMagnitude (Vec2D V)
 {
-  return sqrt (V.x * V.x + V.y * V.y);
+  return std::sqrt(std::pow(V.x,2) + std::pow(V.y ,2));
 }
 
 /**
@@ -57,9 +57,8 @@ void Vec2DNormalize (Vec2D *V)
   {
     return;
   }
-  M = 1/M;
-  V->x *= M;
-  V->y *= M;
+  V->x *= 1/M;
+  V->y *= 1/M;
 }
 /**
 *@brief Allocates memory for a new 2D Vector and returns it;
@@ -111,3 +110,4 @@ void Vec2DReflect(Vec2D *out, Vec2D normal,Vec2D in)
   out->x = in.x - (2 * normal.x * f);
   out->y = in.y - (2 * normal.y * f);
 }
+
