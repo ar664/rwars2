@@ -192,6 +192,7 @@ void Loop()
 }
 void UpdatePhysics(float deltaTime)
 {
+	/*
 	int i;
 	Vec2D someOfForces;
 	Manifold *m = nullptr;
@@ -217,6 +218,7 @@ void UpdatePhysics(float deltaTime)
 		CollisionResponse(&test,&test2,m);
 		delete(m);
 	}
+	*/
 }
 void HandleEvent(sf::Event Event)
 {
