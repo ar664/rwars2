@@ -4,6 +4,7 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Window.hpp>
 #include <iostream>
+#include "fgen.h"
 #include "physics.h"
 #include "audio.h"
 #include "entity.h"
@@ -18,6 +19,9 @@ int gMouseX = 0,gMouseY = 0;
 char *test_files[] = {"sprites/Enemies3.png", 0};
 Entity* ent1, *ent2,*ent3;
 Entity test, test2;
+
+ForceRegistry forceRegistry;
+Gravity g;
 int main(int argc,char *argv[])
 {
 	Init_All();
@@ -115,6 +119,7 @@ void LoadAssets()
 
 void Init_All()
 {
+
 	Init_Graphics(WINDOW_WIDTH,WINDOW_HEIGHT,"RWARS");
 	SpriteListInit();
 	EntitySystemInit();
@@ -128,8 +133,8 @@ void Init_All()
 	ent1->mCurrentFrame = 1;
 	ent1->setPosition(0,0);
 	ent1->SetVelocity(CreateVec2D(2,0));
-	ent1->mBody.mass = 20;
-	ent1->mBody.restitution = 17.4;
+	ent1->mBody.mass = 10;
+	ent1->mBody.restitution = 17.9;
 	ent1->mBody.staticFriction = 0.002;
 	ent1->mBody.dynamicFriction = 0.002;
 	//test.mBody.AddForce(CreateVec2D(6,0));
@@ -159,6 +164,12 @@ void Init_All()
 	ent3->mBody.restitution = 17.5;
 	ent3->mBody.staticFriction = .002;
 	ent3->mBody.dynamicFriction = .002;
+	
+
+	g = Gravity::Gravity(CreateVec2D(0,6.3));
+
+	forceRegistry.add(&ent1->mBody,&g);
+	forceRegistry.add(&ent3->mBody,&g);
 
 	LoadAssets();
 	CallbackInitSystem();
@@ -213,6 +224,7 @@ void Loop()
 		ent1->Draw(gRenderWindow);
 		ent2->Draw(gRenderWindow);
 		ent3->Draw(gRenderWindow);
+
 		sprite->setPosition(ent1->getPosition().x,ent1->getPosition().y);
 		sprite2->setPosition(ent2->getPosition().x,ent2->getPosition().y);
 		gRenderWindow.display();						//Displays whatever is drawn to the window
@@ -243,9 +255,12 @@ void UpdatePhysics(float deltaTime)
 {
 	int i;
 	Entity* ent;
+	forceRegistry.updateForces(deltaTime);
 	for(i = 0;i < numEntities;i++ )
 	{
 		gEntities[i].PhysicsUpdate(deltaTime);
 	}
+	//Post Physics;
+	UpdateCollision();
 }
 

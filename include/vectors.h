@@ -16,7 +16,7 @@ struct Vec2D
 		x *=value;
 		y *=value;
 	}
-
+	//(Scalar product)
 	Vec2D operator*(const float value)const
 	{
 		return CreateVec2D(x*value,y*value);
@@ -49,6 +49,8 @@ struct Vec2D
 	{
 		return CreateVec2D(x-v.x,y - v.y);
 	}
+
+	void AddScaledVector(Vec2D vec,float t);
 
 };
 
@@ -120,6 +122,7 @@ typedef struct
  * @return the calculated dot product
  */
 #define Vec2DDotProduct(a,b)      (a.x*b.x+a.y*b.y)
+
 
 /**
  * @brief checks if vectors are exactly matches of each other

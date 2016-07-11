@@ -81,6 +81,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="fgen.cpp" />
     <ClCompile Include="particle.cpp" />
     <ClCompile Include="src\audio.cpp" />
     <ClCompile Include="src\entity.cpp" />
@@ -93,6 +94,7 @@
     <ClCompile Include="src\vectors.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="fgen.h" />
     <ClInclude Include="include\audio.h" />
     <ClInclude Include="include\entity.h" />
     <ClInclude Include="include\globals.h" />

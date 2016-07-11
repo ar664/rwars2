@@ -4,6 +4,7 @@
 #include <SFML/Audio.hpp>
 #include "vectors.h"
 #include "sprite.h"
+
 struct RigidBody;
 struct Cell;
 class Grid;
@@ -54,7 +55,7 @@ struct RigidBody
 	// We are assuming for now that all Rigidbody shapes are rectangles
 	float		mass;
 	Vec2D		velocity;
-	Vec2D		force;			/*<-- Used to find acceleration, also is applied to the object every physics update until it eventually dies out */
+	Vec2D		force;			
 	Vec2D		acceleration;
 	// Material Structure 
 	float		staticFriction;
@@ -66,6 +67,11 @@ struct RigidBody
 	void AddForce(Vec2D amount);
 };
 
+enum Shape{
+	RECT,
+	CIRCLE
+};
+
 typedef class Entity: public sf::Transformable 
 {
 private:
@@ -75,7 +81,6 @@ private:
 	int					mSpeed;
 	Vec2D				mDimension;
 	Cell*				mCell;
-	
 public:
 
 	int					mInUse;
@@ -85,9 +90,9 @@ public:
 	int					mCurrentFrame;
 	int					mNumSprites;
 	Sprite**			mSpriteArray;
-
 	Sprite*				mCurrentSprite;	
 	RigidBody			mBody;
+	Shape				mShape;
 	sf::SoundBuffer**	mSounds;
 
 	//Functions
@@ -113,7 +118,6 @@ public:
 	Grid*			GetGrid();
 	Vec2D			GetDimension();
 	Vec2D			GetVelocity();
-
 	//Setters
 	void			SetCurrentAnimation(int anim);
 	void			SetCell(Cell* cell);

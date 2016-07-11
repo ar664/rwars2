@@ -73,7 +73,7 @@ Manifold* AABB(Entity *ent1, Entity *ent2)
 	return nullptr;
 }
 
-void FrictionResponse(Entity* ent1, Entity* ent2,Manifold* m)
+void FrictionResponseAABBvsAABB(Entity* ent1, Entity* ent2,Manifold* m)
 {
 	Vec2D rv,tangent,frictionImpulse;
 	float jt,mu,dynamicFriction,invMass1,invMass2,velAlongNormal;
@@ -125,82 +125,8 @@ void FrictionResponse(Entity* ent1, Entity* ent2,Manifold* m)
 		CreateVec2D(ent2->GetVelocity().x + invMass2 *frictionImpulse.x,ent2->GetVelocity().y + invMass2 *frictionImpulse.y));
 
 }
-int CollisionResponse(Entity* ent1,Entity *ent2,Manifold *m)
+int CollisionResponseAABBvsAABB(Entity* ent1,Entity *ent2,Manifold *m)
 {
-	/*
-	Vec2D rv;
-
-	Vec2DSub(rv,ent1->GetVelocity(),ent2->GetVelocity());
-
-	float velAlongNormal = Vec2DDotProduct(rv,m->normal);
-	float invMass1;
-	float invMass2;
-	//Check for infinite mass...Objects with Infinite Mass wont move, Good for platforms
-	if(ent1->mBody.mass == 0)					
-		invMass1 = 0;
-	else
-		invMass1 = (1/ent1->mBody.mass);
-	if(ent2->mBody.mass == 0)
-		invMass2 = 0;
-	else
-		invMass2 = (1/ent2->mBody.mass);
-	
-	//This is to make sure we dont resolve collisions if they will be resolved on the next frame anyways
-	if(velAlongNormal > 0)
-	{
-		return 0;
-	}
-
-	float e = std::min(ent1->mBody.restitution,ent2->mBody.restitution);			//Restitution
-	float j = -(1+e) * velAlongNormal;
-
-	j = (j/(invMass1+invMass2));
-
-	Vec2D impulse = CreateVec2D(m->normal.x * j,m->normal.y * j);
-	Vec2D result1,result2;
-	impulse.y = impulse.y/10;
-	impulse.x = impulse.x/10;
-	if(impulse.x == 0)
-	{
-		result1.x = 0;
-		result2.x = 0;
-	}
-	else
-	{
-		result1.x = invMass1  * impulse.x;
-		result2.x = invMass2  * impulse.x;
-	}
-	if(impulse.y == 0)
-	{
-		result1.y = 0;
-		result2.y = 0;
-	}
-	else
-	{
-		result1.y = invMass1 * impulse.y;
-		result2.y = invMass2 * impulse.y;
-	}
-	float mass_sum = ent1->mBody.mass + ent2->mBody.mass;
-	float ratio = ent1->mBody.mass / mass_sum;
- 	ent1->SetVelocity(CreateVec2D(ent1->GetVelocity().x + result1.x*ratio,
-		ent1->GetVelocity().y + result1.y*ratio));
-	
-	ratio = ent2->mBody.mass / mass_sum;
-
-	ent2->SetVelocity(CreateVec2D(ent2->GetVelocity().x - result2.x*ratio,
-		ent2->GetVelocity().y - result2.y*ratio));
-	
-	//Solve for friction
-		//FrictionResponse(ent1,ent2,m);
-	//Solve for floating point errors and such(Linear Projection) due to gravity
-	
-	const float slop = .1;
-	const float percent= .6f;
-	Vec2D correction = CreateVec2D(std::max(m->penetration.x-slop , 0.0f)/(invMass1 + invMass2)*percent*m->normal.x,
-		std::max(m->penetration.y-slop,0.0f)/(invMass1 + invMass2)*percent*m->normal.y) ;
-	ent1->setPosition(ent1->getPosition().x - (correction.x*invMass1),ent1->getPosition().y + (correction.y*invMass1));
-	ent2->setPosition(ent2->getPosition().x + (correction.x*invMass2),ent2->getPosition().y - (correction.y*invMass2));
-	*/
 		Vec2D rv;
 		Vec2DSub(rv,ent2->GetVelocity(),ent1->GetVelocity());
 
@@ -253,7 +179,7 @@ int CollisionResponse(Entity* ent1,Entity *ent2,Manifold *m)
 		ent2->SetVelocity(CreateVec2D(ent2->GetVelocity().x + result2.x,
 			ent2->GetVelocity().y + result2.y));
 		//Solve for friction
-		FrictionResponse(ent1,ent2,m);
+		FrictionResponseAABBvsAABB(ent1,ent2,m);
 
 		//Solve for floating point errors and such(Linear Projection)
 		const float k_slop = 0.1;
@@ -410,7 +336,7 @@ void RigidBody::AddForce(Vec2D amount)
 }
 void UpdateCollision()
 {
-	
+	//Loop Through Cells in Grid
 	for(int i = 0; i < gGrid->getM_Cells().size();i++)
 	{
 		//printf("Mcells Size%d \n",gGrid->getM_Cells().size());
@@ -461,7 +387,7 @@ void CheckCollision(Entity* ent, std::vector<Entity*>& ents, int startIndex)
 			m = AABB(ent,ents[i]);
 			if(m != nullptr)
 			{
-				CollisionResponse(ent,ents[i],m);
+				CollisionResponseAABBvsAABB(ent,ents[i],m);
 			}
 		}
 	}

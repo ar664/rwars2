@@ -111,3 +111,8 @@ void Vec2DReflect(Vec2D *out, Vec2D normal,Vec2D in)
   out->y = in.y - (2 * normal.y * f);
 }
 
+void Vec2D::AddScaledVector(Vec2D vec,float t)
+{
+	x+= vec.x * t;
+	y+= vec.y * t;
+}

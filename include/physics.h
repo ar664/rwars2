@@ -3,7 +3,8 @@
 #include <vector>
 #include "entity.h"
 
-const float Gravity = 6.3;
+const float Gravity_constant = 6.3;
+const float Damping_constant = .99;	//Acts like wind resistance
 
 /**
 *This struct stores information about 2 entities that collided and is used to 
@@ -50,9 +51,11 @@ private:
 };
 
 
+
+
 Manifold* AABB(Entity *ent1, Entity *ent2);
-int CollisionResponse(Entity* ent1,Entity *ent2,Manifold* m);
-void FrictionResponse(Entity* ent1, Entity* ent2,Manifold* m);
+int CollisionResponseAABBvsAABB(Entity* ent1,Entity *ent2,Manifold* m);
+void FrictionResponseAABBvsAABB(Entity* ent1, Entity* ent2,Manifold* m);
 int SweptAABB(Entity *ent1, Entity *ent2, float& normalx, float& normaly);
 void UpdatePhysics(float deltaTime);
 void UpdateCollision();
