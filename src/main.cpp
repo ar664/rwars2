@@ -34,7 +34,7 @@ void LoadAssets()
 	FILE *file = fopen(ASSET_FILE, "r");
 
 	//First line is expected to be a comment, we get it and ignore it.
-	fgets(temp, 255, file);							
+	fgets(temp, 255, file);
 	memset(temp, 0, 255);
 
 	while(!feof(file))
@@ -50,7 +50,7 @@ void LoadAssets()
 		//Check if commented line
 		if(temp[i] == '\\')
 		{
-			fgets(temp, 255, file);							
+			fgets(temp, 255, file);
 			memset(temp, 0, 255);
 			continue;
 		}
@@ -86,7 +86,7 @@ void LoadAssets()
 				characters_loaded++;
 				continue;
 			}
-			
+
 			if(sounds_loaded < ASSETS_CHARACTERS)
 			{
 				Characters[sounds_loaded]->LoadSounds(files);
@@ -96,10 +96,10 @@ void LoadAssets()
 				sounds_loaded++;
 				continue;
 			}
-			
+
 			if(songs_loaded < ASSETS_SONGS)
 			{
-				AudioLoadSongs(files);				
+				AudioLoadSongs(files);
 				temp = (char*) malloc(sizeof(char)*256);
 				files = (char**) malloc(sizeof(char*)*16);
 				i = 0; j = 0;
@@ -119,7 +119,7 @@ void Init_All()
 	Init_Graphics(WINDOW_WIDTH,WINDOW_HEIGHT,"RWARS");
 	SpriteListInit();
 	EntitySystemInit();
-	
+
 	test.LoadSprites(test_files);
 	test.SetDimensions(CreateVec2D(127,127));
 	test.SetCurrentAnimation(0);
@@ -192,7 +192,7 @@ void Loop()
 			accumulator -= gDeltaTime;
 		}
 		// Remeber to handle the discrete jump in time every 6th frames or so with linear interpolation! To: Jason
-		
+
 		gRenderWindow.draw(*sprite);
 		gRenderWindow.draw(*sprite2);
 		test.Draw(gRenderWindow);
@@ -227,7 +227,7 @@ void UpdatePhysics(float deltaTime)
 	//someOfForces.x = test2.GetVelocity().x*(gClock.getElapsedTime().asSeconds() /deltaTime);
 	//test2.SetVelocity(someOfForces);
 	//test2.move(someOfForces.x,someOfForces.y);
-	
+
 	//Post Physics;
 	m = AABB(&test,&test2);
 	if(m != nullptr)
@@ -241,7 +241,7 @@ void HandleEvent(sf::Event Event)
 	//Close window
 	if(Event.type == sf::Event::EventType::Closed)
 	{
-		gRenderWindow.close();						
+		gRenderWindow.close();
 		exit(1);
 	}
 	else if(Event.type == sf::Event::EventType::MouseMoved)
