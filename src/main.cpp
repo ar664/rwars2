@@ -127,7 +127,7 @@ void Init_All()
 	test_char->SetDimensions(CreateVec2D(127,127));
 	test_char->SetCurrentAnimation(0);
 	test_char->mCurrentSprite->SetFrameBB();
-	test_char->mCurrentFrame = 1;
+	test_char->mCurrentFrame = 0;
 	test_char->SetVelocity(CreateVec2D(0,0));
 	test_char->mBody.mass = 10;
 	test_char->mBody.restitution = 17.5;
@@ -139,7 +139,7 @@ void Init_All()
 	test_char->SetDimensions(CreateVec2D(127,127));
 	test_char->SetCurrentAnimation(0);
 	test_char->mCurrentSprite->SetFrameBB();
-	test_char->mCurrentFrame = 1;
+	test_char->mCurrentFrame = 0;
 	test_char->SetVelocity(CreateVec2D(0,0));
 	test_char->setPosition(0,300);
 	test_char->mBody.mass = 0;

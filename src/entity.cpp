@@ -203,7 +203,7 @@ void Entity::Draw(sf::RenderTarget& target)
 	mNextFrameTime -= delta;
 	if(mNextFrameTime <= 0)
 	{
-		if( mCurrentFrame < mCurrentSprite->mAnimation.maxFrames)
+		if( mCurrentFrame < mCurrentSprite->mAnimation.maxFrames -1)
 		{
 			mCurrentFrame++;
 		} else
