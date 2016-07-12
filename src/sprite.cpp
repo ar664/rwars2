@@ -69,7 +69,7 @@ void Sprite::SetFrameBB()
 							{
 								started = 1;
 								rect.left = x;
-								if(rect.top == -1)
+								if(rect.top == 0)
 								{
 									rect.top = y;
 								}
@@ -96,7 +96,8 @@ void Sprite::SetFrameBB()
 				mFrameBB[i+rowCounter+j].top = rect.top;
 				mFrameBB[i+rowCounter+j].left = rect.left;
 				mFrameBB[i+rowCounter+j].width = rect.width;
-				mFrameBB[i+rowCounter+j].height = rect.height;
+				if(rect.height != 0)
+					mFrameBB[i+rowCounter+j].height = rect.height - startY;
 				std::cout<<"Frame " << i+j <<" :"<< "x: "<< rect.top << " y:" << rect.left << " w:" << rect.width<<
 					" h:" << rect.height << std::endl;
 				if(x*(i+1) >= mSfSprite->getTexture()->getSize().x)
@@ -108,9 +109,9 @@ void Sprite::SetFrameBB()
 					startX += ANIMATION_FRAME_LENGTH;
 				}
 				rect.left = ANIMATION_FRAME_LENGTH*(i+2);
-				rect.top = -1;
-				rect.width = -1;
-				rect.height = -1;
+				rect.top = 0;
+				rect.width = 0;
+				rect.height = 0;
 			}
 			startY += ANIMATION_FRAME_HEIGHT+1;
 			rowCounter++;
