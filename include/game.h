@@ -1,11 +1,11 @@
 class Game
 {
     public:
-        int update();
-        int getState();
-        void setState(int newState);
+        static int update();
+        static int getState();
+        static void setState(int newState);
     private:
-        int state_;
+        static int state_;
 
 };
 

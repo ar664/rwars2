@@ -1,5 +1,7 @@
 #include "game.h"
 
+int Game::state_;
+
 int Game::update()
 {
     switch (state_)
