@@ -11,6 +11,7 @@
 #include "player.h"
 #include "graphics.h"
 #include "globals.h"
+#include "game.h"
 #include "main.h"
 
 const char *ANIMATION_IDLE_STR = "idle";
