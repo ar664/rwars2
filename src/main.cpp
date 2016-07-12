@@ -130,7 +130,7 @@ void Init_All()
 	ent1->SetDimensions(CreateVec2D(127,127));
 	ent1->SetCurrentAnimation(0);
 	ent1->mCurrentSprite->SetFrameBB();
-	ent1->mCurrentFrame = 1;
+	ent1->mCurrentFrame = 2;
 	ent1->setPosition(0,0);
 	ent1->SetVelocity(CreateVec2D(2,0));
 	ent1->mBody.mass = 10;
