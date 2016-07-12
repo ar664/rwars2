@@ -16,7 +16,7 @@
 const char *ANIMATION_IDLE_STR = "idle";
 float gDeltaTime = (float)1/(float)gFrameRate;
 int gMouseX = 0,gMouseY = 0;
-char *test_files[] = {"sprites/Enemies3.png", 0};
+char *test_files[] = {"sprites/enemies3new.png", 0};
 Entity* ent1, *ent2,*ent3;
 Entity test, test2;
 
@@ -123,13 +123,13 @@ void Init_All()
 	Init_Graphics(WINDOW_WIDTH,WINDOW_HEIGHT,"RWARS");
 	SpriteListInit();
 	EntitySystemInit();
+	LoadAssets();
 	gGrid = new Grid(6,6,100);
 
 	ent1 = CreateEntity();	
 	ent1->LoadSprites(test_files);
 	ent1->SetDimensions(CreateVec2D(127,127));
 	ent1->SetCurrentAnimation(0);
-	ent1->mCurrentSprite->SetFrameBB();
 	ent1->mCurrentFrame = 2;
 	ent1->setPosition(0,0);
 	ent1->SetVelocity(CreateVec2D(2,0));
@@ -143,7 +143,6 @@ void Init_All()
 	ent2->LoadSprites(test_files);
 	ent2->SetDimensions(CreateVec2D(127,127));
 	ent2->SetCurrentAnimation(0);
-	ent2->mCurrentSprite->SetFrameBB();
 	ent2->mCurrentFrame = 1;
 	ent2->SetVelocity(CreateVec2D(0,0));
 	ent2->setPosition(0,400);
@@ -156,7 +155,6 @@ void Init_All()
 	ent3->LoadSprites(test_files);
 	ent3->SetDimensions(CreateVec2D(127,127));
 	ent3->SetCurrentAnimation(0);
-	ent3->mCurrentSprite->SetFrameBB();
 	ent3->mCurrentFrame = 1;
 	ent3->SetVelocity(CreateVec2D(0,0));
 	ent3->setPosition(0,273-100);
@@ -171,7 +169,6 @@ void Init_All()
 	forceRegistry.add(&ent1->mBody,&g);
 	forceRegistry.add(&ent3->mBody,&g);
 
-	LoadAssets();
 	CallbackInitSystem();
 	gClock.restart();
 }
