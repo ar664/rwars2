@@ -44,6 +44,7 @@ void Sprite::SetFrameBB()
 	int startX = 0;
 	int startY = 0;
 	int rowCounter = 0;
+	int columnCounter = 0;
 	int numFrame = 1;
 	sf::IntRect rect(ANIMATION_FRAME_LENGTH,-1,-1,-1);
 	sf::Color spriteMask(255,51,51,255);

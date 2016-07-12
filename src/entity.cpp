@@ -205,7 +205,8 @@ void Entity::Draw(sf::RenderTarget& target)
 	mNextFrameTime -= delta;
 	if(mNextFrameTime <= 0)
 	{
-		if( mCurrentFrame < mCurrentSprite->mAnimation.maxFrames)
+		if( mCurrentFrame < mCurrentSprite->mAnimation.maxFrames-
+			(mCurrentSprite->mSfSprite->getTexture()->getSize().x)/ANIMATION_FRAME_HEIGHT)
 		{
 			mCurrentFrame++;
 		} else

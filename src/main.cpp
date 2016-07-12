@@ -19,9 +19,6 @@ int gMouseX = 0,gMouseY = 0;
 char *test_files[] = {"sprites/enemies3new.png", 0};
 Entity* ent1, *ent2,*ent3;
 Entity test, test2;
-
-ForceRegistry forceRegistry;
-Gravity g;
 int main(int argc,char *argv[])
 {
 	Init_All();
@@ -135,8 +132,8 @@ void Init_All()
 	ent1->SetVelocity(CreateVec2D(2,0));
 	ent1->mBody.mass = 10;
 	ent1->mBody.restitution = 17.9;
-	ent1->mBody.staticFriction = 0.002;
-	ent1->mBody.dynamicFriction = 0.002;
+	ent1->mBody.staticFriction = 0.001;
+	ent1->mBody.dynamicFriction = 0.001;
 	//test.mBody.AddForce(CreateVec2D(6,0));
 
 	ent2 =CreateEntity();
@@ -148,26 +145,23 @@ void Init_All()
 	ent2->setPosition(0,400);
 	ent2->mBody.mass = 0;
 	ent2->mBody.restitution = 20;
-	ent2->mBody.staticFriction =.002;
-	ent2->mBody.dynamicFriction = .002;
+	ent2->mBody.staticFriction =.001;
+	ent2->mBody.dynamicFriction = .001;
 
-	ent3 = CreateEntity();	
-	ent3->LoadSprites(test_files);
-	ent3->SetDimensions(CreateVec2D(127,127));
-	ent3->SetCurrentAnimation(0);
-	ent3->mCurrentFrame = 1;
-	ent3->SetVelocity(CreateVec2D(0,0));
-	ent3->setPosition(0,273-100);
-	ent3->mBody.mass = 20;
-	ent3->mBody.restitution = 17.5;
-	ent3->mBody.staticFriction = .002;
-	ent3->mBody.dynamicFriction = .002;
-	
+	//ent3 = CreateEntity();	
+	//ent3->LoadSprites(test_files);
+	//ent3->SetDimensions(CreateVec2D(127,127));
+	//ent3->SetCurrentAnimation(0);
+	//ent3->mCurrentFrame = 1;
+	//ent3->SetVelocity(CreateVec2D(0,0));
+	//ent3->setPosition(0,273-100);
+	//ent3->mBody.mass = 20;
+	//ent3->mBody.restitution = 17.5;
+	//ent3->mBody.staticFriction = .002;
+	//ent3->mBody.dynamicFriction = .002;
 
-	g = Gravity::Gravity(CreateVec2D(0,6.3));
-
-	forceRegistry.add(&ent1->mBody,&g);
-	forceRegistry.add(&ent3->mBody,&g);
+	forceRegistry.add(&ent1->mBody,&gravity);
+	//forceRegistry.add(&ent3->mBody,&gravity);
 
 	CallbackInitSystem();
 	gClock.restart();
@@ -220,8 +214,7 @@ void Loop()
 		gRenderWindow.draw(*sprite2);
 		ent1->Draw(gRenderWindow);
 		ent2->Draw(gRenderWindow);
-		ent3->Draw(gRenderWindow);
-
+		//ent3->Draw(gRenderWindow);
 		sprite->setPosition(ent1->getPosition().x,ent1->getPosition().y);
 		sprite2->setPosition(ent2->getPosition().x,ent2->getPosition().y);
 		gRenderWindow.display();						//Displays whatever is drawn to the window
@@ -245,6 +238,15 @@ void HandleEvent(sf::Event Event)
 	{
 		gMouseX = Event.mouseMove.x;
 		gMouseY = Event.mouseMove.y;
+
+	}
+	else if(Event.type == sf::Event::EventType::MouseButtonPressed)
+	{
+		//Make entity jump!
+		//ent1->mBody.velocity.y= -80;
+
+		//make player move
+		ent1->mBody.velocity.x += 10;
 
 	}
 }

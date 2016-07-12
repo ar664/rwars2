@@ -61,5 +61,4 @@ void UpdatePhysics(float deltaTime);
 void UpdateCollision();
 void CheckCollision(Entity* ent, std::vector<Entity*>& ents, int startIndex);
 
-
 #endif
