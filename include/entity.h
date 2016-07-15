@@ -91,7 +91,7 @@ public:
 	int					mNumSprites;
 	Sprite**			mSpriteArray;
 	Sprite*				mCurrentSprite;	
-	RigidBody			mBody;
+	RigidBody*			mBody;
 	Shape				mShape;
 	sf::SoundBuffer**	mSounds;
 

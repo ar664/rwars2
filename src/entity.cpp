@@ -77,6 +77,7 @@ Entity* CreateEntity()
 			continue;
 		gEntities[i].mInUse = 1;
 		numEntities +=1;
+		gEntities[i].mBody = (RigidBody*)malloc(sizeof(RigidBody));
 		return &gEntities[i];
 
 	}
@@ -175,7 +176,7 @@ void Entity::SetDimensions(Vec2D vec)
 
 void Entity::SetVelocity(Vec2D vec)
 {
-	mBody.velocity = vec;
+	mBody->velocity = vec;
 }
 
 void Entity::Draw(sf::RenderTarget& target)
@@ -231,29 +232,28 @@ Cell* Entity::GetCell()
 void Entity::PhysicsUpdate(float deltaTime)
 {
 		//PrePhysics
-	if(mBody.mass != 0.0f)
+	if(mBody->mass != 0.0f)
 	{
-
-		//mBody.acceleration.y = mBody.mass != 0 ?Gravity_constant*deltaTime*deltaTime*.5:
-			//mBody.acceleration.y*deltaTime*deltaTime*.5;
-		//mBody.acceleration.x *= deltaTime;
+		//mBody->acceleration.y = mBody->mass != 0 ?Gravity_constant*deltaTime*deltaTime*.5:
+			//mBody->acceleration.y*deltaTime*deltaTime*.5;
+		//mBody->acceleration.x *= deltaTime;
 
 		//Force of Gravity
-		//mBody.force.y += Gravity_constant*mBody.mass;
+		//mBody->force.y += Gravity_constant*mBody->mass;
 		//Figure Out acceleration due to force
-		mBody.acceleration.AddScaledVector(mBody.force,1/mBody.mass);
-		mBody.acceleration = mBody.acceleration*deltaTime*deltaTime*.5;
+		mBody->acceleration.AddScaledVector(mBody->force,1/mBody->mass);
+		mBody->acceleration = mBody->acceleration*deltaTime*deltaTime*.5;
 		/**
 		*Calculating one floating point to the power of another is slow when it comes to multiple ents,
 		*So if you need more speed, simply remove the power and times velocity by damping or calculate
 		*the damping once and used it for all ents.
 		*Hope it doesnt crash lol;
 		*/
-		SetVelocity(mBody.velocity*pow(Damping_constant,deltaTime)  + mBody.acceleration);
+		SetVelocity(mBody->velocity*pow(Damping_constant,deltaTime)  + mBody->acceleration);
 		
-		move(mBody.velocity.x*deltaTime,mBody.velocity.y*deltaTime);		
+		move(mBody->velocity.x*deltaTime,mBody->velocity.y*deltaTime);		
 		//Clear the forces
-		mBody.force.x = mBody.force.y = 0;
+		mBody->force.x = mBody->force.y = 0;
 
 	}
 		//Grid Detection via Cells
@@ -280,7 +280,7 @@ Vec2D Entity::GetDimension()
 
 Vec2D Entity::GetVelocity()
 {
-	return mBody.velocity;
+	return mBody->velocity;
 }
 
 void Entity::SetCurrentAnimation(int anim)

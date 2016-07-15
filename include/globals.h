@@ -26,10 +26,12 @@ extern sf::RenderWindow gRenderWindow;
 extern sf::Event gEvent;
 extern sf::Clock gClock;
 extern const int gFrameRate;
+extern float deltaTime;
 
 //Things pertaining to physics
 extern ForceRegistry forceRegistry;
 extern Gravity gravity;
+
 
 /**
  * The animation order for characters.

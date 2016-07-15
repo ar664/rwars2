@@ -15,9 +15,10 @@
 
 const char *ANIMATION_IDLE_STR = "idle";
 float gDeltaTime = (float)1/(float)gFrameRate;
+float deltaTime = 0;
 int gMouseX = 0,gMouseY = 0;
-char *test_files[] = {"sprites/enemies3new.png", 0};
-Entity* ent1, *ent2,*ent3;
+char *test_files[] = {"sprites/Crate.png", 0};
+Entity* ent1, *ent2,*ent3 ,*ent4,*ent5,*ent6;
 Entity test, test2;
 int main(int argc,char *argv[])
 {
@@ -127,41 +128,81 @@ void Init_All()
 	ent1->LoadSprites(test_files);
 	ent1->SetDimensions(CreateVec2D(127,127));
 	ent1->SetCurrentAnimation(0);
-	ent1->mCurrentFrame = 2;
+	ent1->mCurrentFrame = 0;
 	ent1->setPosition(0,0);
-	ent1->SetVelocity(CreateVec2D(2,0));
-	ent1->mBody.mass = 10;
-	ent1->mBody.restitution = 17.9;
-	ent1->mBody.staticFriction = 0.001;
-	ent1->mBody.dynamicFriction = 0.001;
-	//test.mBody.AddForce(CreateVec2D(6,0));
+	ent1->SetVelocity(CreateVec2D(10,30));
+	ent1->mBody->mass = 10;
+	ent1->mBody->restitution =.6;
+	ent1->mBody->staticFriction = 0.001;
+	ent1->mBody->dynamicFriction = 0.001;
+	//test.mBody->AddForce(CreateVec2D(6,0));
+	
+	ent3 = CreateEntity();	
+	ent3->LoadSprites(test_files);
+	ent3->SetDimensions(CreateVec2D(127,127));
+	ent3->SetCurrentAnimation(0);
+	ent3->mCurrentFrame = 0;
+	ent3->SetVelocity(CreateVec2D(0,0));
+	ent3->setPosition(400,0);
+	ent3->mBody->mass = 40;
+	ent3->mBody->restitution = .8;
+	ent3->mBody->staticFriction = .001;
+	ent3->mBody->dynamicFriction = .001;
+	
+	ent4 = CreateEntity();	
+	ent4->LoadSprites(test_files);
+	ent4->SetDimensions(CreateVec2D(127,127));
+	ent4->SetCurrentAnimation(0);
+	ent4->mCurrentFrame = 0;
+	ent4->SetVelocity(CreateVec2D(0,0));
+	ent4->setPosition(400,150);
+	ent4->mBody->mass = 40;
+	ent4->mBody->restitution = .8;
+	ent4->mBody->staticFriction = .001;
+	ent4->mBody->dynamicFriction = .001;
+	
+	ent5 = CreateEntity();	
+	ent5->LoadSprites(test_files);
+	ent5->SetDimensions(CreateVec2D(127,127));
+	ent5->SetCurrentAnimation(0);
+	ent5->mCurrentFrame = 0;
+	ent5->SetVelocity(CreateVec2D(0,0));
+	ent5->setPosition(400,300);
+	ent5->mBody->mass = 40;
+	ent5->mBody->restitution = .8;
+	ent5->mBody->staticFriction = .001;
+	ent5->mBody->dynamicFriction = .001;
+	
+	ent6 = CreateEntity();	
+	ent6->LoadSprites(test_files);
+	ent6->SetDimensions(CreateVec2D(127,127));
+	ent6->SetCurrentAnimation(0);
+	ent6->mCurrentFrame = 0;
+	ent6->SetVelocity(CreateVec2D(0,0));
+	ent6->setPosition(400,-150);
+	ent6->mBody->mass = 40;
+	ent6->mBody->restitution = .8;
+	ent6->mBody->staticFriction = .001;
+	ent6->mBody->dynamicFriction = .001;
+
 
 	ent2 =CreateEntity();
 	ent2->LoadSprites(test_files);
-	ent2->SetDimensions(CreateVec2D(127,127));
+	ent2->SetDimensions(CreateVec2D(1000,127));
 	ent2->SetCurrentAnimation(0);
-	ent2->mCurrentFrame = 1;
+	ent2->mCurrentFrame = 0;
 	ent2->SetVelocity(CreateVec2D(0,0));
 	ent2->setPosition(0,400);
-	ent2->mBody.mass = 0;
-	ent2->mBody.restitution = 20;
-	ent2->mBody.staticFriction =.001;
-	ent2->mBody.dynamicFriction = .001;
+	ent2->mBody->mass = 0;
+	ent2->mBody->restitution = 20;
+	ent2->mBody->staticFriction =.001;
+	ent2->mBody->dynamicFriction = .001;
 
-	//ent3 = CreateEntity();	
-	//ent3->LoadSprites(test_files);
-	//ent3->SetDimensions(CreateVec2D(127,127));
-	//ent3->SetCurrentAnimation(0);
-	//ent3->mCurrentFrame = 1;
-	//ent3->SetVelocity(CreateVec2D(0,0));
-	//ent3->setPosition(0,273-100);
-	//ent3->mBody.mass = 20;
-	//ent3->mBody.restitution = 17.5;
-	//ent3->mBody.staticFriction = .002;
-	//ent3->mBody.dynamicFriction = .002;
-
-	forceRegistry.add(&ent1->mBody,&gravity);
-	//forceRegistry.add(&ent3->mBody,&gravity);
+	forceRegistry.add(ent1->mBody,&gravity);
+	forceRegistry.add(ent3->mBody,&gravity);
+	forceRegistry.add(ent4->mBody,&gravity);
+	forceRegistry.add(ent5->mBody,&gravity);
+	forceRegistry.add(ent6->mBody,&gravity);
 
 	CallbackInitSystem();
 	gClock.restart();
@@ -174,7 +215,7 @@ void Loop()
 	image.create(ent1->mCurrentSprite->mFrameBB[ent1->mCurrentFrame].width,
 	ent1->mCurrentSprite->mFrameBB[ent1->mCurrentFrame].height,sf::Color::Blue);
 
-	image2.create(ent2->mCurrentSprite->mFrameBB[ent2->mCurrentFrame].width,
+	image2.create(800,
 	ent2->mCurrentSprite->mFrameBB[ent2->mCurrentFrame].height,sf::Color::Blue);
 
 	sf::Texture *texture = new sf::Texture;
@@ -204,7 +245,8 @@ void Loop()
 			accumulator = 0.2f;
 		if(accumulator > gDeltaTime)
 		{
-			UpdatePhysics(gClock.getElapsedTime().asSeconds() /frameStart);
+			deltaTime = gClock.getElapsedTime().asSeconds() /frameStart;
+			UpdatePhysics(deltaTime);
 			std::cout << "Physics Update Goes here" << std::endl;
 			accumulator -= gDeltaTime;
 		}
@@ -214,7 +256,10 @@ void Loop()
 		gRenderWindow.draw(*sprite2);
 		ent1->Draw(gRenderWindow);
 		ent2->Draw(gRenderWindow);
-		//ent3->Draw(gRenderWindow);
+		ent3->Draw(gRenderWindow);
+		ent4->Draw(gRenderWindow);
+		ent5->Draw(gRenderWindow);
+		ent6->Draw(gRenderWindow);
 		sprite->setPosition(ent1->getPosition().x,ent1->getPosition().y);
 		sprite2->setPosition(ent2->getPosition().x,ent2->getPosition().y);
 		gRenderWindow.display();						//Displays whatever is drawn to the window
@@ -243,10 +288,10 @@ void HandleEvent(sf::Event Event)
 	else if(Event.type == sf::Event::EventType::MouseButtonPressed)
 	{
 		//Make entity jump!
-		//ent1->mBody.velocity.y= -80;
+		//ent1->mBody->velocity.y= -80;
 
 		//make player move
-		ent1->mBody.velocity.x += 10;
+		ent1->mBody->velocity.x += 10;
 
 	}
 }
