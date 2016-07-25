@@ -16,7 +16,7 @@ struct rShape
 	Poly,
 	Count
 	};
-	rShape(){}
+	rShape(){};
   virtual rShape *Clone( void ) const = 0;
   virtual void Initialize( void ) = 0;
   virtual void ComputeMass( float density ) = 0;
@@ -102,7 +102,15 @@ struct Polygon : public rShape
 
 	void SetOrientation( float radians )
 	{
-		 mat.Set(radians);
+		if(rbody != nullptr)
+		{
+		rbody->orientation = radians;
+		}
+		else
+		{
+			exit(0);
+		}
+		mat.Set(radians);
 	}
 
 	void Draw(sf::RenderTarget &gRenderWindow) const
@@ -112,8 +120,10 @@ struct Polygon : public rShape
 		convex.setPointCount(mVertexCount);
 		for(int i =0; i < mVertexCount;++i)
 		{
-			convex.setPoint(i,sf::Vector2f(mVertices[i].x,mVertices[i].y));
+			Vec2D v = rbody->position + mat * mVertices[i];
+			convex.setPoint(i,sf::Vector2f(v.x,v.y));
 		}
+		convex.setFillColor(c);
 		gRenderWindow.draw(convex);
 	}
 	Type GetType(void ) const

@@ -77,6 +77,7 @@ Entity* CreateEntity()
 		if(gEntities[i].mInUse)
 			continue;
 		gEntities[i].mInUse = 1;
+		gEntities[i].mBody = new RigidBody();
 		numEntities +=1;
 		return &gEntities[i];
 
@@ -165,9 +166,19 @@ void Entity::SetCell(Cell* cell)
 
 void Entity::SetPosition(Vec2D vec)
 {
-	this->setPosition(vec.x, vec.y);
+	if(mBody != nullptr)
+	{
+		mBody->SetPosition(vec);
+	}
 }
 
+Vec2D Entity::GetPosition()
+{
+	if(mBody != nullptr)
+	{
+		return mBody->GetPosition();
+	}
+}
 void Entity::SetDimensions(Vec2D vec)
 {
 	mDimension.x = vec.x;
@@ -245,8 +256,8 @@ void Entity::PhysicsUpdate(float deltaTime)
 		mBody->acceleration = mBody->acceleration*deltaTime*deltaTime*.5;
 
 		//Rotation
-		mBody->angularVelocity += mBody->torque * (mBody->invMomentOfIntertia) * deltaTime;
-		mBody->orientation += mBody->angularVelocity * deltaTime;
+		//mBody->angularVelocity += mBody->torque * (mBody->invMomentOfIntertia) * deltaTime;
+		//mBody->orientation += mBody->angularVelocity * deltaTime;
 
 		/**
 		*Calculating one floating point to the power of another is slow when it comes to multiple ents,
@@ -256,7 +267,10 @@ void Entity::PhysicsUpdate(float deltaTime)
 		*/
 		SetVelocity(mBody->velocity*pow(Damping_constant,deltaTime)  + mBody->acceleration);
 		
-		move(mBody->velocity.x*deltaTime,mBody->velocity.y*deltaTime);		
+
+		move(mBody->velocity.x*deltaTime,mBody->velocity.y*deltaTime);	
+		mBody->position.x = getPosition().x;
+		mBody->position.y = getPosition().y;
 		//Clear the forces
 		mBody->force.x = mBody->force.y = 0;
 
@@ -319,18 +333,27 @@ Vec2D RigidBody::GetAcceleration()
 {
 	return acceleration;
 }
+/*
+RigidBody::RigidBody(rShape* s)
+{
+	shape = s;
+	s->rbody = this;
+}*/
 void RigidBody::SetAcceleration(Vec2D vec)
 {
 	acceleration = vec;
 }
 void RigidBody::SetOrientation(float radians)
 {
-
+	shape->SetOrientation(radians);
 	orientation = radians;
-
 }
-RigidBody::RigidBody(rShape* s)
-	:shape(s->Clone())
+
+void RigidBody::SetPosition(Vec2D vec)
 {
-	s->rbody = this;
+	position = vec;
+}
+Vec2D RigidBody::GetPosition()
+{
+	return position;
 }

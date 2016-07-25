@@ -55,16 +55,19 @@ class Grid;
 struct RigidBody
 {
 	//Constructor
-	RigidBody(rShape* s);
-
+	//RigidBody(rShape* s);
+	RigidBody(){};
 	// We are assuming for now that all Rigidbody shapes are rectangles
 	rShape* shape;
 	
 	float		mass;
+
+	Vec2D		position;
 	Vec2D		velocity;
+
 	Vec2D		force;			
 	Vec2D		acceleration;
-	Vec2D		rotation;
+
 	// Material Structure 
 	float		staticFriction;
 	float		dynamicFriction;
@@ -80,14 +83,17 @@ struct RigidBody
 	int			r,g,b;
 
 	void	AddForce(Vec2D amount);
-	Vec2D	GetVelocity();
 	void	SetVelocity(Vec2D vec);
-	Vec2D	GetAcceleration();
 	void	SetAcceleration(Vec2D vec);
-	
+	void	SetPosition(Vec2D vec);
 	void	SetOrientation	(float	radians);
 	void	SetStatic();
 
+	Vec2D	GetPosition();
+	Vec2D	GetVelocity();
+	Vec2D	GetAcceleration();
+	
+	
 };
 
 enum Shape{
@@ -143,6 +149,7 @@ public:
 	Grid*			GetGrid();
 	Vec2D			GetDimension();
 	Vec2D			GetVelocity();
+	Vec2D			GetPosition();
 	//Setters
 	void			SetCurrentAnimation(int anim);
 	void			SetCell(Cell* cell);
