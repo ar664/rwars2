@@ -2,13 +2,15 @@
 #define _ENTITY_H
 
 #include <SFML/Audio.hpp>
+
 #include "vectors.h"
 #include "sprite.h"
 
-struct RigidBody;
+struct rShape;
 struct Cell;
-class Grid;
+struct Manifold;
 
+class Grid;
 
 #define MAX_ENTITIES	1000
 #define MAX_ANIMATIONS	15
@@ -52,19 +54,40 @@ class Grid;
 
 struct RigidBody
 {
+	//Constructor
+	RigidBody(rShape* s);
+
 	// We are assuming for now that all Rigidbody shapes are rectangles
+	rShape* shape;
+	
 	float		mass;
 	Vec2D		velocity;
 	Vec2D		force;			
 	Vec2D		acceleration;
+	Vec2D		rotation;
 	// Material Structure 
 	float		staticFriction;
 	float		dynamicFriction;
 	float		restitution;
 	float		density;		/*<-- Use density* volume to determine the currect mass of an object */
+	// Angular Components
+	float		orientation;	//radians
+	float		angularVelocity;
+	float		torque;
+	float		MomentOfInertia;
+	float		invMomentOfIntertia;
 
+	int			r,g,b;
 
-	void AddForce(Vec2D amount);
+	void	AddForce(Vec2D amount);
+	Vec2D	GetVelocity();
+	void	SetVelocity(Vec2D vec);
+	Vec2D	GetAcceleration();
+	void	SetAcceleration(Vec2D vec);
+	
+	void	SetOrientation	(float	radians);
+	void	SetStatic();
+
 };
 
 enum Shape{
@@ -81,6 +104,8 @@ private:
 	int					mSpeed;
 	Vec2D				mDimension;
 	Cell*				mCell;
+
+	void				ResolveVelocity(Manifold *m);
 public:
 
 	int					mInUse;
@@ -129,7 +154,13 @@ public:
 	void	LoadSprites(char **SpriteFiles);
 	void	LoadSounds(char **SoundFiles);
 	void	Free();
+	
+	//Methods for physics
+	void	ResolveContact(Manifold *m);
+	void    ResolveInterpenetration(Manifold *m);
 };
+
+
 
 extern Entity *gEntities;
 

@@ -1,9 +1,13 @@
 #ifndef __VECTORS_H_
 #define __VECTORS_H_
 
-struct Vec2D;
 
+struct Vec2D;
+struct Vec3D;
+struct Vec4D;
 Vec2D CreateVec2D(float x , float y);
+Vec3D CreateVec3D(float x, float y,float z);
+Vec4D CreateVec4D(float x, float y,float z,float r);
 
 struct Vec2D
 {
@@ -50,27 +54,72 @@ struct Vec2D
 		return CreateVec2D(x-v.x,y - v.y);
 	}
 
-	void AddScaledVector(Vec2D vec,float t);
+	void AddScaledVector(Vec2D& vec,float t);
+	float CrossProduct(Vec2D &b);
+};
+
+struct Vec3D
+{
+
+	float x; 
+	float y;
+	float z;
+
+		//Scale a vector
+	void operator*=(const float value)
+	{
+		x *=value;
+		y *=value;
+		z *=value;
+	}
+	//(Scalar product)
+	Vec3D operator*(const float value)const
+	{
+		return CreateVec3D(x*value,y*value,z*value);
+	}
+	//Dot Product
+	float operator*(const Vec3D& v)const
+	{
+		return x*v.x +y*v.y + z*v.z;
+	}
+	
+	//Add Vectors
+	void operator+=(const Vec3D &v)
+	{
+		x += v.x;
+		y += v.y;
+		z += v.z;
+	}
+
+	Vec3D operator+(const Vec3D &v)const
+	{
+		return CreateVec3D(x+v.x,y +v.y,z+v.z);
+	}
+	//Subtract Vectors
+	void operator-=(const Vec3D &v)
+	{
+		x -= v.x;
+		y -= v.y;
+		z -= v.z;
+	}
+
+	Vec3D operator-(const Vec3D &v)const
+	{
+		return CreateVec3D(x-v.x,y - v.y,z - v.z);
+	}
+
+	void AddScaledVector(Vec3D vec,float t);
 
 };
 
-
-typedef struct
-{
-	float x; 
-	float y;
-	float z;
-}Vec3D;
-
-
-typedef struct
+struct Vec4D
 {
 
 	float x; 
 	float y;
 	float z;
-	float w;
-}Vec4D;
+	float r;
+};
 /*
 typedef struct
 {
@@ -187,6 +236,8 @@ typedef struct
  * @param d Float w component (only in 4D version)
  */
 #define Vec2DSet(v, a, b)  (v.x=(a), v.y=(b))
+#define Vec3DSet(v, a, b,c)  (v.x=(a), v.y=(b),v.z = (c))
+#define Vec4DSet(v, a, b, c, r)  (v.x=(a), v.y=(b),v.z = (c),v.r = (r))
 
 /**
  * @brief Macro to get the negative of a vector
@@ -211,6 +262,7 @@ void Vec2DReflect(Vec2D *out, Vec2D normal,Vec2D in);
  * @param v pointer to the vector to be normalized.
  */
 float Vec2DMagnitude(Vec2D V);
+float Vec4DMagnitude(Vec4D V);
 
 void Vec2DNormalize (Vec2D *V);
 /**
@@ -254,6 +306,8 @@ int DistanceBetweenGreaterThan2D(Vec2D p1,Vec2D p2,float size);
  */
 #define crandom() (((float)((rand()%1000)/(float)1000.0) * 2.0) - 1.0)
 
+
+float Vec2DLengthSquared(Vec2D vec);
 
 
 //GetLength

@@ -14,7 +14,7 @@ struct Manifold
 {
 	Entity* A;
 	Entity* B;
-	Vec2D penetration;		//How much A is penetrating B.... *wink* *wink*
+	float penetration;		//How much A is penetrating B.... *wink* *wink*
 	Vec2D normal;			//Vector along the normal
 };
 
@@ -54,11 +54,19 @@ private:
 
 
 Manifold* AABB(Entity *ent1, Entity *ent2);
-int CollisionResponseAABBvsAABB(Entity* ent1,Entity *ent2,Manifold* m);
-void FrictionResponseAABBvsAABB(Entity* ent1, Entity* ent2,Manifold* m);
-int SweptAABB(Entity *ent1, Entity *ent2, float& normalx, float& normaly);
-void UpdatePhysics(float deltaTime);
-void UpdateCollision();
-void CheckCollision(Entity* ent, std::vector<Entity*>& ents, int startIndex);
+float	CalculateSeperatingVelocity(Manifold *m);
+int		CollisionResponseAABBvsAABB(Entity* ent1,Entity *ent2,Manifold* m);
+void	ResolveFriction(Manifold* m);
+int		SweptAABB(Entity *ent1, Entity *ent2, float& normalx, float& normaly);
+void	UpdatePhysics(float deltaTime);
+void	UpdateCollision();
+void	CheckCollision(Entity* ent, std::vector<Entity*>& ents, int startIndex);
+
+
+void	CollisionResponseCircleToCircle(Manifold *m,RigidBody* b1,RigidBody* b2);
+void	CollisionResponseCircleToPolygon(Manifold *m,RigidBody* b1,RigidBody* b2);
+void	CollisionResponsePolygonToCircle(Manifold *m,RigidBody* b1,RigidBody* b2);
+void	CollisionResponsePolygonToPolygon(Manifold *m,RigidBody* b1,RigidBody* b2);
+
 
 #endif

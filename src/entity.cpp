@@ -2,6 +2,7 @@
 #include <SFML/Audio.hpp>
 #include <string.h>
 #include <malloc.h>
+#include "shape.h"
 #include "globals.h"
 #include "physics.h"
 #include "entity.h"
@@ -77,7 +78,6 @@ Entity* CreateEntity()
 			continue;
 		gEntities[i].mInUse = 1;
 		numEntities +=1;
-		gEntities[i].mBody = (RigidBody*)malloc(sizeof(RigidBody));
 		return &gEntities[i];
 
 	}
@@ -243,6 +243,11 @@ void Entity::PhysicsUpdate(float deltaTime)
 		//Figure Out acceleration due to force
 		mBody->acceleration.AddScaledVector(mBody->force,1/mBody->mass);
 		mBody->acceleration = mBody->acceleration*deltaTime*deltaTime*.5;
+
+		//Rotation
+		mBody->angularVelocity += mBody->torque * (mBody->invMomentOfIntertia) * deltaTime;
+		mBody->orientation += mBody->angularVelocity * deltaTime;
+
 		/**
 		*Calculating one floating point to the power of another is slow when it comes to multiple ents,
 		*So if you need more speed, simply remove the power and times velocity by damping or calculate
@@ -301,13 +306,31 @@ void Entity::SetCurrentAnimation(int anim)
 	mCurrentFrame = 0;
 }
 
-//Empty Functions Tbd (To be defined)
-void			SetPosition(Vec2D)
-{
-	
-}
 
-void			SetDimensions(Vec2D)
+Vec2D RigidBody::GetVelocity()
 {
-	
+	return velocity;
+}
+void RigidBody::SetVelocity(Vec2D vec)
+{
+	velocity = vec;
+}
+Vec2D RigidBody::GetAcceleration()
+{
+	return acceleration;
+}
+void RigidBody::SetAcceleration(Vec2D vec)
+{
+	acceleration = vec;
+}
+void RigidBody::SetOrientation(float radians)
+{
+
+	orientation = radians;
+
+}
+RigidBody::RigidBody(rShape* s)
+	:shape(s->Clone())
+{
+	s->rbody = this;
 }
