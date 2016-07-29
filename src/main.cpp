@@ -4,6 +4,7 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Window.hpp>
 #include <iostream>
+#include <string.h>
 #include "fgen.h"
 #include "physics.h"
 #include "audio.h"

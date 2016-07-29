@@ -2,7 +2,8 @@
 #define MATRIX_H
 
 #include <utility>
-#include "include\vectors.h"
+#include <cmath>
+#include "vectors.h"
 
 class Matrix22
 {

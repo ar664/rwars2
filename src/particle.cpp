@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <utility>
 #include <assert.h>
-#include "include\vectors.h"
+#include <cmath>
+#include "vectors.h"
 #include "particle.h"
 
 

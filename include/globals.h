@@ -15,7 +15,7 @@
 #define WINDOW_HEIGHT		600
 
 //Whenever ssing an external type include the file before you use it to reduce errors.
-#include <SFML\Graphics.hpp>
+#include <SFML/Graphics.hpp>
 #include "physics.h"
 #include "fgen.h"
 extern int numSprites;

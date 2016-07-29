@@ -1,6 +1,6 @@
 #ifndef __FGEN_H
 #define __FGEN_H
-#include "include\entity.h"
+#include "entity.h"
 
 class ForceGenerator
 {

@@ -1,4 +1,5 @@
 #include "audio.h"
+#include <string.h>
 #include <globals.h>
 
 sf::Music **gPlaylist = NULL;
