@@ -2,11 +2,13 @@
 #include <SFML/Audio.hpp>
 #include <string.h>
 #include <malloc.h>
+#include "shape.h"
 #include "globals.h"
 #include "physics.h"
 #include "entity.h"
 
 Entity *gEntities = NULL;
+int numEntities = 0;
 bool	paused = false;		//temp variable until pause gamestate is a thing
 
 void Entity::LoadSprites(char **SpriteFiles)
@@ -75,6 +77,8 @@ Entity* CreateEntity()
 		if(gEntities[i].mInUse)
 			continue;
 		gEntities[i].mInUse = 1;
+		gEntities[i].mBody = new RigidBody();
+		numEntities +=1;
 		return &gEntities[i];
 
 	}
@@ -162,9 +166,19 @@ void Entity::SetCell(Cell* cell)
 
 void Entity::SetPosition(Vec2D vec)
 {
-	this->setPosition(vec.x, vec.y);
+	if(mBody != nullptr)
+	{
+		mBody->SetPosition(vec);
+	}
 }
 
+Vec2D Entity::GetPosition()
+{
+	if(mBody != nullptr)
+	{
+		return mBody->GetPosition();
+	}
+}
 void Entity::SetDimensions(Vec2D vec)
 {
 	mDimension.x = vec.x;
@@ -173,7 +187,7 @@ void Entity::SetDimensions(Vec2D vec)
 
 void Entity::SetVelocity(Vec2D vec)
 {
-	mBody.velocity = vec;
+	mBody->velocity = vec;
 }
 
 void Entity::Draw(sf::RenderTarget& target)
@@ -217,12 +231,65 @@ void Entity::Draw(sf::RenderTarget& target)
 void Entity::Think()
 {
 	//Empty Think Should be replaced on inheritance
+	
 }
 
 Cell* Entity::GetCell()
 {
 	return mCell;
 }
+//initially this is going to be a void virtual because different entities will different physics behaviors
+void Entity::PhysicsUpdate(float deltaTime)
+{
+		//PrePhysics
+	if(mBody->mass != 0.0f)
+	{
+		//mBody->acceleration.y = mBody->mass != 0 ?Gravity_constant*deltaTime*deltaTime*.5:
+			//mBody->acceleration.y*deltaTime*deltaTime*.5;
+		//mBody->acceleration.x *= deltaTime;
+
+		//Force of Gravity
+		//mBody->force.y += Gravity_constant*mBody->mass;
+		//Figure Out acceleration due to force
+		mBody->acceleration.AddScaledVector(mBody->force,1/mBody->mass);
+		mBody->acceleration = mBody->acceleration*deltaTime*deltaTime*.5;
+
+		//Rotation
+		//mBody->angularVelocity += mBody->torque * (mBody->invMomentOfIntertia) * deltaTime;
+		//mBody->orientation += mBody->angularVelocity * deltaTime;
+
+		/**
+		*Calculating one floating point to the power of another is slow when it comes to multiple ents,
+		*So if you need more speed, simply remove the power and times velocity by damping or calculate
+		*the damping once and used it for all ents.
+		*Hope it doesnt crash lol;
+		*/
+		SetVelocity(mBody->velocity*pow(Damping_constant,deltaTime)  + mBody->acceleration);
+		
+
+		move(mBody->velocity.x*deltaTime,mBody->velocity.y*deltaTime);	
+		mBody->position.x = getPosition().x;
+		mBody->position.y = getPosition().y;
+		//Clear the forces
+		mBody->force.x = mBody->force.y = 0;
+
+	}
+		//Grid Detection via Cells
+		Cell *newCell = gGrid->getCell(CreateVec2D(getPosition().x,getPosition().y));
+		if(newCell != GetCell())
+			{
+				if(GetCell() == NULL)
+			{
+				gGrid->addEntity(this,newCell);
+			}
+			else if(newCell != GetCell())
+			{
+				gGrid->removeEntityFromCell(this);
+				gGrid->addEntity(this,newCell);
+			}
+		}
+}
+
 
 Vec2D Entity::GetDimension()
 {
@@ -231,7 +298,7 @@ Vec2D Entity::GetDimension()
 
 Vec2D Entity::GetVelocity()
 {
-	return mBody.velocity;
+	return mBody->velocity;
 }
 
 void Entity::SetCurrentAnimation(int anim)
@@ -254,18 +321,40 @@ void Entity::SetCurrentAnimation(int anim)
 	mCurrentFrame = 0;
 }
 
-//Empty Functions Tbd (To be defined)
-void			SetPosition(Vec2D)
+
+Vec2D RigidBody::GetVelocity()
 {
-	
+	return velocity;
+}
+void RigidBody::SetVelocity(Vec2D vec)
+{
+	velocity = vec;
+}
+Vec2D RigidBody::GetAcceleration()
+{
+	return acceleration;
+}
+/*
+RigidBody::RigidBody(rShape* s)
+{
+	shape = s;
+	s->rbody = this;
+}*/
+void RigidBody::SetAcceleration(Vec2D vec)
+{
+	acceleration = vec;
+}
+void RigidBody::SetOrientation(float radians)
+{
+	shape->SetOrientation(radians);
+	orientation = radians;
 }
 
-void			SetDimensions(Vec2D)
+void RigidBody::SetPosition(Vec2D vec)
 {
-	
+	position = vec;
 }
-
-void			SetVelocity(Vec2D)
+Vec2D RigidBody::GetPosition()
 {
-	
+	return position;
 }

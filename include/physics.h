@@ -3,7 +3,8 @@
 #include <vector>
 #include "entity.h"
 
-const float Gravity = .2;
+const float Gravity_constant = 6.3;
+const float Damping_constant = .99;	//Acts like wind resistance
 
 /**
 *This struct stores information about 2 entities that collided and is used to 
@@ -13,7 +14,7 @@ struct Manifold
 {
 	Entity* A;
 	Entity* B;
-	Vec2D penetration;		//How much A is penetrating B.... *wink* *wink*
+	float penetration;		//How much A is penetrating B.... *wink* *wink*
 	Vec2D normal;			//Vector along the normal
 };
 
@@ -50,11 +51,22 @@ private:
 };
 
 
+
+
 Manifold* AABB(Entity *ent1, Entity *ent2);
-int CollisionResponse(Entity* ent1,Entity *ent2,Manifold* m);
-void FrictionResponse(Entity* ent1, Entity* ent2,Manifold* m);
-int SweptAABB(Entity *ent1, Entity *ent2, float& normalx, float& normaly);
-void UpdatePhysics(float deltaTime);
+float	CalculateSeperatingVelocity(Manifold *m);
+int		CollisionResponseAABBvsAABB(Entity* ent1,Entity *ent2,Manifold* m);
+void	ResolveFriction(Manifold* m);
+int		SweptAABB(Entity *ent1, Entity *ent2, float& normalx, float& normaly);
+void	UpdatePhysics(float deltaTime);
+void	UpdateCollision();
+void	CheckCollision(Entity* ent, std::vector<Entity*>& ents, int startIndex);
+
+
+void	CollisionResponseCircleToCircle(Manifold *m,RigidBody* b1,RigidBody* b2);
+void	CollisionResponseCircleToPolygon(Manifold *m,RigidBody* b1,RigidBody* b2);
+void	CollisionResponsePolygonToCircle(Manifold *m,RigidBody* b1,RigidBody* b2);
+void	CollisionResponsePolygonToPolygon(Manifold *m,RigidBody* b1,RigidBody* b2);
 
 
 #endif

@@ -3,7 +3,6 @@ sprites/Gill-Sawfish/icon.png sprites/Gill-Sawfish/icon.png sprites/Gill-Sawfish
 sprites/Typhoon-Squid/icon.png sprites/Typhoon-Squid/icon.png sprites/Typhoon-Squid/icon.png sprites/Typhoon-Squid/icon.png sprites/Typhoon-Squid/icon.png sprites/Typhoon-Squid/hit.png
 sprites/Torque/icon.png sprites/Torque/icon.png sprites/Torque/icon.png sprites/Torque/icon.png sprites/Torque/icon.png sprites/Torque/hurt.png
 
-
 \\Sounds (In Order of Characters, Songs, other)
 sounds/empty.ogg 
 sounds/empty.ogg 

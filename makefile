@@ -10,11 +10,11 @@ LDIR=lib
 LIBS=-lm -lsfml-system -lsfml-audio -lsfml-window -lsfml-graphics -lsfml-audio 
 
 #H files go here
-_DEPS = audio.h physics.h player.h sprite.h globals.h graphics.h vectors.h entity.h main.h
+_DEPS = audio.h physics.h player.h sprite.h globals.h graphics.h vectors.h entity.h main.h particle.h fgen.h matrix.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
 #Target object files go here (There basically the c files)
-_OBJ = audio.o physics.o player.o sprite.o globals.o graphics.o vectors.o entity.o main.o
+_OBJ = audio.o physics.o player.o sprite.o globals.o graphics.o vectors.o entity.o main.o particle.o fgen.o matrix.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 
