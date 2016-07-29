@@ -177,6 +177,7 @@ void Loop()
 
 		for(i = 0; i < ASSETS_CHARACTERS; i++)
 		{
+			gCharacters[i]->Update();
 			gCharacters[i]->Draw(gRenderWindow);
 
 		}

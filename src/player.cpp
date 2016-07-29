@@ -108,7 +108,6 @@ void Character::ChangeState(PlayerState state)
 	mState				|=state;
 	mCurrState			= state;
 
-	this->SetCurrentAnimation( (int)log((double)mCurrState) / log(2.0));
 
 	mLastStateChange	= gClock.getElapsedTime().asMilliseconds();
 	mNextStateChange	= 500;//hard coded 500 miliseconds for now
@@ -118,10 +117,13 @@ void Character::ChangeState(PlayerState state)
 //incomplete. Created to set up state changes
 void Character::Update()
 {
+	unsigned int animation;
 	if(this->GetVelocity().y < 0)
 	{
 		ChangeState(P_State_Fall);
 	}
+	animation = (unsigned int) (log(mCurrState) / log(2.0));
+	this->SetCurrentAnimation( animation);
 }
 //needs to be completed
 //only changes states so far

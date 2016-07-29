@@ -238,10 +238,12 @@ void Entity::SetCurrentAnimation(int anim)
 {
 	if(!mSpriteArray)
 	{
+		printf("Entity does not have sprites, attempted to set animation to NULL Sprite Array \n");
 		return;
 	}
-	if(anim >= mNumSprites)
+	if(anim >= mNumSprites || anim < 0)
 	{
+		printf("Entity assigned unset or unknown animation. Sprites Loaded: %d. Animation# = %d \n", mNumSprites, anim);
 		return;
 	}
 	if(mCurrentSprite == mSpriteArray[anim])
