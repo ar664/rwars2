@@ -136,6 +136,7 @@ void Init_All()
 	test_char->mCurrentSprite->SetFrameBB();
 	test_char->mCurrentFrame = 0;
 	test_char->SetVelocity(CreateVec2D(0,0));
+	test_char->setPosition(300,300);
 	test_char->mBody->mass = 10;
 	test_char->mBody->restitution = 17.5;
 	test_char->mBody->staticFriction = .5;

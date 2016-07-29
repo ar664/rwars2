@@ -86,7 +86,7 @@ void Character::ChangeState(PlayerState state)
 		mCurrState = P_State_Neutral;
 	}
 	//can only change states when we are in neutral state
-	if(mCurrState != P_State_Neutral)	return;
+	if(mCurrState != P_State_Neutral || state == P_State_Neutral)	return;
 
 	if(state == P_State_Charge_Atk)
 	{
@@ -113,7 +113,7 @@ void Character::ChangeState(PlayerState state)
 
 
 	mLastStateChange	= gClock.getElapsedTime().asMilliseconds();
-	mNextStateChange	= 500;//hard coded 500 miliseconds for now
+	mNextStateChange	= 5000;//hard coded 500 miliseconds for now
 
 	std::cout <<"Character State is " << mCurrState << std::endl;
 }
@@ -121,9 +121,10 @@ void Character::ChangeState(PlayerState state)
 void Character::Update()
 {
 	unsigned int animation;
+	ChangeState(P_State_Neutral);
+	printf("Player State is %i \n", mCurrState);
 	if(this->GetVelocity().y < 0)
 	{
-		ChangeState(P_State_Fall);
 	}
 	animation = (unsigned int) (log((double)mCurrState) / log(2.0));
 	this->SetCurrentAnimation( animation);
