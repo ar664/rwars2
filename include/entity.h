@@ -101,7 +101,7 @@ enum Shape{
 	CIRCLE
 };
 
-typedef class Entity: public sf::Transformable 
+class Entity: public sf::Transformable 
 {
 private:
 	sf::Uint32			mLastDrawTime;
@@ -125,6 +125,8 @@ public:
 	RigidBody*			mBody;
 	Shape				mShape;
 	sf::SoundBuffer**	mSounds;
+
+
 
 	//Functions
 /**
@@ -176,7 +178,6 @@ Entity *EntityGetFree();
 bool EntitySystemInit();
 void EntitySystemStep();
 void EntitySystemShutdown();
-Entity* CreateEntity();
 
 #endif
 

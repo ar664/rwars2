@@ -18,6 +18,9 @@ Character::Character()
 	
 	mLastStateChange		= 0;
 	mNextStateChange		= 0;
+
+	mInUse = 1;
+	mBody = new RigidBody();
 }
 
 void Character::HandleInput(sf::Event Event)
@@ -122,7 +125,7 @@ void Character::Update()
 	{
 		ChangeState(P_State_Fall);
 	}
-	animation = (unsigned int) (log(mCurrState) / log(2.0));
+	animation = (unsigned int) (log((double)mCurrState) / log(2.0));
 	this->SetCurrentAnimation( animation);
 }
 //needs to be completed

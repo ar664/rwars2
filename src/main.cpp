@@ -130,51 +130,6 @@ void Init_All()
 	LoadAssets();
 	gGrid = new Grid(6,6,100);
 
-
-	//p = new Polygon();
-	ent1 = CreateEntity();	
-	//ent1->mBody = new RigidBody(p);
-	//ent1->mBody->position.x = 100;
-	//ent1->mBody->position.y = 0;
-	//p->SetOrientation(0);
-
-
-	//ent1->LoadSprites(test_files);
-	//ent1->SetDimensions(CreateVec2D(127,127));
-	//ent1->SetCurrentAnimation(0);
-	//ent1->mCurrentFrame = 0;
-	//ent1->setPosition(0,0);
-	//ent1->SetVelocity(CreateVec2D(0,0));
-	//ent1->mBody->mass = 1;
-	//ent1->mBody->restitution =.8;
-	//ent1->mBody->staticFriction = 0.001;
-	//ent1->mBody->dynamicFriction = 0.001;
-	/*
-	Vec2D * arr = new Vec2D[4];
-	arr[0] = CreateVec2D(1,1);
-	arr[1] = CreateVec2D(300,100);
-	arr[2] = CreateVec2D(1,300);
-	arr[3] = CreateVec2D(400,400);
-	p->rbody->r = 10;
-	p->rbody->g = 100;
-	p->rbody->b = 255;
-
-	p->Set(arr,4);
-	*/
-
-	//ent3 = CreateEntity();	
-	//ent3->LoadSprites(test_files);
-	//ent3->SetDimensions(CreateVec2D(127,127));
-	//ent3->SetCurrentAnimation(0);
-	//ent3->mCurrentFrame = 0;
-	//ent3->SetVelocity(CreateVec2D(0,0));
-	//ent3->setPosition(700,0);
-	//ent3->mBody->mass = 40;
-	//ent3->mBody->restitution = .8;
-	//ent3->mBody->staticFriction = .001;
-	//ent3->mBody->dynamicFriction = .001;
-	
-
 	test_char = gCharacters[0];
 	test_char->SetDimensions(CreateVec2D(127,127));
 	test_char->SetCurrentAnimation(0);
@@ -187,72 +142,6 @@ void Init_All()
 	test_char->mBody->dynamicFriction = .5;
 	//test.mBody.AddForce(CreateVec2D(6,0));
 
-	test_char = gCharacters[1];
-	test_char->SetDimensions(CreateVec2D(127,127));
-	test_char->SetCurrentAnimation(0);
-	test_char->mCurrentSprite->SetFrameBB();
-	test_char->mCurrentFrame = 0;
-	test_char->SetVelocity(CreateVec2D(0,0));
-	test_char->setPosition(0,300);
-	test_char->mBody->mass = 0;
-	test_char->mBody->restitution = 1000;
-	test_char->mBody->staticFriction = 1;
-	test_char->mBody->dynamicFriction = 1;
-	ent4 = CreateEntity();	
-	ent4->LoadSprites(test_files);
-	ent4->SetDimensions(CreateVec2D(127,127));
-	ent4->SetCurrentAnimation(0);
-	ent4->mCurrentFrame = 0;
-	ent4->SetVelocity(CreateVec2D(0,0));
-	ent4->setPosition(400,150);
-	ent4->mBody->mass = 40;
-	ent4->mBody->restitution = .8;
-	ent4->mBody->staticFriction = .001;
-	ent4->mBody->dynamicFriction = .001;
-	
-	ent5 = CreateEntity();	
-	ent5->LoadSprites(test_files);
-	ent5->SetDimensions(CreateVec2D(127,127));
-	ent5->SetCurrentAnimation(0);
-	ent5->mCurrentFrame = 0;
-	ent5->SetVelocity(CreateVec2D(0,0));
-	ent5->setPosition(400,300);
-	ent5->mBody->mass = 40;
-	ent5->mBody->restitution = .8;
-	ent5->mBody->staticFriction = .001;
-	ent5->mBody->dynamicFriction = .001;
-	
-	//ent6 = CreateEntity();	
-	//ent6->LoadSprites(test_files);
-	//ent6->SetDimensions(CreateVec2D(127,127));
-	//ent6->SetCurrentAnimation(0);
-	//ent6->mCurrentFrame = 0;
-	//ent6->SetVelocity(CreateVec2D(0,0));
-	//ent6->setPosition(400,-150);
-	//ent6->mBody->mass = 40;
-	//ent6->mBody->restitution = .8;
-	//ent6->mBody->staticFriction = .001;
-	//ent6->mBody->dynamicFriction = .001;
-
-
-	ent2 =CreateEntity();
-	ent2->LoadSprites(test_files);
-	ent2->SetDimensions(CreateVec2D(4000,127));
-	ent2->SetCurrentAnimation(0);
-	ent2->mCurrentFrame = 0;
-	ent2->SetVelocity(CreateVec2D(0,0));
-	ent2->setPosition(0,400);
-	ent2->mBody->mass = 0;
-	ent2->mBody->restitution = 0;
-	ent2->mBody->staticFriction =.001;
-	ent2->mBody->dynamicFriction = .001;
-
-	//forceRegistry.add(ent1->mBody,&gravity);
-	//forceRegistry.add(ent3->mBody,&gravity);
-	forceRegistry.add(ent4->mBody,&gravity);
-	forceRegistry.add(ent5->mBody,&gravity);
-	//forceRegistry.add(ent6->mBody,&gravity);
-
 	CallbackInitSystem();
 	gClock.restart();
 }
@@ -261,24 +150,8 @@ void Loop()
 	float accumulator = 0;				//For Physics Update
 	int i;
 	//Entitys First FrameBB
-	sf::Image image,image2;
-	//image.create(ent1->mCurrentSprite->mFrameBB[ent1->mCurrentFrame].width,
-	//ent1->mCurrentSprite->mFrameBB[ent1->mCurrentFrame].height,sf::Color::Blue);
 
-	image2.create(800,
-	ent2->mCurrentSprite->mFrameBB[ent2->mCurrentFrame].height,sf::Color::Blue);
 
-	//sf::Texture *texture = new sf::Texture;
-	//texture->loadFromImage(image);
-	//sf::Sprite *sprite = new sf::Sprite;
-	//sprite->setTexture(*texture,1);
-	//sprite->setPosition(gMouseX,gMouseY);
-
-	sf::Texture *texture2 = new sf::Texture;
-	texture2->loadFromImage(image2);
-	sf::Sprite *sprite2 = new sf::Sprite;
-	sprite2->setTexture(*texture2,1);
-	sprite2->setPosition(gMouseX,gMouseY);
 
 	gClock.restart();
 
@@ -309,21 +182,8 @@ void Loop()
 		}
 		// Remeber to handle the discrete jump in time every 6th frames or so with linear interpolation! To: Jason
 		
-		//gRenderWindow.draw(*sprite);
-		gRenderWindow.draw(*sprite2);
-		//ent1->Draw(gRenderWindow);
-		ent2->Draw(gRenderWindow);
-		
-		//ent1->mBody->shape->Draw(gRenderWindow);
-		//ent1->mBody->position.x = gMouseX;
-		//ent1->mBody->position.y = gMouseY;
 
-		//ent3->Draw(gRenderWindow);
-		ent4->Draw(gRenderWindow);
-		ent5->Draw(gRenderWindow);
-		//ent6->Draw(gRenderWindow);
-		//sprite->setPosition(ent1->getPosition().x,ent1->getPosition().y);
-		sprite2->setPosition(ent2->getPosition().x,ent2->getPosition().y);
+		
 		gRenderWindow.display();						//Displays whatever is drawn to the window
 		while(gRenderWindow.pollEvent(gEvent))
 		{
@@ -355,12 +215,6 @@ void HandleEvent(sf::Event Event)
 	// end
 	else if(Event.type == sf::Event::EventType::MouseButtonPressed)
 	{
-		//Make entity jump!
-		//ent1->mBody->velocity.y= -80;
-
-		//make player move
-		ent1->mBody->velocity.x += 10;
-
 	}
 }
 void UpdatePhysics(float deltaTime)
