@@ -2,20 +2,28 @@
 #define __PHYSICS_H
 #include <vector>
 #include "entity.h"
+#include "shape.h"
+
 
 const float Gravity_constant = 6.3;
 const float Damping_constant = .99;	//Acts like wind resistance
 
+struct Polygon;
 /**
 *This struct stores information about 2 entities that collided and is used to 
 *physics updates
 */
 struct Manifold
 {
-	Entity* A;
-	Entity* B;
+	RigidBody* A;
+	RigidBody* B;
 	float penetration;		//How much A is penetrating B.... *wink* *wink*
 	Vec2D normal;			//Vector along the normal
+	Vec2D contacts[2];
+	int contact_count;
+
+	void Solve();
+
 };
 
 struct Cell{
@@ -51,9 +59,15 @@ private:
 };
 
 
-
-
+bool BiasGreaterThan( float a, float b );
 Manifold* AABB(Entity *ent1, Entity *ent2);
+Manifold* PolygonVsPolygon(RigidBody *a,RigidBody* b);
+
+int Clip( Vec2D n, float c, Vec2D *face );
+void FindIncidentFace( Vec2D *v, Polygon *RefPoly, Polygon *IncPoly, int referenceIndex );
+float FindAxisLeastPenetration(int *faceIndex,Polygon *a, Polygon *b);
+
+
 float	CalculateSeperatingVelocity(Manifold *m);
 int		CollisionResponseAABBvsAABB(Entity* ent1,Entity *ent2,Manifold* m);
 void	ResolveFriction(Manifold* m);

@@ -1,6 +1,9 @@
 #ifndef __VECTORS_H_
 #define __VECTORS_H_
 
+#include <cmath> 
+#include <cassert> 
+#include <algorithm>
 
 struct Vec2D;
 struct Vec3D;
@@ -56,6 +59,7 @@ struct Vec2D
 
 	void AddScaledVector(Vec2D& vec,float t);
 	float CrossProduct(Vec2D &b);
+	float CrossProduct(float i);
 };
 
 struct Vec3D
@@ -120,39 +124,20 @@ struct Vec4D
 	float z;
 	float r;
 };
-/*
-typedef struct
+inline Vec2D Cross( const Vec2D& v, float a )
 {
+  return CreateVec2D( a * v.y, -a * v.x );
+}
 
-
-}circle;
-
-typedef struct
+inline Vec2D Cross( float a, const Vec2D& v )
 {
+  return CreateVec2D( -a * v.y, a * v.x );
+}
 
-
-}triangle;
-typedef struct
+inline float Cross( const Vec2D& a, const Vec2D& b )
 {
-
-
-)rect;
-enum Shapes
-{
-	Shape_Rect,
-	Shape_Circle,
-	Shape_Triangle
-};
-
-typedef struct
-{
-	int selection;
-	union {
-		circle c;
-		rect r;
-		triangle t;
-}shape;
-*/
+  return a.x * b.y - a.y * b.x;
+}
 
 /**
 *@brief Methods to create Vecs
@@ -305,6 +290,14 @@ int DistanceBetweenGreaterThan2D(Vec2D p1,Vec2D p2,float size);
  * @return a random float between -1.0 and 1.0
  */
 #define crandom() (((float)((rand()%1000)/(float)1000.0) * 2.0) - 1.0)
+
+inline float Random( float l, float h )
+{
+  float a = (float)rand( );
+  a /= RAND_MAX;
+  a = (h - l) * a + l;
+  return a;
+}
 
 
 float Vec2DLengthSquared(Vec2D vec);

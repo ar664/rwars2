@@ -77,7 +77,6 @@ Entity* CreateEntity()
 		if(gEntities[i].mInUse)
 			continue;
 		gEntities[i].mInUse = 1;
-		gEntities[i].mBody = new RigidBody();
 		numEntities +=1;
 		return &gEntities[i];
 
@@ -193,6 +192,8 @@ void Entity::SetVelocity(Vec2D vec)
 void Entity::Draw(sf::RenderTarget& target)
 {
 	int delta = 0;
+	sf::Transformable t;
+	t.setPosition(mBody->position.x,mBody->position.y);
 	if(!mSpriteArray)
 	{
 		return;
@@ -206,7 +207,7 @@ void Entity::Draw(sf::RenderTarget& target)
 		ANIMATION_FRAME_LENGTH,
 		ANIMATION_FRAME_LENGTH);
 	mCurrentSprite->mSfSprite->setTextureRect(rect);
-	target.draw(*mCurrentSprite->mSfSprite,this->getTransform());
+	target.draw(*mCurrentSprite->mSfSprite,t.getTransform());
 
 	//Update Frames for animating
 	if(!paused && mLastDrawTime)
@@ -245,20 +246,17 @@ void Entity::PhysicsUpdate(float deltaTime)
 		//PrePhysics
 	if(mBody->mass != 0.0f)
 	{
-		//mBody->acceleration.y = mBody->mass != 0 ?Gravity_constant*deltaTime*deltaTime*.5:
-			//mBody->acceleration.y*deltaTime*deltaTime*.5;
-		//mBody->acceleration.x *= deltaTime;
-
 		//Force of Gravity
-		//mBody->force.y += Gravity_constant*mBody->mass;
-		//Figure Out acceleration due to force
 		mBody->acceleration.AddScaledVector(mBody->force,1/mBody->mass);
 		mBody->acceleration = mBody->acceleration*deltaTime*deltaTime*.5;
 
 		//Rotation
-		//mBody->angularVelocity += mBody->torque * (mBody->invMomentOfIntertia) * deltaTime;
-		//mBody->orientation += mBody->angularVelocity * deltaTime;
-
+		
+		mBody->angularVelocity += mBody->torque * (mBody->invMomentOfIntertia) * deltaTime;
+		mBody->orientation += mBody->angularVelocity * deltaTime;
+		mBody->SetOrientation(mBody->orientation);
+		
+		mBody->angularVelocity = mBody->angularVelocity*pow(Damping_constant,deltaTime) + mBody->torque;
 		/**
 		*Calculating one floating point to the power of another is slow when it comes to multiple ents,
 		*So if you need more speed, simply remove the power and times velocity by damping or calculate
@@ -267,10 +265,10 @@ void Entity::PhysicsUpdate(float deltaTime)
 		*/
 		SetVelocity(mBody->velocity*pow(Damping_constant,deltaTime)  + mBody->acceleration);
 		
-
-		move(mBody->velocity.x*deltaTime,mBody->velocity.y*deltaTime);	
-		mBody->position.x = getPosition().x;
-		mBody->position.y = getPosition().y;
+		//move(mBody->velocity.x*deltaTime,mBody->velocity.y*deltaTime);	
+		//Move RigidBody
+		mBody->position.x += mBody->velocity.x*deltaTime;
+		mBody->position.y += mBody->velocity.y*deltaTime;
 		//Clear the forces
 		mBody->force.x = mBody->force.y = 0;
 
@@ -333,12 +331,23 @@ Vec2D RigidBody::GetAcceleration()
 {
 	return acceleration;
 }
-/*
 RigidBody::RigidBody(rShape* s)
 {
 	shape = s;
 	s->rbody = this;
-}*/
+	SetVelocity(CreateVec2D(0,0));
+	angularVelocity = 0;
+	torque = 0;
+	force = CreateVec2D( 0, 0 );
+	restitution =.7;
+	staticFriction = 0.001;
+	dynamicFriction = 0.001;
+	//shape->Initialize( );
+	r = Random( 0.0f, 255.0f );
+	g = Random( 0.0f, 255.0f );
+	b = Random( 0.0f, 255.0f );
+
+}
 void RigidBody::SetAcceleration(Vec2D vec)
 {
 	acceleration = vec;
@@ -356,4 +365,20 @@ void RigidBody::SetPosition(Vec2D vec)
 Vec2D RigidBody::GetPosition()
 {
 	return position;
+}
+
+void RigidBody::SetAngVelocity(float i)
+{
+	angularVelocity = i;
+}
+
+float RigidBody::GetAngVelocity()
+{
+	return angularVelocity;
+}
+void RigidBody::SetColor(float red,float green , float blue)
+{
+	r = red;
+	g = green;
+	b = blue;
 }

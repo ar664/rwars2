@@ -48,5 +48,5 @@ void Gravity::updateForce(RigidBody* body, float delta)
 	if (body->mass == 0) return;
 
     // Apply the mass-scaled force to the body
-	body->AddForce(gravity*body->mass);
+	body->AddForce(gravity);
 }

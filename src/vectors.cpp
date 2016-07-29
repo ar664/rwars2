@@ -1,5 +1,4 @@
 #include <SFML/Graphics.hpp>
-#include <math.h>
 #include "vectors.h"
 
 
@@ -71,6 +70,7 @@ void Vec2DSetMagnitude(Vec2D * V,float magnitude)
 */
 void Vec2DNormalize (Vec2D *V)
 {
+
   float M;
   if (!V)return;
   M = Vec2DMagnitude (*V);
@@ -81,6 +81,7 @@ void Vec2DNormalize (Vec2D *V)
   float invM = 1.0f/M;
   V->x *= invM;
   V->y *= invM;
+  
 }
 
 float Vec2DLengthSquared(Vec2D vec)

@@ -55,8 +55,8 @@ class Grid;
 struct RigidBody
 {
 	//Constructor
-	//RigidBody(rShape* s);
-	RigidBody(){};
+	RigidBody(rShape* s);
+
 	// We are assuming for now that all Rigidbody shapes are rectangles
 	rShape* shape;
 	
@@ -88,10 +88,13 @@ struct RigidBody
 	void	SetPosition(Vec2D vec);
 	void	SetOrientation	(float	radians);
 	void	SetStatic();
-
+	void	SetAngVelocity(float i);
+	void	SetColor(float red,float green , float blue);
+	
 	Vec2D	GetPosition();
 	Vec2D	GetVelocity();
 	Vec2D	GetAcceleration();
+	float	GetAngVelocity();
 	
 	
 };

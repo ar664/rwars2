@@ -60,7 +60,7 @@ struct Polygon : public rShape
 	    int i2 = i1 + 1 < mVertexCount ? i1 + 1 : 0;
 	    Vec2D p2 = CreateVec2D( mVertices[i2].x,mVertices[i2].y );
 
-		float D = p1.CrossProduct(p2);
+		float D = Cross(p1,p2);
 	    float triangleArea = 0.5f * D;
 
 	    area += triangleArea;
@@ -82,9 +82,11 @@ struct Polygon : public rShape
 	    mVertices[i] -= c;
 
 	  rbody->mass = density * area;
+	  rbody->mass /= 1000;
 	  rbody->MomentOfInertia = I * density;
 	  rbody->invMomentOfIntertia= rbody->MomentOfInertia ? 1.0f / 
 		  rbody->MomentOfInertia : 0.0f;
+	  rbody->invMomentOfIntertia=rbody->invMomentOfIntertia*40;
 	}
 	rShape *Clone( void ) const
 	{
@@ -236,7 +238,25 @@ struct Polygon : public rShape
     mNormals[2]= CreateVec2D(  0.0f,   1.0f );
     mNormals[3]= CreateVec2D( -1.0f,   0.0f );
   }
+	Vec2D GetSupport( const Vec2D& dir )
+  {
+    float bestProjection = -FLT_MAX;
+    Vec2D bestVertex;
 
+    for(int i = 0; i < mVertexCount; ++i)
+    {
+      Vec2D v = mVertices[i];
+      float projection = v * dir ;
+
+      if(projection > bestProjection)
+      {
+        bestVertex = v;
+        bestProjection = projection;
+      }
+    }
+
+    return bestVertex;
+  }
 };
 
 
