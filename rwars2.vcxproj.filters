@@ -24,7 +24,6 @@
     <ClCompile Include="src\graphics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-
     <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -43,36 +42,57 @@
     <ClCompile Include="src\audio.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="particle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="fgen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="shape.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="matrix.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\entity.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\globals.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\graphics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-
     <ClInclude Include="include\main.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\physics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-
     <ClInclude Include="include\sprite.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\vectors.h">
-
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\audio.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="particle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\entity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fgen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="shape.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="matrix.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

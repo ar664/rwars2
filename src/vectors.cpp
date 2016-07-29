@@ -3,7 +3,6 @@
 #include "vectors.h"
 
 
-
 /**
 *@brief Creates a 2D Vector
 */
@@ -16,13 +15,35 @@ Vec2D CreateVec2D(float x, float y)
 /**
 *@brief Creates a 3D Vector
 */
-
+Vec3D CreateVec3D(float x, float y,float z)
+{
+  Vec3D vec;
+  Vec3DSet(vec,x, y,z);
+  return vec;
+}
+/**
+*@brief Creates a 4D Vector
+*/
+Vec4D CreateVec4D(float x, float y,float z,float r)
+{
+  Vec4D vec;
+  Vec4DSet(vec,x, y,z,r);
+  return vec;
+}
 /**
 *@brief Returns the magnitude of specified 2D Vector
 */
 float Vec2DMagnitude (Vec2D V)
 {
-  return sqrt (V.x * V.x + V.y * V.y);
+  return std::sqrt(V.x*V.x + V.y *V.y);
+}
+/**
+*@brief Returns the magnitude of specified 4D Vector
+*/
+float Vec4DMagnitude (Vec4D V)
+{
+  return std::sqrt(std::pow(V.x,2) + std::pow(V.y ,2)
+	  + std::pow(V.z ,2)+ std::pow(V.r ,2));
 }
 
 /**
@@ -57,9 +78,14 @@ void Vec2DNormalize (Vec2D *V)
   {
     return;
   }
-  M = 1/M;
-  V->x *= M;
-  V->y *= M;
+  float invM = 1.0f/M;
+  V->x *= invM;
+  V->y *= invM;
+}
+
+float Vec2DLengthSquared(Vec2D vec)
+{
+	return vec.x*vec.x+vec.y*vec.y;
 }
 /**
 *@brief Allocates memory for a new 2D Vector and returns it;
@@ -110,4 +136,15 @@ void Vec2DReflect(Vec2D *out, Vec2D normal,Vec2D in)
   f = Vec2DDotProduct(in,normal);
   out->x = in.x - (2 * normal.x * f);
   out->y = in.y - (2 * normal.y * f);
+}
+
+void Vec2D::AddScaledVector(Vec2D &vec,float t)
+{
+	x+= vec.x * t;
+	y+= vec.y * t;
+}
+
+float Vec2D::CrossProduct(Vec2D &b)
+{
+	return x*b.y - y * b.x;
 }

@@ -3,7 +3,7 @@
 #include "graphics.h"
 sf::RenderWindow gRenderWindow;
 sf::Clock gClock;
-const int gFrameRate = 45;
+const int gFrameRate = 30;
 
 
 void Init_Graphics(int WindowWidth,int WindowHeight,char* WindowName)

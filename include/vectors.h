@@ -1,29 +1,125 @@
 #ifndef __VECTORS_H_
 #define __VECTORS_H_
 
-typedef struct
+
+struct Vec2D;
+struct Vec3D;
+struct Vec4D;
+Vec2D CreateVec2D(float x , float y);
+Vec3D CreateVec3D(float x, float y,float z);
+Vec4D CreateVec4D(float x, float y,float z,float r);
+
+struct Vec2D
 {
 	union {float x;	float w;};
 	union {float y;	float h;};
-}Vec2D;
 
+	//Scale a vector
+	void operator*=(const float value)
+	{
+		x *=value;
+		y *=value;
+	}
+	//(Scalar product)
+	Vec2D operator*(const float value)const
+	{
+		return CreateVec2D(x*value,y*value);
+	}
+	//Dot Product
+	float operator*(const Vec2D& v)const
+	{
+		return x*v.x +y*v.y;
+	}
+	
+	//Add Vectors
+	void operator+=(const Vec2D &v)
+	{
+		x += v.x;
+		y += v.y;
+	}
 
-typedef struct
+	Vec2D operator+(const Vec2D &v)const
+	{
+		return CreateVec2D(x+v.x,y +v.y);
+	}
+	//Subtract Vectors
+	void operator-=(const Vec2D &v)
+	{
+		x -= v.x;
+		y -= v.y;
+	}
+
+	Vec2D operator-(const Vec2D &v)const
+	{
+		return CreateVec2D(x-v.x,y - v.y);
+	}
+
+	void AddScaledVector(Vec2D& vec,float t);
+	float CrossProduct(Vec2D &b);
+};
+
+struct Vec3D
 {
+
 	float x; 
 	float y;
 	float z;
-}Vec3D;
 
+		//Scale a vector
+	void operator*=(const float value)
+	{
+		x *=value;
+		y *=value;
+		z *=value;
+	}
+	//(Scalar product)
+	Vec3D operator*(const float value)const
+	{
+		return CreateVec3D(x*value,y*value,z*value);
+	}
+	//Dot Product
+	float operator*(const Vec3D& v)const
+	{
+		return x*v.x +y*v.y + z*v.z;
+	}
+	
+	//Add Vectors
+	void operator+=(const Vec3D &v)
+	{
+		x += v.x;
+		y += v.y;
+		z += v.z;
+	}
 
-typedef struct
+	Vec3D operator+(const Vec3D &v)const
+	{
+		return CreateVec3D(x+v.x,y +v.y,z+v.z);
+	}
+	//Subtract Vectors
+	void operator-=(const Vec3D &v)
+	{
+		x -= v.x;
+		y -= v.y;
+		z -= v.z;
+	}
+
+	Vec3D operator-(const Vec3D &v)const
+	{
+		return CreateVec3D(x-v.x,y - v.y,z - v.z);
+	}
+
+	void AddScaledVector(Vec3D vec,float t);
+
+};
+
+struct Vec4D
 {
 
 	float x; 
 	float y;
 	float z;
-	float w;
-}Vec4D;
+	float r;
+};
 /*
 typedef struct
 {
@@ -62,7 +158,6 @@ typedef struct
 *@brief Methods to create Vecs
 */
 
-Vec2D CreateVec2D(float x , float y);
 #define MAX(a,b) (a>b?a:b)
 #define MIN(a,b) (a<b?a:b)
 
@@ -76,6 +171,7 @@ Vec2D CreateVec2D(float x , float y);
  * @return the calculated dot product
  */
 #define Vec2DDotProduct(a,b)      (a.x*b.x+a.y*b.y)
+
 
 /**
  * @brief checks if vectors are exactly matches of each other
@@ -119,7 +215,11 @@ Vec2D CreateVec2D(float x , float y);
  */
 #define Vec2DScale(dst,src,factor) (dst.x = src.x *factor,\
                                          dst.y = src.y *factor)
-/**
+
+#define Vec2DComponentProduct(dst,src,src2) (dst.x = src.x * src2.x,\
+												dst.y = src.y * src2.y)
+
+ /**
  * @brief Macro that sets vector to zero.
  * @param a Vect[2D|3D|4D] input
  */
@@ -136,6 +236,8 @@ Vec2D CreateVec2D(float x , float y);
  * @param d Float w component (only in 4D version)
  */
 #define Vec2DSet(v, a, b)  (v.x=(a), v.y=(b))
+#define Vec3DSet(v, a, b,c)  (v.x=(a), v.y=(b),v.z = (c))
+#define Vec4DSet(v, a, b, c, r)  (v.x=(a), v.y=(b),v.z = (c),v.r = (r))
 
 /**
  * @brief Macro to get the negative of a vector
@@ -160,6 +262,7 @@ void Vec2DReflect(Vec2D *out, Vec2D normal,Vec2D in);
  * @param v pointer to the vector to be normalized.
  */
 float Vec2DMagnitude(Vec2D V);
+float Vec4DMagnitude(Vec4D V);
 
 void Vec2DNormalize (Vec2D *V);
 /**
@@ -202,6 +305,9 @@ int DistanceBetweenGreaterThan2D(Vec2D p1,Vec2D p2,float size);
  * @return a random float between -1.0 and 1.0
  */
 #define crandom() (((float)((rand()%1000)/(float)1000.0) * 2.0) - 1.0)
+
+
+float Vec2DLengthSquared(Vec2D vec);
 
 
 //GetLength

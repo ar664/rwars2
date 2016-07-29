@@ -5,6 +5,100 @@
 #include "vectors.h"
 #include "physics.h"
 
+ForceRegistry forceRegistry;
+Grid* gGrid;
+/**
+* 
+*
+*/
+float CalculateSeperatingVelocity(Manifold *m)
+{
+	Vec2D rVelocity = m->A->GetVelocity();
+	if(m->B->mBody->mass != 0)
+	{
+		rVelocity -= m->B->GetVelocity();
+	}
+	return rVelocity * CreateVec2D(-m->normal.x,-m->normal.y);
+}
+/**
+* 
+*
+*/
+void Entity::ResolveContact(Manifold *m)
+{
+	ResolveVelocity(m);
+	ResolveFriction(m);
+	ResolveInterpenetration(m);
+}
+/**
+* 
+*
+*/
+void Entity::ResolveVelocity(Manifold *m)
+{
+	float inverseMass = 1/mBody->mass;
+	float sVelocity = CalculateSeperatingVelocity(m);
+	if(sVelocity > 0)
+	{
+		return;
+	}
+	float newSVelocity = -sVelocity* mBody->restitution;
+
+
+	//To keep objects in resting contact, this block corrects the increase of velocity that would arise
+	//from them settling into one another over the course of one frame
+	Vec2D accCausedVelocity = m->A->mBody->GetAcceleration();
+	if(m->B->mBody->mass != 0)
+		accCausedVelocity += m->B->mBody->GetAcceleration();
+	float accCausedSepVelocity = accCausedVelocity * CreateVec2D(-m->normal.x,-m->normal.y) * deltaTime;
+	if(accCausedSepVelocity < 0)
+		newSVelocity += mBody->restitution * accCausedSepVelocity;
+	if(newSVelocity <0)
+		newSVelocity = 0;
+
+
+	float deltaVelocity = newSVelocity -sVelocity;
+	float totalInverseMass = inverseMass;
+	if(m->B->mBody->mass != 0)
+		totalInverseMass += 1/m->B->mBody->mass;
+	if(totalInverseMass <=0)
+		return;
+	float impulse = deltaVelocity / totalInverseMass;
+
+	Vec2D impulseVec = CreateVec2D(-m->normal.x,-m->normal.y) * impulse;
+	mBody->SetVelocity(mBody->GetVelocity() + impulseVec*(inverseMass));
+	if(m->B->mBody->mass != 0)
+		m->B->mBody->SetVelocity(m->B->mBody->GetVelocity() + impulseVec * -(1/m->B->mBody->mass));
+}
+/**
+* 
+*
+*/
+void Entity::ResolveInterpenetration(Manifold *m)
+{
+	float inverseMass = 1/mBody->mass;
+	Vec2D movementB;
+	if(m->penetration == 0)
+		return;
+	float totalInverseMass = inverseMass;
+	if(m->B->mBody->mass != 0)
+		totalInverseMass += 1/m->B->mBody->mass;
+	if(totalInverseMass == 0)
+		return;
+	Vec2D sep = CreateVec2D(-m->normal.x,-m->normal.y) *(m->penetration/totalInverseMass);
+	Vec2D movementA = sep * inverseMass;
+	if(m->B->mBody->mass != 0)
+		movementB = sep *(-1/m->B->mBody->mass);
+	m->A->setPosition(m->A->getPosition().x + movementA.x,m->A->getPosition().y + movementA.y);
+	if(m->B->mBody->mass != 0)
+		m->B->setPosition(m->B->getPosition().x + movementB.x,m->B->getPosition().y + movementB.y);
+	
+}
+
+/**
+* 
+*
+*/
 
 Manifold* AABB(Entity *ent1, Entity *ent2)
 {
@@ -21,63 +115,78 @@ Manifold* AABB(Entity *ent1, Entity *ent2)
 		Vec2D center2 = CreateVec2D(ent2->getPosition().x + (ent2->GetDimension().x/2),
 			ent2->getPosition().y + (ent2->GetDimension().y/2));
 		Manifold* m = new Manifold;
+		
+		
 		m->normal.x = 0;
 		m->normal.y = 0;
 		m->A = ent1;
 		m->B = ent2;
-		int w,h,dx,dy,wy,hx;
-		w = .5*(ent1->GetDimension().x + ent2->GetDimension().x);
-		h = .5*(ent1->GetDimension().y + ent2->GetDimension().y);
-		dx = center1.x - center2.x;
-		dy = center1.y - center2.y;
-		wy = w *dy;
-		hx = h*dx;
-			if(wy > hx)
-				if(wy > -hx){
-					//Top Collision
-					m->penetration.y = (ent2->getPosition().y + ent2->GetDimension().y) - ent1->getPosition().y;
-					m->normal.y = 1; 
-				}
-				else{
-					//Right Collision
-					m->penetration.x = (ent1->getPosition().x + ent1->GetDimension().x) - ent2->getPosition().x;
-					m->normal.x = 1;
-				}
-			else
-				if(wy > -hx)
-				{
-					//Left Collision
-					m->penetration.x = (ent2->getPosition().x + ent2->GetDimension().x) - ent1->getPosition().x;
-					m->normal.x = -1;
-				}
-				else{
-					//Bottom Collisions
-					m->penetration.y = (ent1->getPosition().y + ent1->GetDimension().y) - ent2->getPosition().y;
-					m->normal.y = -1;
-				}
-		std::cout << "Collision Detected" << std::endl;
-		return m;
+		float a_extent = (ent1->getPosition().x + ent1->GetDimension().x - ent1->getPosition().x) / 2 ;
+		float b_extent = (ent2->getPosition().x + ent2->GetDimension().x - ent2->getPosition().x) / 2;
+  
+		// Calculate overlap on x axis
+		float x_overlap = a_extent + b_extent - abs( ent2->getPosition().x - ent1->getPosition().x );
+  
+	// SAT test on x axis
+	  if(x_overlap > 0)
+	  {
+	    // Calculate half extents along x axis for each object
+		a_extent = (ent1->getPosition().y + ent1->GetDimension().y - ent1->getPosition().y) / 2 ;
+		b_extent = (ent2->getPosition().y + ent2->GetDimension().y - ent2->getPosition().y) / 2;
+	  
+	    // Calculate overlap on y axis
+	    float y_overlap = a_extent + b_extent - abs( ent2->getPosition().y - ent1->getPosition().y );
+	  
+	    // SAT test on y axis
+	    if(y_overlap > 0)
+	    {
+	      // Find out which axis is axis of least penetration
+	      if(x_overlap < y_overlap)
+	      {
+	        // Point towards B knowing that n points from A to B
+	        if(ent2->getPosition().x - ent1->getPosition().x < 0)
+	          m->normal = CreateVec2D( -1, 0 );
+	        else
+	          m->normal = CreateVec2D( 0, 0 );
+	        m->penetration = x_overlap;
+			return m;
+	      }
+	      else
+	      {
+	        // Point toward B knowing that n points from A to B
+	        if(ent2->getPosition().y - ent1->getPosition().y< 0)
+	          m->normal = CreateVec2D( 0, -1 );
+	        else
+	          m->normal = CreateVec2D( 0, 1 );
+	        m->penetration = y_overlap;
+			return m;
+	      }
+	    }
+	  }
 	}
 	return nullptr;
 }
-
-void FrictionResponse(Entity* ent1, Entity* ent2,Manifold* m)
+/**
+* 
+*
+*/
+void ResolveFriction(Manifold* m)
 {
 	Vec2D rv,tangent,frictionImpulse;
 	float jt,mu,dynamicFriction,invMass1,invMass2,velAlongNormal;
 
-	if(ent1->mBody.mass == 0)					//Check for infinite Mass
+	if(m->A->mBody->mass == 0)					//Check for infinite Mass
 		invMass1 = 0;
 	else
-		invMass1 = (1/ent1->mBody.mass);
-	if(ent2->mBody.mass == 0)
+		invMass1 = (1/m->A->mBody->mass);
+	if(m->B->mBody->mass == 0)
 		invMass2 = 0;
 	else
-		invMass2 = (1/ent2->mBody.mass);
+		invMass2 = (1/m->B->mBody->mass);
 
 
 	//Find resolution Vector
-	Vec2DSub(rv,ent2->GetVelocity(),ent1->GetVelocity());
+	Vec2DSub(rv,m->B->GetVelocity(),m->A->GetVelocity());
 	//Solve for tangent Vector
 	velAlongNormal = Vec2DDotProduct(rv,m->normal);
 	tangent = CreateVec2D(rv.x - velAlongNormal * m->normal.x,rv.y - velAlongNormal * m->normal.y);
@@ -88,105 +197,103 @@ void FrictionResponse(Entity* ent1, Entity* ent2,Manifold* m)
 	jt = -Vec2DDotProduct( rv, tangent);
 	jt = jt / (invMass1 + invMass2);
 	//Use pythag to solve for mu (Doing Coulumbs law)
-	mu = sqrt(pow(ent1->mBody.staticFriction,(float)2) + pow(ent2->mBody.staticFriction,(float)2));
+	mu = sqrt(pow(m->A->mBody->staticFriction,(float)2) + pow(m->B->mBody->staticFriction,(float)2));
 
-	float e = std::min(ent1->mBody.restitution,ent2->mBody.restitution);			//Restitution
-	float j = -(1+e) * velAlongNormal;
-
+	float e = std::min(m->A->mBody->restitution,m->B->mBody->restitution);			//Restitution
+	float j = -(1+e) * jt;
 	j = (j/(invMass1+invMass2));
 
 	if(abs(jt) < j * mu)
 		//Assuming the object is at rest, this code will execute
+	{
 		frictionImpulse = CreateVec2D(tangent.x * jt,tangent.y * jt);
+	}
 	else
 	{
-		dynamicFriction =sqrt(pow(ent1->mBody.dynamicFriction,(float)2) + pow(ent2->mBody.dynamicFriction,(float)2));
+		dynamicFriction =sqrt(pow(m->A->mBody->dynamicFriction,(float)2) + pow(m->B->mBody->dynamicFriction,(float)2));
 		frictionImpulse = CreateVec2D(-j*tangent.x*dynamicFriction,-j*tangent.y*dynamicFriction);
 	}
-	frictionImpulse.x = frictionImpulse.x /10;
-	frictionImpulse.y = frictionImpulse.y /10;
+	frictionImpulse.x = frictionImpulse.x;
+	frictionImpulse.y = frictionImpulse.y;
 
-	ent1->SetVelocity(
-		CreateVec2D(ent1->GetVelocity().x - invMass1 *frictionImpulse.x,ent1->GetVelocity().y - invMass1 *frictionImpulse.y));
-	ent2->SetVelocity(
-		CreateVec2D(ent2->GetVelocity().x + invMass2 *frictionImpulse.x,ent2->GetVelocity().y + invMass2 *frictionImpulse.y));
+	m->A->SetVelocity(
+		CreateVec2D(m->A->GetVelocity().x - invMass1 *frictionImpulse.x,m->A->GetVelocity().y - invMass1 *frictionImpulse.y));
+	m->B->SetVelocity(
+		CreateVec2D(m->B->GetVelocity().x + invMass2 *frictionImpulse.x,m->B->GetVelocity().y + invMass2 *frictionImpulse.y));
 
 }
-int CollisionResponse(Entity* ent1,Entity *ent2,Manifold *m)
+/**
+* 
+*
+*/
+int CollisionResponseAABBvsAABB(Entity* ent1,Entity *ent2,Manifold *m)
 {
-	Vec2D rv;
+	/*
+		Vec2D rv;
+		Vec2DSub(rv,ent2->GetVelocity(),ent1->GetVelocity());
+		float penetration = 0;
+		float velAlongNormal = Vec2DDotProduct(rv,m->normal);
+		float invMass1;
+		float invMass2;
+		if(ent1->mBody->mass == 0)					//Check for infinite Mass
+			invMass1 = 0;
+		else
+			invMass1 = (1/ent1->mBody->mass);
+		if(ent2->mBody->mass == 0)
+			invMass2 = 0;
+		else
+			invMass2 = (1/ent2->mBody->mass);
+		if(velAlongNormal > 0)
+		{
+			return 0;
+		}
+		float e = ent1->mBody->restitution;			//Restitution
+		float j = (1+e) * -velAlongNormal;
 
-	Vec2DSub(rv,ent1->GetVelocity(),ent2->GetVelocity());
 
-	float velAlongNormal = Vec2DDotProduct(rv,m->normal);
-	float invMass1;
-	float invMass2;
-	//Check for infinite mass...Objects with Infinite Mass wont move, Good for platforms
-	if(ent1->mBody.mass == 0)					
-		invMass1 = 0;
-	else
-		invMass1 = (1/ent1->mBody.mass);
-	if(ent2->mBody.mass == 0)
-		invMass2 = 0;
-	else
-		invMass2 = (1/ent2->mBody.mass);
-	
-	//This is to make sure we dont resolve collisions if they will be resolved on the next frame anyways
-	if(velAlongNormal > 0)
-	{
-		return 0;
-	}
+		j = (j/(invMass1+invMass2));
 
-	float e = std::min(ent1->mBody.restitution,ent2->mBody.restitution);			//Restitution
-	float j = -(1+e) * velAlongNormal;
+		Vec2D impulse = CreateVec2D(m->normal.x * j,m->normal.y * j);
+		Vec2D result1,result2;
+		
+		result1.x = (invMass1  * impulse.x);
+		result1.y = (invMass1  * impulse.y);
+		
+		e = ent2->mBody->restitution;			//Restitution
+		j = (1+e) * -velAlongNormal;
+		j = (j/(invMass1+invMass2));
+		impulse = CreateVec2D(m->normal.x * j,m->normal.y * j);
 
-	j = (j/(invMass1+invMass2));
+		result2.x = (invMass2  * impulse.x);
+		result2.y = (invMass2  * impulse.y);
+ 		
 
-	Vec2D impulse = CreateVec2D(m->normal.x * j,m->normal.y * j);
-	Vec2D result1,result2;
-	impulse.y = impulse.y/10;
-	impulse.x = impulse.x/10;
-	if(impulse.x == 0)
-	{
-		result1.x = 0;
-		result2.x = 0;
-	}
-	else
-	{
-		result1.x = invMass1  * impulse.x;
-		result2.x = invMass2  * impulse.x;
-	}
-	if(impulse.y == 0)
-	{
-		result1.y = 0;
-		result2.y = 0;
-	}
-	else
-	{
-		result1.y = invMass1 * impulse.y;
-		result2.y = invMass2 * impulse.y;
-	}
-	float mass_sum = ent1->mBody.mass + ent2->mBody.mass;
-	float ratio = ent1->mBody.mass / mass_sum;
- 	ent1->SetVelocity(CreateVec2D(ent1->GetVelocity().x + result1.x*ratio,
-		ent1->GetVelocity().y + result1.y*ratio));
-	
-	ratio = ent2->mBody.mass / mass_sum;
+		ent1->SetVelocity(CreateVec2D(ent1->GetVelocity().x - result1.x,
+			ent1->GetVelocity().y - result1.y));
+		if(invMass2 != 0)
+			ent2->SetVelocity(CreateVec2D(ent2->GetVelocity().x + result2.x,
+				ent2->GetVelocity().y + result2.y));
+		//Solve for friction
+		FrictionResponseAABBvsAABB(ent1,ent2,m);
 
-	ent2->SetVelocity(CreateVec2D(ent2->GetVelocity().x - result2.x*ratio,
-		ent2->GetVelocity().y - result2.y*ratio));
-	
-	//Solve for friction
-		FrictionResponse(ent1,ent2,m);
-	//Solve for floating point errors and such(Linear Projection) due to gravity
-	const float slop = .1;
-	const float percent= .6f;
-	Vec2D correction = CreateVec2D(std::max(m->penetration.x-slop , 0.0f)/(invMass1 + invMass2)*percent*m->normal.x,
-		std::max(m->penetration.y-slop,0.0f)/(invMass1 + invMass2)*percent*m->normal.y) ;
-	ent1->setPosition(ent1->getPosition().x - (correction.x*invMass1),ent1->getPosition().y + (correction.y*invMass1));
-	ent2->setPosition(ent2->getPosition().x + (correction.x*invMass2),ent2->getPosition().y + (correction.y*invMass2));
-	
+		//Solve for interpenetration
+		if(m->penetration.x != 0)
+			penetration = m->penetration.x;
+		if(m->penetration.y != 0)
+			penetration = m->penetration.y;
+		if(penetration > 0)
+		{
+			const float k_slop = 0.01f;
+			const float percent= .8f;
+			Vec2D correction = CreateVec2D((std::max(m->penetration.x - k_slop,0.0f)/(invMass1 + invMass2))*percent*m->normal.x,
+				(std::max(m->penetration.y - k_slop,0.0f)/(invMass1 + invMass2))*percent*m->normal.y) ;
+			ent1->setPosition(ent1->getPosition().x - (correction.x*invMass1),ent1->getPosition().y - (correction.y*invMass1));
+			if(invMass2 != 0)
+				ent2->setPosition(ent2->getPosition().x + (correction.x*invMass2),ent2->getPosition().y + (correction.y*invMass2));
+		}
+	*/
 	return 1;
+	
 	}
 /**
  * @brief Constructer for Grid
@@ -203,7 +310,10 @@ Grid::Grid(int width, int height, int cellSize):
 		//Allocate cells
 		m_cells.resize(m_numYCells * m_numXCells);
 }
-
+/**
+* 
+*
+*/
 Grid::~Grid(void)
 {
 }
@@ -329,4 +439,74 @@ int Grid::getM_Height()
 void RigidBody::AddForce(Vec2D amount)
 {
 	Vec2DAdd(force,force,amount);
+}
+
+/**
+* 
+*
+*/
+void UpdateCollision()
+{
+	//Loop Through Cells in Grid
+	for(int i = 0; i < gGrid->getM_Cells().size();i++)
+	{
+		//printf("Mcells Size%d \n",gGrid->getM_Cells().size());
+		int x = i % gGrid->getM_NumXCells();
+		int y = i / gGrid->getM_NumXCells();
+
+		Cell cell = gGrid->getM_Cells()[i];
+		//Loop through Entities in Cell
+		for(int j = 0;j < cell.entities.size();j++)
+		{
+			Entity* ent = cell.entities[j];
+			//Do collision checks in the current cell than update
+			CheckCollision(cell.entities[j],cell.entities,j+1);
+			
+			//Update Collision with neighbor cells
+			if(x > 0)
+			{	//Left
+				CheckCollision(ent,gGrid->getCell(x-1,y)->entities,0);
+				if(y > 0)
+				{	
+					//TopLeft
+					CheckCollision(ent,gGrid->getCell(x-1,y-1)->entities,0);
+				}
+				if(y < gGrid->getM_NumYCells() -1)
+				{
+					//Bottom left
+					CheckCollision(ent,gGrid->getCell(x-1,y+1)->entities,0);
+				}
+			}
+			if(y > 0){
+				//Top
+				CheckCollision(ent,gGrid->getCell(x,y-1)->entities,0);
+			}
+		}
+		
+		}
+	
+}
+/**
+* 
+*
+*/
+void CheckCollision(Entity* ent, std::vector<Entity*>& ents, int startIndex)
+{
+	Manifold *m = nullptr;
+
+	if(ent->mBody->mass > 0)
+	{
+		for (int i = 0; i < ents.size();i++)
+		{
+			if(ents[i] != ent){		//Make sure player isnt checking collision with self and ent doesnt have infinite mass
+
+				m = AABB(ent,ents[i]);
+				if(m != nullptr)
+				{
+					ent->ResolveContact(m);
+				}
+			}
+		}
+	}
+	delete(m);
 }

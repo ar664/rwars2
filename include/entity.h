@@ -2,12 +2,15 @@
 #define _ENTITY_H
 
 #include <SFML/Audio.hpp>
+
 #include "vectors.h"
 #include "sprite.h"
-struct RigidBody;
-struct Cell;
-class Grid;
 
+struct rShape;
+struct Cell;
+struct Manifold;
+
+class Grid;
 
 #define MAX_ENTITIES	1000
 #define MAX_ANIMATIONS	15
@@ -51,19 +54,51 @@ class Grid;
 
 struct RigidBody
 {
+	//Constructor
+	//RigidBody(rShape* s);
+	RigidBody(){};
 	// We are assuming for now that all Rigidbody shapes are rectangles
+	rShape* shape;
+	
 	float		mass;
+
+	Vec2D		position;
 	Vec2D		velocity;
-	Vec2D		force;			/*<-- Used to find acceleration, also is applied to the object every physics update until it eventually dies out */
+
+	Vec2D		force;			
 	Vec2D		acceleration;
+
 	// Material Structure 
 	float		staticFriction;
 	float		dynamicFriction;
 	float		restitution;
 	float		density;		/*<-- Use density* volume to determine the currect mass of an object */
+	// Angular Components
+	float		orientation;	//radians
+	float		angularVelocity;
+	float		torque;
+	float		MomentOfInertia;
+	float		invMomentOfIntertia;
 
+	int			r,g,b;
 
-	void AddForce(Vec2D amount);
+	void	AddForce(Vec2D amount);
+	void	SetVelocity(Vec2D vec);
+	void	SetAcceleration(Vec2D vec);
+	void	SetPosition(Vec2D vec);
+	void	SetOrientation	(float	radians);
+	void	SetStatic();
+
+	Vec2D	GetPosition();
+	Vec2D	GetVelocity();
+	Vec2D	GetAcceleration();
+	
+	
+};
+
+enum Shape{
+	RECT,
+	CIRCLE
 };
 
 typedef class Entity: public sf::Transformable 
@@ -75,7 +110,8 @@ private:
 	int					mSpeed;
 	Vec2D				mDimension;
 	Cell*				mCell;
-	
+
+	void				ResolveVelocity(Manifold *m);
 public:
 
 	int					mInUse;
@@ -85,9 +121,9 @@ public:
 	int					mCurrentFrame;
 	int					mNumSprites;
 	Sprite**			mSpriteArray;
-
 	Sprite*				mCurrentSprite;	
-	RigidBody			mBody;
+	RigidBody*			mBody;
+	Shape				mShape;
 	sf::SoundBuffer**	mSounds;
 
 	//Functions
@@ -99,6 +135,7 @@ public:
  * @note Graphics timings don't get updated when paused.
  */
 	void Draw(sf::RenderTarget &target);
+	void PhysicsUpdate(float deltaTime);
 
 /**
  * @breif Empty think function, to be overridden by children who inherit it.
@@ -106,12 +143,13 @@ public:
  */
 	virtual void Think();
 
+
 	//Getters
 	Cell*			GetCell();
 	Grid*			GetGrid();
 	Vec2D			GetDimension();
 	Vec2D			GetVelocity();
-
+	Vec2D			GetPosition();
 	//Setters
 	void			SetCurrentAnimation(int anim);
 	void			SetCell(Cell* cell);
@@ -123,7 +161,13 @@ public:
 	void	LoadSprites(char **SpriteFiles);
 	void	LoadSounds(char **SoundFiles);
 	void	Free();
+	
+	//Methods for physics
+	void	ResolveContact(Manifold *m);
+	void    ResolveInterpenetration(Manifold *m);
 };
+
+
 
 extern Entity *gEntities;
 

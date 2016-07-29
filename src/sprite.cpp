@@ -43,6 +43,8 @@ void Sprite::SetFrameBB()
 	int ended = 0;
 	int startX = 0;
 	int startY = 0;
+	int rowCounter = 0;
+	int columnCounter = 0;
 	int numFrame = 1;
 	sf::IntRect rect(ANIMATION_FRAME_LENGTH,-1,-1,-1);
 	sf::Color spriteMask(255,51,51,255);
@@ -68,7 +70,7 @@ void Sprite::SetFrameBB()
 							{
 								started = 1;
 								rect.left = x;
-								if(rect.top == -1)
+								if(rect.top == 0)
 								{
 									rect.top = y;
 								}
@@ -92,19 +94,28 @@ void Sprite::SetFrameBB()
 						rect.width = x - rect.left;
 					}
 				}
-				mFrameBB[i+j].top = rect.top;
-				mFrameBB[i+j].left = rect.left;
-				mFrameBB[i+j].width = rect.width;
-				mFrameBB[i+j].height = rect.height;
+				mFrameBB[i+rowCounter+j].top = rect.top;
+				mFrameBB[i+rowCounter+j].left = rect.left;
+				mFrameBB[i+rowCounter+j].width = rect.width;
+				if(rect.height != 0)
+					mFrameBB[i+rowCounter+j].height = rect.height - startY;
 				std::cout<<"Frame " << i+j <<" :"<< "x: "<< rect.top << " y:" << rect.left << " w:" << rect.width<<
 					" h:" << rect.height << std::endl;
-				startX += ANIMATION_FRAME_LENGTH+1;
+				if(x*(i+1) >= mSfSprite->getTexture()->getSize().x)
+				{
+					startX = 0;
+				}
+				else
+				{
+					startX += ANIMATION_FRAME_LENGTH;
+				}
 				rect.left = ANIMATION_FRAME_LENGTH*(i+2);
-				rect.top = -1;
-				rect.width = -1;
-				rect.height = -1;
+				rect.top = 0;
+				rect.width = 0;
+				rect.height = 0;
 			}
 			startY += ANIMATION_FRAME_HEIGHT+1;
+			rowCounter++;
 		}
 		
 		//Creates color mask

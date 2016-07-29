@@ -1,5 +1,5 @@
 \\Sprites (In Order of Characters, Platforms, Backgrounds) 
-sprites/enemies3.png sprites/enemies3.png
+sprites/enemies3new.png sprites/enemies3new.png
 
 \\Sounds (In Order of Characters, Songs, other)
 sounds/empty.ogg
