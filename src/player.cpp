@@ -36,9 +36,11 @@ void Character::HandleInput(sf::Event Event)
 			ChangeState(P_State_Lane_Switch);
 			break;
 		case KEY_MOVE_LEFT :
+			ChangeState(P_State_Running);	
 			//move left
 			break;
 		case KEY_MOVE_RIGHT :
+			ChangeState(P_State_Running);
 			//move right
 			break;
 		case KEY_ATTACK :

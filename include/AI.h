@@ -1,5 +1,10 @@
+#ifndef _AI_H_
+#define _AI_H_
 #include "entity.h"
 #include "physics.h"
+
+#include "player.h"
+
 
 enum Enemy_States
 {
@@ -16,6 +21,9 @@ private:
 	bool				mFoundTarget;
 	Entity				*mTargetEnemy;
 
+	int					mLastStateChange;
+	int					mNextStateChange;
+
 public:	
 	void				Block();
 	void				Attack();
@@ -23,4 +31,8 @@ public:
 
 	bool				FindTarget(Entity *target);
 
+	void				ChangeState(Enemy_States new_state);
+	void				UpdateRandState();	
+	void				SpecialAttack();
 };
+#endif
