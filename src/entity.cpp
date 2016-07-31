@@ -251,12 +251,13 @@ void Entity::PhysicsUpdate(float deltaTime)
 		mBody->acceleration = mBody->acceleration*deltaTime*deltaTime*.5;
 
 		//Rotation
-		
-		mBody->angularVelocity += mBody->torque * (mBody->invMomentOfIntertia) * deltaTime;
-		mBody->orientation += mBody->angularVelocity * deltaTime;
-		mBody->SetOrientation(mBody->orientation);
-		
-		mBody->angularVelocity = mBody->angularVelocity*pow(Damping_constant,deltaTime) + mBody->torque;
+		if(mBody->zConstraint == 0)
+		{
+			mBody->angularVelocity += mBody->torque * (mBody->invMomentOfIntertia) * deltaTime;
+			mBody->orientation += mBody->angularVelocity * deltaTime;
+			mBody->SetOrientation(mBody->orientation);
+			mBody->angularVelocity = mBody->angularVelocity*pow(Damping_constant,deltaTime) + mBody->torque;
+		}
 		/**
 		*Calculating one floating point to the power of another is slow when it comes to multiple ents,
 		*So if you need more speed, simply remove the power and times velocity by damping or calculate
@@ -271,6 +272,7 @@ void Entity::PhysicsUpdate(float deltaTime)
 		mBody->position.y += mBody->velocity.y*deltaTime;
 		//Clear the forces
 		mBody->force.x = mBody->force.y = 0;
+		mBody->torque = 0;
 
 	}
 		//Grid Detection via Cells
@@ -342,6 +344,7 @@ RigidBody::RigidBody(rShape* s)
 	restitution =.7;
 	staticFriction = 0.001;
 	dynamicFriction = 0.001;
+	zConstraint = 0;
 	//shape->Initialize( );
 	r = Random( 0.0f, 255.0f );
 	g = Random( 0.0f, 255.0f );

@@ -27,7 +27,7 @@ float CalculateSeperatingVelocity(Manifold *m)
 void Entity::ResolveContact(Manifold *m)
 {
 	ResolveVelocity(m);
-	ResolveFriction(m);
+	//ResolveFriction(m);
 	ResolveInterpenetration(m);
 }
 /**
@@ -235,6 +235,7 @@ void ResolveFriction(Manifold* m)
 */
 void Entity::ResolveInterpenetration(Manifold *m)
 {
+	/*
 	float inverseMass = 1/mBody->mass;
 	Vec2D movementB;
 	if(m->penetration == 0)
@@ -256,6 +257,22 @@ void Entity::ResolveInterpenetration(Manifold *m)
 	if(m->B->mass != 0)
 		m->B->SetPosition(CreateVec2D(m->B->GetPosition().x + movementB.x,m->B->GetPosition().y + movementB.y));
 	
+	*/
+	if(m->penetration > 0)
+		{
+			const float k_slop = 0.01f;
+			const float percent= .8f;
+			float max = std::max(m->penetration - k_slop,0.0f);
+			float totalInverseMass = 1/m->A->mass;
+			if(m->B->mass != 0)
+				totalInverseMass += 1/m->B->mass;
+			Vec2D correction = CreateVec2D(max/totalInverseMass *percent*m->normal.x,
+				max /totalInverseMass*percent*m->normal.y) ;
+			m->A->SetPosition(CreateVec2D(m->A->GetPosition().x - (correction.x*1/m->A->mass),
+				m->A->GetPosition().y - (correction.y*1/m->A->mass)));
+			if(m->B->mass != 0)
+				m->B->SetPosition(CreateVec2D(m->B->GetPosition().x - (correction.x*1/m->B->mass),
+				m->B->GetPosition().y - (correction.y*1/m->B->mass)));		}
 }
 
 float FindAxisLeastPenetration(int *faceIndex,Polygon *a, Polygon *b)

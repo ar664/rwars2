@@ -82,6 +82,9 @@ struct RigidBody
 
 	int			r,g,b;
 
+	bool		zConstraint;
+	bool		isAwake;
+
 	void	AddForce(Vec2D amount);
 	void	SetVelocity(Vec2D vec);
 	void	SetAcceleration(Vec2D vec);
@@ -114,7 +117,11 @@ private:
 	Vec2D				mDimension;
 	Cell*				mCell;
 
+
+
 	void				ResolveVelocity(Manifold *m);
+
+
 public:
 
 	int					mInUse;
@@ -168,6 +175,9 @@ public:
 	//Methods for physics
 	void	ResolveContact(Manifold *m);
 	void    ResolveInterpenetration(Manifold *m);
+
+
+
 };
 
 

@@ -8,6 +8,7 @@
 #include "physics.h"
 #include "audio.h"
 #include "entity.h"
+#include "include\scene.h"
 #include "player.h"
 #include "graphics.h"
 #include "globals.h"
@@ -19,10 +20,11 @@ float gDeltaTime = (float)1/(float)gFrameRate;
 float deltaTime = 0;
 int gMouseX = 0,gMouseY = 0;
 char *test_files[] = {"sprites/Crate.png", 0};
+Scene *gScene;
 Entity* ent1, *ent2,*ent3 ,*ent4,*ent5,*ent6;
 Entity test, test2;
 Polygon *p,*p2,*p3;
-
+Vec2D *verts;
 int main(int argc,char *argv[])
 {
 	Init_All();
@@ -126,6 +128,8 @@ void Init_All()
 	EntitySystemInit();
 	LoadAssets();
 	gGrid = new Grid(6,6,100);
+	gScene = new Scene;
+
 
 
 	p = new Polygon();
@@ -140,7 +144,10 @@ void Init_All()
 	ent1->SetVelocity(CreateVec2D(5,0));
 	ent1->mBody->SetColor(10,100,255);
 	p->SetBox(50,50);
+	ent1->mBody->restitution = .1;
 	ent1->mBody->shape->ComputeMass(2);
+	ent1->mBody->zConstraint = 1;
+
 
 	p2 = new Polygon();
 	ent2 = CreateEntity();	
@@ -150,12 +157,20 @@ void Init_All()
 	ent2->LoadSprites(test_files);
 	ent2->SetCurrentAnimation(0);
 	ent2->mCurrentFrame = 0;
-	ent2->SetPosition(CreateVec2D(600,100));
-	ent2->SetVelocity(CreateVec2D(-5,0));
+	ent2->SetPosition(CreateVec2D(300,450));
+	ent2->SetVelocity(CreateVec2D(0,0));
 	ent2->mBody->SetColor(255,0,0);
-	p2->SetBox(50,50);
-	ent2->mBody->shape->ComputeMass(2);
+	verts = new Vec2D;
+	verts[0] = CreateVec2D(0,0);
+	verts[1] = CreateVec2D(0,-50);
+	verts[2] = CreateVec2D(-50,0);
+	p2->Set(verts,3);
+	ent2->mBody->zConstraint = 1;
+	//p2->SetBox(50,50);
+	ent2->mBody->shape->ComputeMass(0);
 
+	
+	
 	p3 = new Polygon();
 	ent3 = CreateEntity();	
 	ent3->mBody = new RigidBody(p3);
@@ -172,10 +187,6 @@ void Init_All()
 
 	forceRegistry.add(ent1->mBody,&gravity);
 	forceRegistry.add(ent2->mBody,&gravity);
-	//forceRegistry.add(ent3->mBody,&gravity);
-	//forceRegistry.add(ent4->mBody,&gravity);
-	//forceRegistry.add(ent5->mBody,&gravity);
-	//forceRegistry.add(ent6->mBody,&gravity);
 
 	CallbackInitSystem();
 	gClock.restart();
@@ -208,6 +219,7 @@ void Loop()
 		ent1->mBody->shape->Draw(gRenderWindow);
 		ent2->mBody->shape->Draw(gRenderWindow);
 		ent3->mBody->shape->Draw(gRenderWindow);
+		ent1->mBody->velocity.x = 4;
 		gRenderWindow.display();						//Displays whatever is drawn to the window
 		while(gRenderWindow.pollEvent(gEvent))
 		{
@@ -252,17 +264,5 @@ void UpdatePhysics(float deltaTime)
 	}
 	//Post Physics;
 	UpdateCollision();
-	/*
-	Manifold *m;
-	m = PolygonVsPolygon(ent1->mBody,ent3->mBody);
-	if(m == nullptr)
-		std::cout << "no Collision" <<std::endl;
-	else 
-	{
-		std::cout << "Collision!" <<std::endl;
-		ent1->ResolveContact(m);
-	}
-	delete m;
-	*/
 }
 

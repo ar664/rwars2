@@ -5,6 +5,7 @@ Gravity gravity = Gravity::Gravity(CreateVec2D(0,Gravity_constant));
 
 ForceGenerator::ForceGenerator(void)
 {
+	
 }
 
 
