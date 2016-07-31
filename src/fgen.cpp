@@ -1,7 +1,7 @@
-#include "include\globals.h"
+#include "globals.h"
 #include "fgen.h"
 
-Gravity gravity = Gravity::Gravity(CreateVec2D(0,Gravity_constant));
+Gravity gravity = Gravity(CreateVec2D(0,Gravity_constant));
 
 ForceGenerator::ForceGenerator(void)
 {

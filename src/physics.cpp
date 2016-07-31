@@ -1,4 +1,4 @@
-#include <SFML\Graphics.hpp>
+#include <SFML/Graphics.hpp>
 #include <iostream>
 #include <cmath>
 #include "globals.h"
@@ -787,6 +787,7 @@ void RigidBody::AddForce(Vec2D amount)
 {
 	Vec2DAdd(force,force,amount);
 }
+
 /**
 * 
 *

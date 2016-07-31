@@ -1,9 +1,11 @@
 #include <stdio.h>
+#include <string.h>
 #include <utility>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <SFML/Window.hpp>
 #include <iostream>
+#include <string.h>
 #include "fgen.h"
 #include "physics.h"
 #include "audio.h"
@@ -23,8 +25,9 @@ char *test_files[] = {"sprites/Crate.png", 0};
 Scene *gScene;
 Entity* ent1, *ent2,*ent3 ,*ent4,*ent5,*ent6;
 Entity test, test2;
-Polygon *p,*p2,*p3;
-Vec2D *verts;
+Character *test_char;
+Polygon *p;
+
 int main(int argc,char *argv[])
 {
 	Init_All();
@@ -95,7 +98,7 @@ void LoadAssets()
 			
 			if(sounds_loaded < ASSETS_CHARACTERS)
 			{
-				Characters[sounds_loaded]->LoadSounds(files);
+				gCharacters[sounds_loaded]->LoadSounds(files);
 				temp = (char*) malloc(sizeof(char)*256);
 				files = (char**) malloc(sizeof(char*)*16);
 				i = 0; j = 0;
@@ -129,7 +132,8 @@ void Init_All()
 	LoadAssets();
 	gGrid = new Grid(6,6,100);
 	gScene = new Scene;
-
+/*
+<<<<<<< HEAD
 
 
 	p = new Polygon();
@@ -187,6 +191,20 @@ void Init_All()
 
 	forceRegistry.add(ent1->mBody,&gravity);
 	forceRegistry.add(ent2->mBody,&gravity);
+=======
+*/
+	test_char = gCharacters[0];
+	test_char->SetDimensions(CreateVec2D(127,127));
+	test_char->SetCurrentAnimation(0);
+	test_char->mCurrentSprite->SetFrameBB();
+	test_char->mCurrentFrame = 0;
+	test_char->SetVelocity(CreateVec2D(0,0));
+	test_char->setPosition(300,300);
+	test_char->mBody->mass = 10;
+	test_char->mBody->restitution = 17.5;
+	test_char->mBody->staticFriction = .5;
+	test_char->mBody->dynamicFriction = .5;
+	//test.mBody.AddForce(CreateVec2D(6,0));
 
 	CallbackInitSystem();
 	gClock.restart();
@@ -194,6 +212,9 @@ void Init_All()
 void Loop()
 {
 	float accumulator = 0;				//For Physics Update
+	int i;
+	//Entitys First FrameBB
+
 	gClock.restart();
 
 	float frameStart = gClock.getElapsedTime().asSeconds();
@@ -214,16 +235,26 @@ void Loop()
 			//std::cout << "Physics Update Goes here" << std::endl;
 			accumulator -= gDeltaTime;
 		}
+
+		for(i = 0; i < ASSETS_CHARACTERS; i++)
+		{
+			gCharacters[i]->Update();
+			gCharacters[i]->Draw(gRenderWindow);
+
+		}
 		// Remeber to handle the discrete jump in time every 6th frames or so with linear interpolation! To: Jason
-		
+/*
 		ent1->mBody->shape->Draw(gRenderWindow);
 		ent2->mBody->shape->Draw(gRenderWindow);
 		ent3->mBody->shape->Draw(gRenderWindow);
 		ent1->mBody->velocity.x = 4;
+=======
+*/
 		gRenderWindow.display();						//Displays whatever is drawn to the window
 		while(gRenderWindow.pollEvent(gEvent))
 		{
 			HandleEvent(gEvent);
+			//doubleg
 			//AudioLoop(0);
 		}
 		//CallbackRunSystem();
@@ -241,16 +272,15 @@ void HandleEvent(sf::Event Event)
 	{
 		gMouseX = Event.mouseMove.x;
 		gMouseY = Event.mouseMove.y;
-
 	}
+	//double Garry test code
+	else if((Event.type == sf::Event::EventType::KeyPressed) || (Event.type == sf::Event::EventType::KeyReleased))
+	{
+		test_char->HandleInput(Event);
+	}
+	// end
 	else if(Event.type == sf::Event::EventType::MouseButtonPressed)
 	{
-		//Make entity jump!
-		//ent1->mBody->velocity.y= -80;
-
-		//make player move
-		ent1->mBody->velocity.x += 10;
-
 	}
 }
 void UpdatePhysics(float deltaTime)

@@ -38,7 +38,7 @@ void Entity::LoadSounds(char** SoundFiles)
 	int i;
 	void *temp_sound;
 	mSounds = (sf::SoundBuffer**) malloc(sizeof(sf::SoundBuffer*)*(MAX_ANIMATIONS+1));
-	memset(mSounds, 0, sizeof(sf::Sound*)*(MAX_ANIMATIONS+1));
+	memset(mSounds, 0, sizeof(sf::SoundBuffer*)*(MAX_ANIMATIONS+1));
 
 	if(!SoundFiles)
 	{
@@ -218,8 +218,7 @@ void Entity::Draw(sf::RenderTarget& target)
 	mNextFrameTime -= delta;
 	if(mNextFrameTime <= 0)
 	{
-		if( mCurrentFrame < mCurrentSprite->mAnimation.maxFrames-
-			(mCurrentSprite->mSfSprite->getTexture()->getSize().x)/ANIMATION_FRAME_HEIGHT)
+		if( mCurrentFrame < mCurrentSprite->mAnimation.maxFrames -1)
 		{
 			mCurrentFrame++;
 		} else
@@ -306,10 +305,12 @@ void Entity::SetCurrentAnimation(int anim)
 {
 	if(!mSpriteArray)
 	{
+		printf("Entity does not have sprites, attempted to set animation to NULL Sprite Array \n");
 		return;
 	}
-	if(anim >= mNumSprites)
+	if(anim >= mNumSprites || anim < 0)
 	{
+		printf("Entity assigned unset or unknown animation. Sprites Loaded: %d. Animation# = %d \n", mNumSprites, anim);
 		return;
 	}
 	if(mCurrentSprite == mSpriteArray[anim])
@@ -369,7 +370,6 @@ Vec2D RigidBody::GetPosition()
 {
 	return position;
 }
-
 void RigidBody::SetAngVelocity(float i)
 {
 	angularVelocity = i;

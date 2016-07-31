@@ -6,7 +6,7 @@
 #define CALLBACKS_MAX		1000
 
 #define ASSET_FILE			"assets.txt"
-#define ASSETS_CHARACTERS	1
+#define ASSETS_CHARACTERS	3
 #define ASSETS_PLATFORMS	0
 #define ASSETS_BACKGROUNDS	0
 #define ASSETS_SONGS		1
@@ -15,7 +15,7 @@
 #define WINDOW_HEIGHT		600
 
 //Whenever ssing an external type include the file before you use it to reduce errors.
-#include <SFML\Graphics.hpp>
+#include <SFML/Graphics.hpp>
 #include "physics.h"
 #include "fgen.h"
 extern int numSprites;
@@ -42,6 +42,9 @@ enum AnimationCharacter
 {
 	ANIMATION_IDLE,
 	ANIMAITON_ATTACK,
+	ANIMATION_JUMP,
+	ANIMATION_WALK,
+	ANIMATION_DEATH,
 	ANIMATION_DOODLE
 };
 

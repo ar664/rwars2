@@ -4,7 +4,7 @@
 #include <assert.h>
 #include <utility>
 #include "matrix.h"
-#include "include\globals.h"
+#include "globals.h"
 
 struct RigidBody;
 

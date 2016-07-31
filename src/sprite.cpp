@@ -119,12 +119,14 @@ void Sprite::SetFrameBB()
 		}
 		
 		//Creates color mask
+		/*
 		sf::Color color(255,51,51,255);
 		image.createMaskFromColor(color);
-		sf::Texture *texture = new sf::Texture;
+		sf::Texture *texture = new sf::Texture();
 		texture->loadFromImage(image);
 		mSfSprite->setTexture(*texture,1);
 		mFrameBBSet = 1;
+		*/
 	}
 }
 
@@ -159,7 +161,10 @@ Sprite *LoadSprite(char* filename)
 	sprite->mRefCount +=1;
 
 	//Set Physics Dimensions
-	rect = malloc(sizeof(sf::IntRect)*sprite->mSfSprite->getTexture()->getSize().x / ANIMATION_FRAME_LENGTH);
+	int l = sprite->mSfSprite->getTexture()->getSize().x / ANIMATION_FRAME_LENGTH;
+	int w = sprite->mSfSprite->getTexture()->getSize().y / ANIMATION_FRAME_LENGTH;
+
+	rect = malloc(sizeof(sf::IntRect)* l * w);
 	sprite->mFrameBB = (sf::IntRect*)rect;
 	memset(sprite->mFrameBB,0,sizeof(Vec2D));
 	strcpy(sprite->mFileName,filename);
