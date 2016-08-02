@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClCompile Include="src\AI.cpp" />
     <ClCompile Include="src\audio.cpp" />
+	<ClCompile Include="src\components.cpp" />
     <ClCompile Include="src\entity.cpp" />
     <ClCompile Include="src\fgen.cpp" />
     <ClCompile Include="src\globals.cpp" />
@@ -22,13 +23,15 @@
     <ClCompile Include="src\particle.cpp" />
     <ClCompile Include="src\physics.cpp" />
     <ClCompile Include="src\player.cpp" />
-    <ClCompile Include="src\shape.cpp" />
+    <ClCompile Include="src\scene.cpp" />
+	<ClCompile Include="src\shape.cpp" />
     <ClCompile Include="src\sprite.cpp" />
     <ClCompile Include="src\vectors.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\AI.h" />
     <ClInclude Include="include\audio.h" />
+    <ClInclude Include="include\components.h" />
     <ClInclude Include="include\entity.h" />
     <ClInclude Include="include\fgen.h" />
     <ClInclude Include="include\globals.h" />
@@ -38,6 +41,7 @@
     <ClInclude Include="include\particle.h" />
     <ClInclude Include="include\physics.h" />
     <ClInclude Include="include\player.h" />
+	<ClInclude Include="include\scene.h" />
     <ClInclude Include="include\shape.h" />
     <ClInclude Include="include\sprite.h" />
     <ClInclude Include="include\vectors.h" />
@@ -112,41 +116,6 @@
       <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
-<<<<<<< HEAD
-  <ItemGroup>
-    <ClCompile Include="fgen.cpp" />
-    <ClCompile Include="matrix.cpp" />
-    <ClCompile Include="particle.cpp" />
-    <ClCompile Include="shape.cpp" />
-    <ClCompile Include="src\audio.cpp" />
-    <ClCompile Include="src\entity.cpp" />
-    <ClCompile Include="src\globals.cpp" />
-    <ClCompile Include="src\graphics.cpp" />
-    <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\physics.cpp" />
-    <ClCompile Include="src\player.cpp" />
-    <ClCompile Include="src\scene.cpp" />
-    <ClCompile Include="src\sprite.cpp" />
-    <ClCompile Include="src\vectors.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="fgen.h" />
-    <ClInclude Include="include\audio.h" />
-    <ClInclude Include="include\entity.h" />
-    <ClInclude Include="include\globals.h" />
-    <ClInclude Include="include\graphics.h" />
-    <ClInclude Include="include\main.h" />
-    <ClInclude Include="include\physics.h" />
-    <ClInclude Include="include\player.h" />
-    <ClInclude Include="include\scene.h" />
-    <ClInclude Include="include\sprite.h" />
-    <ClInclude Include="include\vectors.h" />
-    <ClInclude Include="matrix.h" />
-    <ClInclude Include="particle.h" />
-    <ClInclude Include="shape.h" />
-  </ItemGroup>
-=======
->>>>>>> d9de50c1e19525a0f9c231f655e32dd8f7647c96
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

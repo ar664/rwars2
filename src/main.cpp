@@ -22,11 +22,11 @@ float gDeltaTime = (float)1/(float)gFrameRate;
 float deltaTime = 0;
 int gMouseX = 0,gMouseY = 0;
 char *test_files[] = {"sprites/Crate.png", 0};
-Scene *gScene;
+//Scene *gScene;
 Entity* ent1, *ent2,*ent3 ,*ent4,*ent5,*ent6;
 Entity test, test2;
-Character *test_char;
-Polygon *p;
+//Character *test_char;
+Polygon *p,*p2,*p3;
 
 int main(int argc,char *argv[])
 {
@@ -88,22 +88,22 @@ void LoadAssets()
 			files[j+1] = NULL;
 			if(characters_loaded < ASSETS_CHARACTERS)
 			{
-				PlayerLoad(characters_loaded, files);
-				temp = (char*) malloc(sizeof(char)*256);
-				files = (char**) malloc(sizeof(char*)*16);
-				i = 0; j = 0;
-				characters_loaded++;
-				continue;
+				//PlayerLoad(characters_loaded, files);
+				//temp = (char*) malloc(sizeof(char)*256);
+				//files = (char**) malloc(sizeof(char*)*16);
+				//i = 0; j = 0;
+				//characters_loaded++;
+				//continue;
 			}
 			
 			if(sounds_loaded < ASSETS_CHARACTERS)
 			{
-				gCharacters[sounds_loaded]->LoadSounds(files);
-				temp = (char*) malloc(sizeof(char)*256);
-				files = (char**) malloc(sizeof(char*)*16);
-				i = 0; j = 0;
-				sounds_loaded++;
-				continue;
+				//gCharacters[sounds_loaded]->LoadSounds(files);
+				//temp = (char*) malloc(sizeof(char)*256);
+				//files = (char**) malloc(sizeof(char*)*16);
+				//i = 0; j = 0;
+				//sounds_loaded++;
+				//continue;
 			}
 			
 			if(songs_loaded < ASSETS_SONGS)
@@ -129,12 +129,9 @@ void Init_All()
 	Init_Graphics(WINDOW_WIDTH,WINDOW_HEIGHT,"RWARS");
 	SpriteListInit();
 	EntitySystemInit();
-	LoadAssets();
+	//LoadAssets();
 	gGrid = new Grid(6,6,100);
-	gScene = new Scene;
-/*
-<<<<<<< HEAD
-
+	//gScene = new Scene;
 
 	p = new Polygon();
 	ent1 = CreateEntity();	
@@ -144,7 +141,7 @@ void Init_All()
 	ent1->LoadSprites(test_files);
 	ent1->SetCurrentAnimation(0);
 	ent1->mCurrentFrame = 0;
-	ent1->SetPosition(CreateVec2D(0,100));
+	ent1->SetPosition(CreateVec2D(0,400));
 	ent1->SetVelocity(CreateVec2D(5,0));
 	ent1->mBody->SetColor(10,100,255);
 	p->SetBox(50,50);
@@ -164,14 +161,9 @@ void Init_All()
 	ent2->SetPosition(CreateVec2D(300,450));
 	ent2->SetVelocity(CreateVec2D(0,0));
 	ent2->mBody->SetColor(255,0,0);
-	verts = new Vec2D;
-	verts[0] = CreateVec2D(0,0);
-	verts[1] = CreateVec2D(0,-50);
-	verts[2] = CreateVec2D(-50,0);
-	p2->Set(verts,3);
 	ent2->mBody->zConstraint = 1;
-	//p2->SetBox(50,50);
-	ent2->mBody->shape->ComputeMass(0);
+	p2->SetBox(50,50);
+	ent2->mBody->shape->ComputeMass(2);
 
 	
 	
@@ -191,8 +183,8 @@ void Init_All()
 
 	forceRegistry.add(ent1->mBody,&gravity);
 	forceRegistry.add(ent2->mBody,&gravity);
-=======
-*/
+
+	/*
 	test_char = gCharacters[0];
 	test_char->SetDimensions(CreateVec2D(127,127));
 	test_char->SetCurrentAnimation(0);
@@ -205,7 +197,7 @@ void Init_All()
 	test_char->mBody->staticFriction = .5;
 	test_char->mBody->dynamicFriction = .5;
 	//test.mBody.AddForce(CreateVec2D(6,0));
-
+	*/
 	CallbackInitSystem();
 	gClock.restart();
 }
@@ -238,18 +230,16 @@ void Loop()
 
 		for(i = 0; i < ASSETS_CHARACTERS; i++)
 		{
-			gCharacters[i]->Update();
-			gCharacters[i]->Draw(gRenderWindow);
+			//gCharacters[i]->Update();
+			//gCharacters[i]->Draw(gRenderWindow);
 
 		}
 		// Remeber to handle the discrete jump in time every 6th frames or so with linear interpolation! To: Jason
-/*
+
 		ent1->mBody->shape->Draw(gRenderWindow);
 		ent2->mBody->shape->Draw(gRenderWindow);
 		ent3->mBody->shape->Draw(gRenderWindow);
-		ent1->mBody->velocity.x = 4;
-=======
-*/
+		ent1->mBody->velocity.x = 6;
 		gRenderWindow.display();						//Displays whatever is drawn to the window
 		while(gRenderWindow.pollEvent(gEvent))
 		{
@@ -276,7 +266,7 @@ void HandleEvent(sf::Event Event)
 	//double Garry test code
 	else if((Event.type == sf::Event::EventType::KeyPressed) || (Event.type == sf::Event::EventType::KeyReleased))
 	{
-		test_char->HandleInput(Event);
+		//test_char->HandleInput(Event);
 	}
 	// end
 	else if(Event.type == sf::Event::EventType::MouseButtonPressed)

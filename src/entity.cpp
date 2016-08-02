@@ -186,7 +186,8 @@ void Entity::SetDimensions(Vec2D vec)
 
 void Entity::SetVelocity(Vec2D vec)
 {
-	mBody->velocity = vec;
+	if(mBody != nullptr)
+		mBody->velocity = vec;
 }
 
 void Entity::Draw(sf::RenderTarget& target)

@@ -5,6 +5,7 @@
 
 #include "vectors.h"
 #include "sprite.h"
+#include "include\components.h"
 
 struct rShape;
 struct Cell;
@@ -116,9 +117,6 @@ private:
 	int					mSpeed;
 	Vec2D				mDimension;
 	Cell*				mCell;
-
-
-
 	void				ResolveVelocity(Manifold *m);
 
 
@@ -133,7 +131,6 @@ public:
 	Sprite**			mSpriteArray;
 	Sprite*				mCurrentSprite;	
 	RigidBody*			mBody;
-	Shape				mShape;
 	sf::SoundBuffer**	mSounds;
 
 
@@ -187,7 +184,7 @@ public:
 extern Entity *gEntities;
 
 Entity *EntityGetFree();
-
+Entity* CreateEntity();
 bool EntitySystemInit();
 void EntitySystemStep();
 void EntitySystemShutdown();

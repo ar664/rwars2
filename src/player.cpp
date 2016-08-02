@@ -4,6 +4,7 @@
 
 #include "player.h"
 #include "globals.h"
+/*
 
 Character **gCharacters = (Character**) malloc(sizeof(Character*)*ASSETS_CHARACTERS);
 
@@ -20,7 +21,7 @@ Character::Character()
 	mNextStateChange		= 0;
 
 	mInUse = 1;
-	mBody = new RigidBody();
+	//mBody = new RigidBody();
 }
 
 void Character::HandleInput(sf::Event Event)
@@ -157,3 +158,4 @@ Character * PlayerLoad(int num, char** sprites)
 
 	return player;
 }
+*/
