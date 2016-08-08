@@ -16,6 +16,7 @@
 
 //Whenever ssing an external type include the file before you use it to reduce errors.
 #include <SFML/Graphics.hpp>
+#include "scene.h"
 #include "physics.h"
 #include "fgen.h"
 extern int numSprites;
@@ -27,7 +28,7 @@ extern sf::Event gEvent;
 extern sf::Clock gClock;
 extern const int gFrameRate;
 extern float deltaTime;
-
+extern Scene *gScene;
 //Things pertaining to physics
 extern ForceRegistry forceRegistry;
 extern Gravity gravity;

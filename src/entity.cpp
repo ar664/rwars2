@@ -65,7 +65,11 @@ void Entity::Free()
 		}
 		free(mSpriteArray);
 	}
-	
+	if(mBody)
+	{
+		free(mBody->shape);
+		free(mBody);
+	}
 	//Reset you own memory
 	memset(this, 0, sizeof(Entity));
 }
@@ -77,7 +81,10 @@ Entity* CreateEntity()
 		if(gEntities[i].mInUse)
 			continue;
 		gEntities[i].mInUse = 1;
+		gEntities[i].mID = i;
 		numEntities +=1;
+
+		gEntities[i].mMask = COMPONENT_ENTITY;
 		return &gEntities[i];
 
 	}
@@ -337,8 +344,8 @@ Vec2D RigidBody::GetAcceleration()
 }
 RigidBody::RigidBody(rShape* s)
 {
-	shape = s;
 	s->rbody = this;
+	shape = s;
 	SetVelocity(CreateVec2D(0,0));
 	angularVelocity = 0;
 	torque = 0;
@@ -385,4 +392,25 @@ void RigidBody::SetColor(float red,float green , float blue)
 	r = red;
 	g = green;
 	b = blue;
+}
+
+
+void Entity::AddComponent(sf::Int64 component)
+{
+	if(gScene != nullptr)
+	{
+		if(mID > MAX_ENTITIES)
+		{
+			std::printf("Exceed EntityLimit..EXIT");
+			exit(0);
+		}
+		else if (mMask & component == component)
+		{
+			std::printf("Entity already has this component");
+		}
+		else
+		{
+			mMask = mMask | component;
+		}
+	}
 }

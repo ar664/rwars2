@@ -58,7 +58,6 @@ struct RigidBody
 	//Constructor
 	RigidBody(rShape* s);
 
-	// We are assuming for now that all Rigidbody shapes are rectangles
 	rShape* shape;
 	
 	float		mass;
@@ -121,7 +120,8 @@ private:
 
 
 public:
-
+	sf::Int64			mMask;
+	int					mID;
 	int					mInUse;
 	int					mCellIndex;
 	
@@ -175,7 +175,8 @@ public:
 	void	ResolveContact(Manifold *m);
 	void    ResolveInterpenetration(Manifold *m);
 
-
+	//Component Methods
+	void	AddComponent(sf::Int64 component);
 
 };
 

@@ -22,7 +22,7 @@ float gDeltaTime = (float)1/(float)gFrameRate;
 float deltaTime = 0;
 int gMouseX = 0,gMouseY = 0;
 char *test_files[] = {"sprites/Crate.png", 0};
-//Scene *gScene;
+Scene *gScene;
 Entity* ent1, *ent2,*ent3 ,*ent4,*ent5,*ent6;
 Entity test, test2;
 //Character *test_char;
@@ -131,8 +131,9 @@ void Init_All()
 	EntitySystemInit();
 	//LoadAssets();
 	gGrid = new Grid(6,6,100);
-	//gScene = new Scene;
+	gScene = new Scene;
 
+	
 	p = new Polygon();
 	ent1 = CreateEntity();	
 	ent1->mBody = new RigidBody(p);
@@ -148,6 +149,8 @@ void Init_All()
 	ent1->mBody->restitution = .1;
 	ent1->mBody->shape->ComputeMass(2);
 	ent1->mBody->zConstraint = 1;
+	ent1->AddComponent(COMPONENT_PLAYER);
+	ent1->AddComponent(COMPONENT_PLAYER);
 
 
 	p2 = new Polygon();
@@ -181,8 +184,9 @@ void Init_All()
 	p3->SetBox(500,50);
 	ent3->mBody->shape->ComputeMass(0);
 
-	forceRegistry.add(ent1->mBody,&gravity);
-	forceRegistry.add(ent2->mBody,&gravity);
+
+	//forceRegistry.add(ent1->mBody,&gravity);
+	//forceRegistry.add(ent2->mBody,&gravity);
 
 	/*
 	test_char = gCharacters[0];
@@ -235,11 +239,10 @@ void Loop()
 
 		}
 		// Remeber to handle the discrete jump in time every 6th frames or so with linear interpolation! To: Jason
-
 		ent1->mBody->shape->Draw(gRenderWindow);
 		ent2->mBody->shape->Draw(gRenderWindow);
 		ent3->mBody->shape->Draw(gRenderWindow);
-		ent1->mBody->velocity.x = 6;
+
 		gRenderWindow.display();						//Displays whatever is drawn to the window
 		while(gRenderWindow.pollEvent(gEvent))
 		{
