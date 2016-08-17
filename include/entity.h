@@ -82,8 +82,8 @@ struct RigidBody
 
 	int			r,g,b;
 
-	bool		zConstraint;
-	bool		isAwake;
+	bool		zConstraint;		
+	int			isAwake;
 
 	void	AddForce(Vec2D amount);
 	void	SetVelocity(Vec2D vec);

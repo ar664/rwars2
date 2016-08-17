@@ -59,10 +59,10 @@ void Entity::Free()
 	//Free Sprites
 	if(mSpriteArray)
 	{
-		for(i = 0; i < mNumSprites; i++)
-		{
-			mSpriteArray[i]->FreeSprite();
-		}
+		//for(i = 0; i < mNumSprites; i++)
+	//	{
+		//	mSpriteArray[i]->FreeSprite();
+	//	}
 		free(mSpriteArray);
 	}
 	if(mBody)
@@ -83,7 +83,7 @@ Entity* CreateEntity()
 		gEntities[i].mInUse = 1;
 		gEntities[i].mID = i;
 		numEntities +=1;
-
+		
 		gEntities[i].mMask = COMPONENT_ENTITY;
 		return &gEntities[i];
 
@@ -346,6 +346,7 @@ RigidBody::RigidBody(rShape* s)
 {
 	s->rbody = this;
 	shape = s;
+	isAwake = 1;
 	SetVelocity(CreateVec2D(0,0));
 	angularVelocity = 0;
 	torque = 0;
@@ -355,9 +356,6 @@ RigidBody::RigidBody(rShape* s)
 	dynamicFriction = 0.001;
 	zConstraint = 0;
 	//shape->Initialize( );
-	r = Random( 0.0f, 255.0f );
-	g = Random( 0.0f, 255.0f );
-	b = Random( 0.0f, 255.0f );
 
 }
 void RigidBody::SetAcceleration(Vec2D vec)

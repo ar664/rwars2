@@ -141,12 +141,10 @@ void Init_All()
 
 	ent1->LoadSprites(test_files);
 	ent1->SetCurrentAnimation(0);
-	ent1->mCurrentFrame = 0;
 	ent1->SetPosition(CreateVec2D(0,400));
 	ent1->SetVelocity(CreateVec2D(5,0));
 	ent1->mBody->SetColor(10,100,255);
 	p->SetBox(50,50);
-	ent1->mBody->restitution = .1;
 	ent1->mBody->shape->ComputeMass(2);
 	ent1->mBody->zConstraint = 1;
 	ent1->AddComponent(COMPONENT_PLAYER);
@@ -160,7 +158,6 @@ void Init_All()
 	
 	ent2->LoadSprites(test_files);
 	ent2->SetCurrentAnimation(0);
-	ent2->mCurrentFrame = 0;
 	ent2->SetPosition(CreateVec2D(300,450));
 	ent2->SetVelocity(CreateVec2D(0,0));
 	ent2->mBody->SetColor(255,0,0);
@@ -283,7 +280,8 @@ void UpdatePhysics(float deltaTime)
 	forceRegistry.updateForces(deltaTime);
 	for(i = 0;i < numEntities;i++ )
 	{
-		gEntities[i].PhysicsUpdate(deltaTime);
+		if(gEntities[i].mBody->isAwake == 1)
+			gEntities[i].PhysicsUpdate(deltaTime);
 	}
 	//Post Physics;
 	UpdateCollision();

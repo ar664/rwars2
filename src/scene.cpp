@@ -11,5 +11,6 @@
 
 Scene::Scene(void)
 {
+
 	memset(Players,0,sizeof(PlayerComponent)*MAX_ENTITIES);
 }
