@@ -29,4 +29,18 @@ void Loop();
  */
 void HandleEvent(sf::Event Event);
 
+enum GameState{
+		NONE,
+		Splash,
+		Menu,
+		Playing,
+		Paused,
+		Exiting,
+	};
+
+void Start();
+bool IsExiting();
+
+void HandleInput();
+
 #endif

@@ -39,12 +39,12 @@ public:
 	 * @brief Handles movement, lane switch, jump, and attack inputs
 	 * @param Event, player input to handle event
 	 */
-	//void HandleInput(sf::Event Event);
+	void HandleInput();
 	/**
 	 * @brief Changes player state if enough time has passed since last state change
 	 * @param state, state player must change to
 	 */
-	//void ChangeState(PlayerState state);
+	void ChangeState(PlayerState state);
 	/**
 	 * @brief Handles updating player status and state
 	 */
@@ -62,8 +62,14 @@ public:
 	//void Touch(Entity *other);
 
 	int GetState();
-};
 
+};
+static const sf::Keyboard::Key KEY_ATTACK		=	sf::Keyboard::E;
+static const sf::Keyboard::Key KEY_JUMP			=	sf::Keyboard::Space;
+static const sf::Keyboard::Key KEY_MOVE_LEFT		=	sf::Keyboard::A;
+static const sf::Keyboard::Key KEY_MOVE_RIGHT	=	sf::Keyboard::D;
+static const sf::Keyboard::Key KEY_MOVE_UP		=	sf::Keyboard::W;
+static const sf::Keyboard::Key KEY_MOVE_DOWN		=	sf::Keyboard::S;
 
 
 

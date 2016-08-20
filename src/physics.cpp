@@ -27,7 +27,7 @@ float CalculateSeperatingVelocity(Manifold *m)
 void Entity::ResolveContact(Manifold *m)
 {
 	ResolveVelocity(m);
-	//ResolveFriction(m);
+	ResolveFriction(m);
 	ResolveInterpenetration(m);
 }
 /**
@@ -103,14 +103,9 @@ void Entity::ResolveVelocity(Manifold *m)
 		totalInverseMass += inverseMass;
 
 		float impulse = deltaVelocity / totalInverseMass;
-		//impulse /= (float)m->contact_count;
+		impulse /= (float)m->contact_count;
 		
 		Vec2D impulseVec = m->normal * impulse;
-		
-		if(impulseVec.y < 0)
-		{
-			std::cout << "AHH" << std::endl;
-		}
 
 		mBody->SetVelocity(mBody->GetVelocity() + impulseVec*(-inverseMass));
 		mBody->SetAngVelocity(mBody->GetAngVelocity() + mBody->invMomentOfIntertia 
@@ -141,44 +136,51 @@ void ResolveFriction(Manifold* m)
 		invMass2 = 0;
 	else
 		invMass2 = (1/m->B->mass);
-
-	for(int i = 0; i < m->contact_count; ++i)
+		for(int i = 0; i < m->contact_count; ++i)
 	 {
 	   // Calculate radii from COM to contact
 	   Vec2D ra = m->contacts[i] - m->A->position;
 	   Vec2D rb = m->contacts[i] - m->B->position;
-		rv = m->B->velocity + Cross( m->B->angularVelocity, rb ) -
-              m->A->velocity - Cross( m->A->angularVelocity, ra );
+
+		rv = m->B->velocity  - m->A->velocity ;
 		Vec2D t = rv - (m->normal *(rv*m->normal));
 		Vec2DNormalize(&t);
 
-		//Solve for tangent Vector
-		velAlongNormal = Vec2DDotProduct(rv,m->normal);
-		tangent = CreateVec2D(rv.x - velAlongNormal * m->normal.x,rv.y - velAlongNormal * m->normal.y);
+		
+		float raCrossN = Cross( ra, m->normal);
+		float rbCrossN = Cross( rb, m->normal);
+		float totalInverseMass = (raCrossN*raCrossN) * m->A->invMomentOfIntertia;
+		if(m->B->mass != 0)
+		{
+			totalInverseMass += (rbCrossN * rbCrossN) * m->B->invMomentOfIntertia;
+			totalInverseMass += 1/m->B->mass;
+		}
+		jt = -( rv * t);
+		jt = jt / (invMass1+invMass2);
+		jt /= (float)m->contact_count;
 
-		
-		
-		jt = -Vec2DDotProduct( rv, tangent);
-		jt = jt / (invMass1 + invMass2);
-		//jt /= (float)m->contact_count;
-		//Use pythag to solve for mu (Doing Coulumbs law)
-		mu = sqrt(pow(m->A->staticFriction,(float)2) + pow(m->B->staticFriction,(float)2));
 
 		float e = std::min(m->A->restitution,m->B->restitution);			//Restitution
-		float j = -(1+e) * jt;
+		float j =  -(1+e) * jt;
 		j = (j/(invMass1+invMass2));
+		 j /= (float)m->contact_count;
 
-		if(jt == 0.0f)
-			return;
+
+
+		//Use pythag to solve for mu (Doing Coulumbs law)
+		mu = sqrt(pow(m->A->staticFriction,(float)2) + pow(m->B->staticFriction,(float)2));
+		float df= sqrt(pow(m->A->dynamicFriction,(float)2) + pow(m->B->dynamicFriction,(float)2));
+
+		//printf("apply\n");
 		if(abs(jt) < j * mu)
 			//Assuming the object is at rest, this code will execute
 		{
-			frictionImpulse = CreateVec2D(tangent.x * jt,tangent.y * jt);
+			frictionImpulse = t*jt;
 		}
+		
 		else
 		{
-			dynamicFriction =sqrt(pow(m->A->dynamicFriction,(float)2) + pow(m->B->dynamicFriction,(float)2));
-			frictionImpulse = CreateVec2D(-j*tangent.x*dynamicFriction,-j*tangent.y*dynamicFriction);
+			frictionImpulse = t*df*-j;
 		}
 		m->A->SetVelocity(m->A->GetVelocity() + frictionImpulse*(-1/m->A->mass));
 		m->A->SetAngVelocity(m->A->GetAngVelocity() + m->A->invMomentOfIntertia 
@@ -191,43 +193,6 @@ void ResolveFriction(Manifold* m)
 		}
 
 	}
-	/*
-	//Find resolution Vector
-	Vec2DSub(rv,m->B->GetVelocity(),m->A->GetVelocity());
-	//Solve for tangent Vector
-	velAlongNormal = Vec2DDotProduct(rv,m->normal);
-	tangent = CreateVec2D(rv.x - velAlongNormal * m->normal.x,rv.y - velAlongNormal * m->normal.y);
-
-	Vec2DNormalize(&tangent);
-
-	// Solve for magnitude to apply along the friction vector
-	jt = -Vec2DDotProduct( rv, tangent);
-	jt = jt / (invMass1 + invMass2);
-	//Use pythag to solve for mu (Doing Coulumbs law)
-	mu = sqrt(pow(m->A->staticFriction,(float)2) + pow(m->B->staticFriction,(float)2));
-
-	float e = std::min(m->A->restitution,m->B->restitution);			//Restitution
-	float j = -(1+e) * jt;
-	j = (j/(invMass1+invMass2));
-
-	if(abs(jt) < j * mu)
-		//Assuming the object is at rest, this code will execute
-	{
-		frictionImpulse = CreateVec2D(tangent.x * jt,tangent.y * jt);
-	}
-	else
-	{
-		dynamicFriction =sqrt(pow(m->A->dynamicFriction,(float)2) + pow(m->B->dynamicFriction,(float)2));
-		frictionImpulse = CreateVec2D(-j*tangent.x*dynamicFriction,-j*tangent.y*dynamicFriction);
-	}
-	frictionImpulse.x = frictionImpulse.x;
-	frictionImpulse.y = frictionImpulse.y;
-
-	m->A->SetVelocity(
-		CreateVec2D(m->A->GetVelocity().x - invMass1 *frictionImpulse.x,m->A->GetVelocity().y - invMass1 *frictionImpulse.y));
-	m->B->SetVelocity(
-		CreateVec2D(m->B->GetVelocity().x + invMass2 *frictionImpulse.x,m->B->GetVelocity().y + invMass2 *frictionImpulse.y));
-		*/
 }
 /**
 * 
@@ -260,7 +225,7 @@ void Entity::ResolveInterpenetration(Manifold *m)
 	*/
 	if(m->penetration > 0)
 		{
-			const float k_slop = 0.01f;
+			const float k_slop = 0.05f;
 			const float percent= .8f;
 			float max = std::max(m->penetration - k_slop,0.0f);
 			float totalInverseMass = 1/m->A->mass;
@@ -273,6 +238,7 @@ void Entity::ResolveInterpenetration(Manifold *m)
 			if(m->B->mass != 0)
 				m->B->SetPosition(CreateVec2D(m->B->GetPosition().x - (correction.x*1/m->B->mass),
 				m->B->GetPosition().y - (correction.y*1/m->B->mass)));		}
+				
 }
 
 float FindAxisLeastPenetration(int *faceIndex,Polygon *a, Polygon *b)

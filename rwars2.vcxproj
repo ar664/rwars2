@@ -13,7 +13,8 @@
   <ItemGroup>
     <ClCompile Include="src\AI.cpp" />
     <ClCompile Include="src\audio.cpp" />
-	<ClCompile Include="src\components.cpp" />
+    <ClCompile Include="src\components.cpp" />
+    <ClCompile Include="src\input.cpp" />
     <ClCompile Include="src\entity.cpp" />
     <ClCompile Include="src\fgen.cpp" />
     <ClCompile Include="src\globals.cpp" />
@@ -24,7 +25,7 @@
     <ClCompile Include="src\physics.cpp" />
     <ClCompile Include="src\player.cpp" />
     <ClCompile Include="src\scene.cpp" />
-	<ClCompile Include="src\shape.cpp" />
+    <ClCompile Include="src\shape.cpp" />
     <ClCompile Include="src\sprite.cpp" />
     <ClCompile Include="src\vectors.cpp" />
   </ItemGroup>
@@ -36,12 +37,13 @@
     <ClInclude Include="include\fgen.h" />
     <ClInclude Include="include\globals.h" />
     <ClInclude Include="include\graphics.h" />
+    <ClCompile Include="include\input.h" />
     <ClInclude Include="include\main.h" />
     <ClInclude Include="include\matrix.h" />
     <ClInclude Include="include\particle.h" />
     <ClInclude Include="include\physics.h" />
     <ClInclude Include="include\player.h" />
-	<ClInclude Include="include\scene.h" />
+    <ClInclude Include="include\scene.h" />
     <ClInclude Include="include\shape.h" />
     <ClInclude Include="include\sprite.h" />
     <ClInclude Include="include\vectors.h" />
@@ -73,7 +75,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(SFML2)\include;$(SolutionDir)include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\Jason\Desktop\Rwars2\rwars2\include\rapidjson;$(SFML2)\include;$(SolutionDir)include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LibraryPath>$(SFML2)\lib;$(LibraryPath)</LibraryPath>

@@ -177,7 +177,7 @@ public:
 
 	//Component Methods
 	void	AddComponent(sf::Int64 component);
-
+	bool	HasComponent(sf::Int64 component);
 };
 
 

@@ -3,6 +3,8 @@
   <ItemGroup>
     <ClCompile Include="src\AI.cpp" />
     <ClCompile Include="src\audio.cpp" />
+    <ClCompile Include="src\components.cpp" />
+    <ClCompile Include="src\input.cpp" />
     <ClCompile Include="src\entity.cpp" />
     <ClCompile Include="src\fgen.cpp" />
     <ClCompile Include="src\globals.cpp" />
@@ -12,101 +14,16 @@
     <ClCompile Include="src\particle.cpp" />
     <ClCompile Include="src\physics.cpp" />
     <ClCompile Include="src\player.cpp" />
+    <ClCompile Include="src\scene.cpp" />
     <ClCompile Include="src\shape.cpp" />
     <ClCompile Include="src\sprite.cpp" />
     <ClCompile Include="src\vectors.cpp" />
+    <ClCompile Include="include\input.h" />
   </ItemGroup>
   <ItemGroup>
-<<<<<<< HEAD
-    <ClCompile Include="src\entity.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\globals.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphics.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\physics.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\sprite.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\vectors.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\player.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\audio.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="particle.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="fgen.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="shape.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="matrix.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\scene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="include\globals.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\graphics.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\main.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\physics.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\sprite.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\vectors.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\player.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\audio.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="particle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\entity.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fgen.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="shape.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="matrix.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\scene.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-=======
     <ClInclude Include="include\AI.h" />
     <ClInclude Include="include\audio.h" />
+    <ClInclude Include="include\components.h" />
     <ClInclude Include="include\entity.h" />
     <ClInclude Include="include\fgen.h" />
     <ClInclude Include="include\globals.h" />
@@ -116,9 +33,9 @@
     <ClInclude Include="include\particle.h" />
     <ClInclude Include="include\physics.h" />
     <ClInclude Include="include\player.h" />
+    <ClInclude Include="include\scene.h" />
     <ClInclude Include="include\shape.h" />
     <ClInclude Include="include\sprite.h" />
     <ClInclude Include="include\vectors.h" />
->>>>>>> d9de50c1e19525a0f9c231f655e32dd8f7647c96
   </ItemGroup>
 </Project>

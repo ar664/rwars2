@@ -25,13 +25,13 @@ char *test_files[] = {"sprites/Crate.png", 0};
 Scene *gScene;
 Entity* ent1, *ent2,*ent3 ,*ent4,*ent5,*ent6;
 Entity test, test2;
+GameState gGameState;
 //Character *test_char;
 Polygon *p,*p2,*p3;
 
 int main(int argc,char *argv[])
 {
-	Init_All();
-	Loop();
+	Start();
 	return 0;
 }
 
@@ -122,13 +122,12 @@ void LoadAssets()
 
 
 }
-
-void Init_All()
+void Start()
 {
-
 	Init_Graphics(WINDOW_WIDTH,WINDOW_HEIGHT,"RWARS");
 	SpriteListInit();
 	EntitySystemInit();
+	gGameState = Playing;
 	//LoadAssets();
 	gGrid = new Grid(6,6,100);
 	gScene = new Scene;
@@ -141,11 +140,11 @@ void Init_All()
 
 	ent1->LoadSprites(test_files);
 	ent1->SetCurrentAnimation(0);
-	ent1->SetPosition(CreateVec2D(0,400));
-	ent1->SetVelocity(CreateVec2D(5,0));
+	ent1->SetPosition(CreateVec2D(0,300));
+	ent1->SetVelocity(CreateVec2D(3,0));
 	ent1->mBody->SetColor(10,100,255);
 	p->SetBox(50,50);
-	ent1->mBody->shape->ComputeMass(2);
+	ent1->mBody->shape->ComputeMass(1);
 	ent1->mBody->zConstraint = 1;
 	ent1->AddComponent(COMPONENT_PLAYER);
 	ent1->AddComponent(COMPONENT_PLAYER);
@@ -159,7 +158,6 @@ void Init_All()
 	ent2->LoadSprites(test_files);
 	ent2->SetCurrentAnimation(0);
 	ent2->SetPosition(CreateVec2D(300,450));
-	ent2->SetVelocity(CreateVec2D(0,0));
 	ent2->mBody->SetColor(255,0,0);
 	ent2->mBody->zConstraint = 1;
 	p2->SetBox(50,50);
@@ -182,8 +180,8 @@ void Init_All()
 	ent3->mBody->shape->ComputeMass(0);
 
 
-	//forceRegistry.add(ent1->mBody,&gravity);
-	//forceRegistry.add(ent2->mBody,&gravity);
+	forceRegistry.add(ent1->mBody,&gravity);
+	forceRegistry.add(ent2->mBody,&gravity);
 
 	/*
 	test_char = gCharacters[0];
@@ -201,76 +199,87 @@ void Init_All()
 	*/
 	CallbackInitSystem();
 	gClock.restart();
+	while(!IsExiting())
+		Loop();
+	gRenderWindow.close();
+}
+bool IsExiting()
+{
+	if(gGameState == Exiting)
+		return true;
+	else
+		return false;
 }
 void Loop()
 {
 	float accumulator = 0;				//For Physics Update
 	int i;
-	//Entitys First FrameBB
-
 	gClock.restart();
-
 	float frameStart = gClock.getElapsedTime().asSeconds();
+	
 	while(gRenderWindow.isOpen())
-	{
-		gRenderWindow.clear();		//Clears the window
-
-		//	Handle Physics -- This is so that there is a fixed update for physics
-
-		accumulator += gClock.getElapsedTime().asSeconds() - frameStart; // Store Time of last frame
-		frameStart = gClock.getElapsedTime().asSeconds();				// Store Time of new frame
-		if(accumulator > 0.2f)
-			accumulator = 0.2f;
-		if(accumulator > gDeltaTime)
 		{
-			deltaTime = gClock.getElapsedTime().asSeconds() /frameStart;
-			UpdatePhysics(deltaTime);
-			//std::cout << "Physics Update Goes here" << std::endl;
-			accumulator -= gDeltaTime;
+			gRenderWindow.clear();		//Clears the window
+			gRenderWindow.pollEvent(gEvent);
+			//HandleEvent(gEvent);
+			if(gRenderWindow.hasFocus())
+				HandleInput();
+			//	Handle Physics -- This is so that there is a fixed update for physics
+	
+			accumulator += gClock.getElapsedTime().asSeconds() - frameStart; // Store Time of last frame
+			frameStart = gClock.getElapsedTime().asSeconds();				// Store Time of new frame
+			if(accumulator > 0.2f)
+				accumulator = 0.2f;
+			if(accumulator > gDeltaTime)
+			{
+
+				deltaTime = gClock.getElapsedTime().asSeconds() /frameStart;
+				UpdatePhysics(deltaTime);
+				//std::cout << "Physics Update Goes here" << std::endl;
+				accumulator -= gDeltaTime;
+			}
+	
+			for(i = 0; i < ASSETS_CHARACTERS; i++)
+			{
+				//gCharacters[i]->Update();
+				//gCharacters[i]->Draw(gRenderWindow);
+	
+			}
+			// Remeber to handle the discrete jump in time every 6th frames or so with linear interpolation! To: Jason
+			ent1->mBody->shape->Draw(gRenderWindow);
+			ent2->mBody->shape->Draw(gRenderWindow);
+			ent3->mBody->shape->Draw(gRenderWindow);
+	
+			gRenderWindow.display();						//Displays whatever is drawn to the window
+	
+			//CallbackRunSystem();
 		}
 
-		for(i = 0; i < ASSETS_CHARACTERS; i++)
-		{
-			//gCharacters[i]->Update();
-			//gCharacters[i]->Draw(gRenderWindow);
-
-		}
-		// Remeber to handle the discrete jump in time every 6th frames or so with linear interpolation! To: Jason
-		ent1->mBody->shape->Draw(gRenderWindow);
-		ent2->mBody->shape->Draw(gRenderWindow);
-		ent3->mBody->shape->Draw(gRenderWindow);
-
-		gRenderWindow.display();						//Displays whatever is drawn to the window
-		while(gRenderWindow.pollEvent(gEvent))
-		{
-			HandleEvent(gEvent);
-			//doubleg
-			//AudioLoop(0);
-		}
-		//CallbackRunSystem();
-	}
+	
 }
 void HandleEvent(sf::Event Event)
 {
 	//Close window
-	if(Event.type == sf::Event::EventType::Closed)
+	//gScene->Players[ent1->mID].HandleInput(Event);
+	switch(Event.type)
 	{
-		gRenderWindow.close();						
+	case sf::Event::Closed:
+		gRenderWindow.close();
 		exit(1);
+		break;
+	default:
+		break;
 	}
-	else if(Event.type == sf::Event::EventType::MouseMoved)
+}
+void HandleInput()
+{
+	int i;
+	for(i = 0;i < numEntities;i++ )
 	{
-		gMouseX = Event.mouseMove.x;
-		gMouseY = Event.mouseMove.y;
-	}
-	//double Garry test code
-	else if((Event.type == sf::Event::EventType::KeyPressed) || (Event.type == sf::Event::EventType::KeyReleased))
-	{
-		//test_char->HandleInput(Event);
-	}
-	// end
-	else if(Event.type == sf::Event::EventType::MouseButtonPressed)
-	{
+		if(gEntities[i].HasComponent(COMPONENT_PLAYER))
+		{
+			gScene->Players[gEntities[i].mID].HandleInput();
+		}
 	}
 }
 void UpdatePhysics(float deltaTime)

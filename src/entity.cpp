@@ -351,9 +351,9 @@ RigidBody::RigidBody(rShape* s)
 	angularVelocity = 0;
 	torque = 0;
 	force = CreateVec2D( 0, 0 );
-	restitution =.7;
-	staticFriction = 0.001;
-	dynamicFriction = 0.001;
+	restitution =0;
+	staticFriction = .03;
+	dynamicFriction = .03;
 	zConstraint = 0;
 	//shape->Initialize( );
 
@@ -392,7 +392,14 @@ void RigidBody::SetColor(float red,float green , float blue)
 	b = blue;
 }
 
+bool Entity::HasComponent(sf::Int64 component)
+{
+	if (mMask & component == component)
+		return true;
+	else
+		return false;
 
+}
 void Entity::AddComponent(sf::Int64 component)
 {
 	if(gScene != nullptr)
@@ -410,5 +417,11 @@ void Entity::AddComponent(sf::Int64 component)
 		{
 			mMask = mMask | component;
 		}
+	switch(component)
+	{
+		case COMPONENT_PLAYER:
+			gScene->Players[mID].mID = mID;
+	}
+
 	}
 }
