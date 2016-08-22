@@ -12,6 +12,7 @@
 Scene::Scene()
 {
 	mEntityList = gEntities;
+	memset(Players,0,sizeof(PlayerComponent)*MAX_ENTITIES);
 	std::mt19937 randGenerator;
 	std::uniform_real_distribution<float> xDist(0,500);
 	std::uniform_real_distribution<float> yDist(0,400);
@@ -79,3 +80,4 @@ void Scene::Update()
 	}
 
 }
+

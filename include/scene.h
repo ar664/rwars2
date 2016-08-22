@@ -10,12 +10,13 @@ class Scene
 public:
 	Scene();
 	~Scene();
+	PlayerComponent			Players		[MAX_ENTITIES];
 	void Draw(sf::RenderTarget &target);
 	void Update();
+
 private:
 	Entity *mEntityList;
 	b2World* m_world;
 };
-
 
 #endif

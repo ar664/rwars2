@@ -25,13 +25,13 @@ char *test_files[] = {"sprites/Crate.png", 0};
 Scene *gScene;
 Entity* ent1, *ent2,*ent3 ,*ent4,*ent5,*ent6;
 Entity test, test2;
+GameState gGameState;
 //Character *test_char;
 Polygon *p,*p2,*p3;
 
 int main(int argc,char *argv[])
 {
-	Init_All();
-	Loop();
+	Start();
 	return 0;
 }
 
@@ -122,27 +122,35 @@ void LoadAssets()
 
 
 }
-
-void Init_All()
+void Start()
 {
-
 	Init_Graphics(WINDOW_WIDTH,WINDOW_HEIGHT,"RWARS");
 	SpriteListInit();
 	EntitySystemInit();
+	gGameState = Playing;
 	//LoadAssets();
 	gGrid = new Grid(6,6,100);
 	gScene = new Scene;
-
 	CallbackInitSystem();
 	gClock.restart();
+	while(!IsExiting())
+		Loop();
+	gRenderWindow.close();
+}
+bool IsExiting()
+{
+	if(gGameState == Exiting)
+		return true;
+	else
+		return false;
 }
 void Loop()
 {
 	float accumulator = 0;				//For Physics Update
 	int i;
 	gClock.restart();
-
 	float frameStart = gClock.getElapsedTime().asSeconds();
+	
 	while(gRenderWindow.isOpen())
 	{
 		gRenderWindow.clear();		//Clears the window
@@ -169,28 +177,31 @@ void Loop()
 		}
 		//CallbackRunSystem();
 	}
+
 }
 void HandleEvent(sf::Event Event)
 {
 	//Close window
-	if(Event.type == sf::Event::EventType::Closed)
+	//gScene->Players[ent1->mID].HandleInput(Event);
+	switch(Event.type)
 	{
-		gRenderWindow.close();						
+	case sf::Event::Closed:
+		gRenderWindow.close();
 		exit(1);
+		break;
+	default:
+		break;
 	}
-	else if(Event.type == sf::Event::EventType::MouseMoved)
+}
+void HandleInput()
+{
+	int i;
+	for(i = 0;i < numEntities;i++ )
 	{
-		gMouseX = Event.mouseMove.x;
-		gMouseY = Event.mouseMove.y;
-	}
-	//double Garry test code
-	else if((Event.type == sf::Event::EventType::KeyPressed) || (Event.type == sf::Event::EventType::KeyReleased))
-	{
-		//test_char->HandleInput(Event);
-	}
-	// end
-	else if(Event.type == sf::Event::EventType::MouseButtonPressed)
-	{
+		if(gEntities[i].HasComponent(COMPONENT_PLAYER))
+		{
+			gScene->Players[gEntities[i].mID].HandleInput();
+		}
 	}
 }
 

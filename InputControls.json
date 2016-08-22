@@ -1,0 +1,9 @@
+{"Player 1":
+	[
+	"up" : "up_arrowkey",
+	"down" : "down_arrowkey",
+	"left" : "left_arrowkey",
+	"right" : "right_arrowkey"
+	]
+
+}

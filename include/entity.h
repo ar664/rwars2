@@ -54,8 +54,6 @@ class Grid;
 *	float		restitution		-	Used for Bounce(higher the value,the higher the bounce).Values over 20 start to get wierd bounce behavior
 *	float		density			-	Not being used at the moment but may switch to it inorder to determine mass
 */
-
-
 class Entity: public sf::Transformable 
 {
 private:
@@ -69,7 +67,8 @@ private:
 
 
 public:
-
+	sf::Int64			mMask;
+	int					mID;
 	int					mInUse;
 	int					mCellIndex;
 	
@@ -122,6 +121,9 @@ public:
 	void	LoadSprites(char **SpriteFiles);
 	void	LoadSounds(char **SoundFiles);
 	void	Free();
+	//Component Methods
+	void	AddComponent(sf::Int64 component);
+	bool	HasComponent(sf::Int64 component);
 };
 
 

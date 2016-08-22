@@ -168,30 +168,33 @@ void UpdateCollision()
 		{
 			Entity* ent = cell.entities[j];
 			//Do collision checks in the current cell than update
-			CheckCollision(cell.entities[j],cell.entities,j+1);
-			
-			//Update Collision with neighbor cells
-			if(x > 0)
-			{	//Left
-				CheckCollision(ent,gGrid->getCell(x-1,y)->entities,0);
-				if(y > 0)
-				{	
-					//TopLeft
-					CheckCollision(ent,gGrid->getCell(x-1,y-1)->entities,0);
+			if(cell.entities[j]->mBody != nullptr)
+			{
+					CheckCollision(ent,cell.entities,j+1);
+					
+					//Update Collision with neighbor cells
+					if(x > 0)
+					{	//Left
+						CheckCollision(ent,gGrid->getCell(x-1,y)->entities,0);
+						if(y > 0)
+						{	
+							//TopLeft
+							CheckCollision(ent,gGrid->getCell(x-1,y-1)->entities,0);
+						}
+						if(y < gGrid->getM_NumYCells() -1)
+						{
+							//Bottom left
+							CheckCollision(ent,gGrid->getCell(x-1,y+1)->entities,0);
+						}
+					}
+					if(y > 0){
+						//Top
+						CheckCollision(ent,gGrid->getCell(x,y-1)->entities,0);
+					}
 				}
-				if(y < gGrid->getM_NumYCells() -1)
-				{
-					//Bottom left
-					CheckCollision(ent,gGrid->getCell(x-1,y+1)->entities,0);
-				}
-			}
-			if(y > 0){
-				//Top
-				CheckCollision(ent,gGrid->getCell(x,y-1)->entities,0);
-			}
-		}
 		
-		}
+			}
+	}
 	
 }
 /**
@@ -201,8 +204,6 @@ void UpdateCollision()
 void CheckCollision(Entity* ent, std::vector<Entity*>& ents, int startIndex)
 {
 	Manifold *m = nullptr;
-
-
 		for (int i = 0; i < ents.size();i++)
 		{
 			if(ents[i] != ent){		//Make sure player isnt checking collision with self and ent doesnt have infinite mass

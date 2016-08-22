@@ -14,6 +14,7 @@
     <ClCompile Include="src\AI.cpp" />
     <ClCompile Include="src\audio.cpp" />
     <ClCompile Include="src\components.cpp" />
+    <ClCompile Include="src\input.cpp" />
     <ClCompile Include="src\entity.cpp" />
     <ClCompile Include="src\fgen.cpp" />
     <ClCompile Include="src\globals.cpp" />
@@ -36,6 +37,7 @@
     <ClInclude Include="include\fgen.h" />
     <ClInclude Include="include\globals.h" />
     <ClInclude Include="include\graphics.h" />
+    <ClCompile Include="include\input.h" />
     <ClInclude Include="include\main.h" />
     <ClInclude Include="include\matrix.h" />
     <ClInclude Include="include\particle.h" />
@@ -73,7 +75,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(SFML2)\include;$(SolutionDir)include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\Jason\Desktop\Rwars2\rwars2\include\rapidjson;$(SFML2)\include;$(SolutionDir)include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LibraryPath>$(SolutionDir)\Debug;$(SFML2)\lib;$(LibraryPath)</LibraryPath>

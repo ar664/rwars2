@@ -4,6 +4,10 @@
     <ClCompile Include="src\AI.cpp" />
     <ClCompile Include="src\audio.cpp" />
     <ClCompile Include="src\components.cpp" />
+<<<<<<< HEAD
+=======
+    <ClCompile Include="src\input.cpp" />
+>>>>>>> ComponentSystem
     <ClCompile Include="src\entity.cpp" />
     <ClCompile Include="src\fgen.cpp" />
     <ClCompile Include="src\globals.cpp" />
@@ -17,6 +21,7 @@
     <ClCompile Include="src\shape.cpp" />
     <ClCompile Include="src\sprite.cpp" />
     <ClCompile Include="src\vectors.cpp" />
+    <ClCompile Include="include\input.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\AI.h" />

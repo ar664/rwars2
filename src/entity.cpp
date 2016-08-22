@@ -59,13 +59,16 @@ void Entity::Free()
 	//Free Sprites
 	if(mSpriteArray)
 	{
-		for(i = 0; i < mNumSprites; i++)
-		{
-			mSpriteArray[i]->FreeSprite();
-		}
+		//for(i = 0; i < mNumSprites; i++)
+	//	{
+		//	mSpriteArray[i]->FreeSprite();
+	//	}
 		free(mSpriteArray);
 	}
-	
+	if(mBody)
+	{
+		free(mBody);
+	}
 	//Reset you own memory
 	memset(this, 0, sizeof(Entity));
 }
@@ -77,7 +80,10 @@ Entity* CreateEntity()
 		if(gEntities[i].mInUse)
 			continue;
 		gEntities[i].mInUse = 1;
+		gEntities[i].mID = i;
 		numEntities +=1;
+		
+		gEntities[i].mMask = COMPONENT_ENTITY;
 		return &gEntities[i];
 
 	}
@@ -308,20 +314,18 @@ Vec2D RigidBody::GetAcceleration()
 }
 RigidBody::RigidBody(rShape* s)
 {
-	shape = s;
 	s->rbody = this;
+	shape = s;
+	isAwake = 1;
 	SetVelocity(CreateVec2D(0,0));
 	angularVelocity = 0;
 	torque = 0;
 	force = CreateVec2D( 0, 0 );
-	restitution =.7;
-	staticFriction = 0.001;
-	dynamicFriction = 0.001;
+	restitution =0;
+	staticFriction = .03;
+	dynamicFriction = .03;
 	zConstraint = 0;
 	//shape->Initialize( );
-	r = Random( 0.0f, 255.0f );
-	g = Random( 0.0f, 255.0f );
-	b = Random( 0.0f, 255.0f );
 
 }
 void RigidBody::SetAcceleration(Vec2D vec)
@@ -356,4 +360,39 @@ void RigidBody::SetColor(float red,float green , float blue)
 	r = red;
 	g = green;
 	b = blue;
+
 }*/
+
+bool Entity::HasComponent(sf::Int64 component)
+{
+	if (mMask & component == component)
+		return true;
+	else
+		return false;
+
+}
+void Entity::AddComponent(sf::Int64 component)
+{
+	if(gScene != nullptr)
+	{
+		if(mID > MAX_ENTITIES)
+		{
+			std::printf("Exceed EntityLimit..EXIT");
+			exit(0);
+		}
+		else if (mMask & component == component)
+		{
+			std::printf("Entity already has this component");
+		}
+		else
+		{
+			mMask = mMask | component;
+		}
+	switch(component)
+	{
+		case COMPONENT_PLAYER:
+			gScene->Players[mID].mID = mID;
+	}
+
+	}
+}
