@@ -162,7 +162,7 @@ void Entity::SetCell(Cell* cell)
 {
 	mCell = cell;
 }
-
+/*
 void Entity::SetPosition(Vec2D vec)
 {
 	if(mBody != nullptr)
@@ -189,12 +189,12 @@ void Entity::SetVelocity(Vec2D vec)
 	if(mBody != nullptr)
 		mBody->velocity = vec;
 }
-
+*/
 void Entity::Draw(sf::RenderTarget& target)
 {
 	int delta = 0;
 	sf::Transformable t;
-	t.setPosition(mBody->position.x,mBody->position.y);
+	//t.setPosition(mBody->position.x,mBody->position.y);
 	if(!mSpriteArray)
 	{
 		return;
@@ -241,40 +241,11 @@ Cell* Entity::GetCell()
 	return mCell;
 }
 //initially this is going to be a void virtual because different entities will different physics behaviors
-void Entity::PhysicsUpdate(float deltaTime)
+void Entity::Update(float deltaTime)
 {
 		//PrePhysics
-	if(mBody->mass != 0.0f)
-	{
-		//Force of Gravity
-		mBody->acceleration.AddScaledVector(mBody->force,1/mBody->mass);
-		mBody->acceleration = mBody->acceleration*deltaTime*deltaTime*.5;
-
-		//Rotation
-		if(mBody->zConstraint == 0)
-		{
-			mBody->angularVelocity += mBody->torque * (mBody->invMomentOfIntertia) * deltaTime;
-			mBody->orientation += mBody->angularVelocity * deltaTime;
-			mBody->SetOrientation(mBody->orientation);
-			mBody->angularVelocity = mBody->angularVelocity*pow(Damping_constant,deltaTime) + mBody->torque;
-		}
-		/**
-		*Calculating one floating point to the power of another is slow when it comes to multiple ents,
-		*So if you need more speed, simply remove the power and times velocity by damping or calculate
-		*the damping once and used it for all ents.
-		*Hope it doesnt crash lol;
-		*/
-		SetVelocity(mBody->velocity*pow(Damping_constant,deltaTime)  + mBody->acceleration);
-		
-		//move(mBody->velocity.x*deltaTime,mBody->velocity.y*deltaTime);	
-		//Move RigidBody
-		mBody->position.x += mBody->velocity.x*deltaTime;
-		mBody->position.y += mBody->velocity.y*deltaTime;
-		//Clear the forces
-		mBody->force.x = mBody->force.y = 0;
-		mBody->torque = 0;
-
-	}
+		mBody->GetShape()->setRotation( mBody->GetBody()->GetAngle()*(180/3.14159265359)  );
+		mBody->GetShape()->setPosition( mBody->GetBody()->GetPosition().x*PPM, mBody->GetBody()->GetPosition().y*PPM);
 		//Grid Detection via Cells
 		Cell *newCell = gGrid->getCell(CreateVec2D(getPosition().x,getPosition().y));
 		if(newCell != GetCell())
@@ -291,7 +262,7 @@ void Entity::PhysicsUpdate(float deltaTime)
 		}
 }
 
-
+/*
 Vec2D Entity::GetDimension()
 {
 	return mDimension;
@@ -301,7 +272,7 @@ Vec2D Entity::GetVelocity()
 {
 	return mBody->velocity;
 }
-
+*/
 void Entity::SetCurrentAnimation(int anim)
 {
 	if(!mSpriteArray)
@@ -321,7 +292,7 @@ void Entity::SetCurrentAnimation(int anim)
 	mCurrentSprite = mSpriteArray[anim];
 	mCurrentFrame = 0;
 }
-
+/*
 
 Vec2D RigidBody::GetVelocity()
 {
@@ -385,4 +356,4 @@ void RigidBody::SetColor(float red,float green , float blue)
 	r = red;
 	g = green;
 	b = blue;
-}
+}*/

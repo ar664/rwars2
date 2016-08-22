@@ -5,9 +5,58 @@
 #include <utility>
 #include "matrix.h"
 #include "globals.h"
+#include "include\Box2D\Box2D.h"
+
+class pShape
+{
+public:
+	virtual	void		init(b2World* world,const Vec2D position,const Vec2D dimensions) = 0;
+	b2Body*				GetBody(){return mBody;};
+	b2FixtureDef		GetFixture(){return mFixture;};
+	sf::Shape*			GetShape(){return mShape;};
+	Sprite*				sprite;
+	Vec2D				GetDimensions(){return mDimensions;};
+	int getN()			{return n;};
+	void				SetPoints(sf::Vector2f* points,int count);
+protected:
+	b2Body*				mBody;
+	b2FixtureDef		mFixture;
+	Vec2D				mDimensions;
+	b2BodyDef			mBodyDef;
+	b2PolygonShape		mBodyShape;
+	b2FixtureDef		mBodyFix;
+	sf::Shape*			mShape; //SFML shape
+	sf::Vector2f*		mPoints;
+	int					mPointCount;
+	static int n;
+};
+
+class Box : public pShape
+{
+public:
+	Box();
+	~Box();
+	virtual void		init(b2World* world,const Vec2D position,const Vec2D dimensions);
+
+protected:
+
+	
+};
+
+class Polygon : public pShape
+{
+public:
+	Polygon();
+	~Polygon();
+	virtual void		init(b2World* world,const Vec2D position,const Vec2D dimensions);
+
+protected:
+
+	
+};
 
 struct RigidBody;
-
+/*
 struct rShape
 {
 	enum Type
@@ -258,6 +307,6 @@ struct Polygon : public rShape
     return bestVertex;
   }
 };
-
+*/
 
 #endif

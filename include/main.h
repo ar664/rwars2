@@ -1,6 +1,6 @@
 #ifndef __MAIN_H
 #define __MAIN_H
-
+#include "include\Box2D\Box2D.h"
 /**
  * @brief Loads all the assests from the assets.txt file. Calls exit if critical failure.
  *
@@ -28,5 +28,9 @@ void Loop();
  * @param an sf::Event
  */
 void HandleEvent(sf::Event Event);
+
+
+
+
 
 #endif

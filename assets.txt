@@ -1,11 +1,4 @@
 \\Sprites (In Order of Characters, Platforms, Backgrounds) 
-sprites/Gill-Sawfish/icon.png sprites/Gill-Sawfish/icon.png sprites/Gill-Sawfish/icon.png sprites/Gill-Sawfish/icon.png sprites/Gill-Sawfish/icon.png sprites/Gill-Sawfish/jump.png sprites/Gill-Sawfish/jump.png
-sprites/Typhoon-Squid/icon.png sprites/Typhoon-Squid/icon.png sprites/Typhoon-Squid/icon.png sprites/Typhoon-Squid/icon.png sprites/Typhoon-Squid/icon.png sprites/Typhoon-Squid/hit.png sprites/Typhoon-Squid/hit.png
-sprites/Torque/icon.png sprites/Torque/icon.png sprites/Torque/icon.png sprites/Torque/icon.png sprites/Torque/icon.png sprites/Torque/hurt.png sprites/Torque/hurt.png
-
- 
+sprites/Crate.png
 \\Sounds (In Order of Characters, Songs, other)
-sounds/empty.ogg 
-sounds/empty.ogg 
-sounds/empty.ogg 
-audio/songs/memory.ogg audio/songs/thunder.wav
+

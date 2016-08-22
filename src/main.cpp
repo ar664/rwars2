@@ -22,7 +22,7 @@ float gDeltaTime = (float)1/(float)gFrameRate;
 float deltaTime = 0;
 int gMouseX = 0,gMouseY = 0;
 char *test_files[] = {"sprites/Crate.png", 0};
-//Scene *gScene;
+Scene *gScene;
 Entity* ent1, *ent2,*ent3 ,*ent4,*ent5,*ent6;
 Entity test, test2;
 //Character *test_char;
@@ -131,73 +131,8 @@ void Init_All()
 	EntitySystemInit();
 	//LoadAssets();
 	gGrid = new Grid(6,6,100);
-	//gScene = new Scene;
+	gScene = new Scene;
 
-	p = new Polygon();
-	ent1 = CreateEntity();	
-	ent1->mBody = new RigidBody(p);
-	p->SetOrientation(0);
-
-	ent1->LoadSprites(test_files);
-	ent1->SetCurrentAnimation(0);
-	ent1->mCurrentFrame = 0;
-	ent1->SetPosition(CreateVec2D(0,400));
-	ent1->SetVelocity(CreateVec2D(5,0));
-	ent1->mBody->SetColor(10,100,255);
-	p->SetBox(50,50);
-	ent1->mBody->restitution = .1;
-	ent1->mBody->shape->ComputeMass(2);
-	ent1->mBody->zConstraint = 1;
-
-
-	p2 = new Polygon();
-	ent2 = CreateEntity();	
-	ent2->mBody = new RigidBody(p2);
-	p2->SetOrientation(0);
-	
-	ent2->LoadSprites(test_files);
-	ent2->SetCurrentAnimation(0);
-	ent2->mCurrentFrame = 0;
-	ent2->SetPosition(CreateVec2D(300,450));
-	ent2->SetVelocity(CreateVec2D(0,0));
-	ent2->mBody->SetColor(255,0,0);
-	ent2->mBody->zConstraint = 1;
-	p2->SetBox(50,50);
-	ent2->mBody->shape->ComputeMass(2);
-
-	
-	
-	p3 = new Polygon();
-	ent3 = CreateEntity();	
-	ent3->mBody = new RigidBody(p3);
-	p3->SetOrientation(0);
-
-	ent3->LoadSprites(test_files);
-	ent3->SetCurrentAnimation(0);
-	ent3->mCurrentFrame = 0;
-	ent3->mBody->SetPosition(CreateVec2D(0,500));
-	ent3->SetVelocity(CreateVec2D(0,0));
-	ent3->mBody->SetColor(0,255,0);
-	p3->SetBox(500,50);
-	ent3->mBody->shape->ComputeMass(0);
-
-	forceRegistry.add(ent1->mBody,&gravity);
-	forceRegistry.add(ent2->mBody,&gravity);
-
-	/*
-	test_char = gCharacters[0];
-	test_char->SetDimensions(CreateVec2D(127,127));
-	test_char->SetCurrentAnimation(0);
-	test_char->mCurrentSprite->SetFrameBB();
-	test_char->mCurrentFrame = 0;
-	test_char->SetVelocity(CreateVec2D(0,0));
-	test_char->setPosition(300,300);
-	test_char->mBody->mass = 10;
-	test_char->mBody->restitution = 17.5;
-	test_char->mBody->staticFriction = .5;
-	test_char->mBody->dynamicFriction = .5;
-	//test.mBody.AddForce(CreateVec2D(6,0));
-	*/
 	CallbackInitSystem();
 	gClock.restart();
 }
@@ -205,15 +140,12 @@ void Loop()
 {
 	float accumulator = 0;				//For Physics Update
 	int i;
-	//Entitys First FrameBB
-
 	gClock.restart();
 
 	float frameStart = gClock.getElapsedTime().asSeconds();
 	while(gRenderWindow.isOpen())
 	{
 		gRenderWindow.clear();		//Clears the window
-
 		//	Handle Physics -- This is so that there is a fixed update for physics
 
 		accumulator += gClock.getElapsedTime().asSeconds() - frameStart; // Store Time of last frame
@@ -223,23 +155,11 @@ void Loop()
 		if(accumulator > gDeltaTime)
 		{
 			deltaTime = gClock.getElapsedTime().asSeconds() /frameStart;
-			UpdatePhysics(deltaTime);
-			//std::cout << "Physics Update Goes here" << std::endl;
+			gScene->Update();
 			accumulator -= gDeltaTime;
 		}
 
-		for(i = 0; i < ASSETS_CHARACTERS; i++)
-		{
-			//gCharacters[i]->Update();
-			//gCharacters[i]->Draw(gRenderWindow);
-
-		}
-		// Remeber to handle the discrete jump in time every 6th frames or so with linear interpolation! To: Jason
-
-		ent1->mBody->shape->Draw(gRenderWindow);
-		ent2->mBody->shape->Draw(gRenderWindow);
-		ent3->mBody->shape->Draw(gRenderWindow);
-		ent1->mBody->velocity.x = 6;
+		gScene->Draw(gRenderWindow);
 		gRenderWindow.display();						//Displays whatever is drawn to the window
 		while(gRenderWindow.pollEvent(gEvent))
 		{
@@ -273,16 +193,5 @@ void HandleEvent(sf::Event Event)
 	{
 	}
 }
-void UpdatePhysics(float deltaTime)
-{
-	int i;
-	Entity* ent;
-	forceRegistry.updateForces(deltaTime);
-	for(i = 0;i < numEntities;i++ )
-	{
-		gEntities[i].PhysicsUpdate(deltaTime);
-	}
-	//Post Physics;
-	UpdateCollision();
-}
+
 

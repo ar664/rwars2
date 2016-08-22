@@ -14,6 +14,10 @@
 #define WINDOW_WIDTH		800
 #define WINDOW_HEIGHT		600
 
+
+#define PPM	30.0f
+#define MPP	(1.0f/PIXELS_PER_METER)
+
 //Whenever ssing an external type include the file before you use it to reduce errors.
 #include <SFML/Graphics.hpp>
 #include "physics.h"
@@ -28,9 +32,6 @@ extern sf::Clock gClock;
 extern const int gFrameRate;
 extern float deltaTime;
 
-//Things pertaining to physics
-extern ForceRegistry forceRegistry;
-extern Gravity gravity;
 
 
 

@@ -13,6 +13,7 @@ struct Polygon;
 *This struct stores information about 2 entities that collided and is used to 
 *physics updates
 */
+/*
 struct Manifold
 {
 	RigidBody* A;
@@ -25,7 +26,7 @@ struct Manifold
 	void Solve();
 
 };
-
+*/
 struct Cell{
 	
 	std::vector<Entity*> entities;
@@ -59,28 +60,28 @@ private:
 };
 
 
-bool BiasGreaterThan( float a, float b );
-Manifold* AABB(Entity *ent1, Entity *ent2);
-Manifold* PolygonVsPolygon(RigidBody *a,RigidBody* b);
+//bool BiasGreaterThan( float a, float b );
+//Manifold* AABB(Entity *ent1, Entity *ent2);
+//Manifold* PolygonVsPolygon(RigidBody *a,RigidBody* b);
 
-int Clip( Vec2D n, float c, Vec2D *face );
-void FindIncidentFace( Vec2D *v, Polygon *RefPoly, Polygon *IncPoly, int referenceIndex );
-float FindAxisLeastPenetration(int *faceIndex,Polygon *a, Polygon *b);
+//int Clip( Vec2D n, float c, Vec2D *face );
+//void FindIncidentFace( Vec2D *v, Polygon *RefPoly, Polygon *IncPoly, int referenceIndex );
+//float FindAxisLeastPenetration(int *faceIndex,Polygon *a, Polygon *b);
 
 
-float	CalculateSeperatingVelocity(Manifold *m);
-int		CollisionResponseAABBvsAABB(Entity* ent1,Entity *ent2,Manifold* m);
-void	ResolveFriction(Manifold* m);
-int		SweptAABB(Entity *ent1, Entity *ent2, float& normalx, float& normaly);
+//float	CalculateSeperatingVelocity(Manifold *m);
+//int		CollisionResponseAABBvsAABB(Entity* ent1,Entity *ent2,Manifold* m);
+//void	ResolveFriction(Manifold* m);
+//int		SweptAABB(Entity *ent1, Entity *ent2, float& normalx, float& normaly);
 void	UpdatePhysics(float deltaTime);
 void	UpdateCollision();
 void	CheckCollision(Entity* ent, std::vector<Entity*>& ents, int startIndex);
 
 
-void	CollisionResponseCircleToCircle(Manifold *m,RigidBody* b1,RigidBody* b2);
-void	CollisionResponseCircleToPolygon(Manifold *m,RigidBody* b1,RigidBody* b2);
-void	CollisionResponsePolygonToCircle(Manifold *m,RigidBody* b1,RigidBody* b2);
-void	CollisionResponsePolygonToPolygon(Manifold *m,RigidBody* b1,RigidBody* b2);
+//void	CollisionResponseCircleToCircle(Manifold *m,RigidBody* b1,RigidBody* b2);
+//void	CollisionResponseCircleToPolygon(Manifold *m,RigidBody* b1,RigidBody* b2);
+//void	CollisionResponsePolygonToCircle(Manifold *m,RigidBody* b1,RigidBody* b2);
+//void	CollisionResponsePolygonToPolygon(Manifold *m,RigidBody* b1,RigidBody* b2);
 
 
 #endif

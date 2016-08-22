@@ -149,3 +149,11 @@ float Vec2D::CrossProduct(Vec2D &b)
 {
 	return x*b.y - y * b.x;
 }
+
+Vec2D RotatePoint(Vec2D vec, float angle)
+{
+	Vec2D newV;
+	newV= CreateVec2D( vec.x * cos(angle) - vec.y * sin(angle),
+		vec.x * sin(angle) + vec.y * cos(angle));
+	return newV;
+}

@@ -17,6 +17,7 @@ struct Vec2D
 	union {float x;	float w;};
 	union {float y;	float h;};
 
+
 	//Scale a vector
 	void operator*=(const float value)
 	{
@@ -265,6 +266,12 @@ float Vec2DMagnitudeSquared(Vec2D V);
  * @param magnitude the new length for the vector
  */
 void Vec2DSetMagnitude(Vec2D * V,float magnitude);
+
+/**
+*Rotates a point by a angle
+*/
+Vec2D RotatePoint(Vec2D vec, float angle);
+
 /**
  * @brief checks if the distance between the two points provided is less than size.
  * @param p1 one point for the distance check

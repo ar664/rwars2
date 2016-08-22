@@ -193,9 +193,9 @@ void Sprite::FreeSprite()
 	}
 	if(mRefCount <= 0)
 	{
-		delete mSfSprite->getTexture();
-		delete mSfSprite;
-		delete mFrameBB;
+		//delete mSfSprite->getTexture();
+		//delete mSfSprite;
+		//delete mFrameBB;
 		strcpy(mFileName ,"\0");
 		mRefCount = 0;
 		mSfSprite = NULL;
