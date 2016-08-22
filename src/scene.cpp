@@ -61,10 +61,10 @@ Scene::~Scene(){
 void Scene::Draw(sf::RenderTarget &target)
 {
 	sf::Transformable t;
-	for(int i = 0; i < 11;++i)
+	for(int i = 0; i < MAX_ENTITIES;++i)
 	{
-		gEntities[i].Update(gDeltaTime);
-		target.draw(*gEntities[i].mBody->GetShape());
+		if(gEntities[i].mBody != nullptr)
+			target.draw(*gEntities[i].mBody->GetShape());
 	}
 
 }
@@ -72,5 +72,10 @@ void Scene::Draw(sf::RenderTarget &target)
 void Scene::Update()
 {
 	m_world->Step(gDeltaTime,8,6);
+	for(int i = 0; i < MAX_ENTITIES;++i)
+	{
+		if(gEntities[i].mBody != nullptr)
+			gEntities[i].Update(gDeltaTime);
+	}
 
 }
