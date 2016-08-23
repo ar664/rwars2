@@ -3,6 +3,7 @@
 #include <malloc.h>
 #include <string.h>
 #include <iostream>
+#include "include\resourcemanager.h"
 #include "vectors.h"
 #include "globals.h"
 #include "sprite.h"
@@ -25,13 +26,7 @@ void CloseSpriteList()
 	{
 		return;
 	}
-	for (i = 0;i < MAX_SPRITES;i++)
-	{
-		if(SpriteList[i].mSfSprite != NULL)
-		{
-			SpriteList[i].FreeSprite();
-		}
-	}
+	ResourceManager::FreeCaches();
 	free(SpriteList);
 	SpriteList = NULL;
 }
@@ -51,10 +46,10 @@ void Sprite::SetFrameBB()
 	sf::Image image;
 	if(!mFrameBBSet)
 	{
-		image = mSfSprite->getTexture()->copyToImage();
-		for(j = 0; j <(mSfSprite->getTexture()->getSize().y / ANIMATION_FRAME_HEIGHT);++j)
+		image = mSfSprite.getTexture()->copyToImage();
+		for(j = 0; j <(mSfSprite.getTexture()->getSize().y / ANIMATION_FRAME_HEIGHT);++j)
 		{
-			for(i = 0; i < (mSfSprite->getTexture()->getSize().x / ANIMATION_FRAME_LENGTH);++i)
+			for(i = 0; i < (mSfSprite.getTexture()->getSize().x / ANIMATION_FRAME_LENGTH);++i)
 			{
 				for(y=startY;y < ANIMATION_FRAME_HEIGHT*(j+1);++y)
 				{
@@ -101,7 +96,7 @@ void Sprite::SetFrameBB()
 					mFrameBB[i+rowCounter+j].height = rect.height - startY;
 				std::cout<<"Frame " << i+j <<" :"<< "x: "<< rect.top << " y:" << rect.left << " w:" << rect.width<<
 					" h:" << rect.height << std::endl;
-				if(x*(i+1) >= mSfSprite->getTexture()->getSize().x)
+				if(x*(i+1) >= mSfSprite.getTexture()->getSize().x)
 				{
 					startX = 0;
 				}
@@ -135,7 +130,6 @@ Sprite *LoadSprite(char* filename)
 	int i;
 	void *rect;
 	Sprite* sprite;
-	sf::Texture *texture = new sf::Texture;
 	for(i = 0; i< MAX_SPRITES;i++)
 	{
 		if(strncmp(filename,SpriteList[i].mFileName,128) == 0)
@@ -155,14 +149,13 @@ Sprite *LoadSprite(char* filename)
 		if(SpriteList[i].mRefCount <= 0)break;
 	}
 	sprite = &SpriteList[i];
-	texture->loadFromFile(filename);
-	sprite->mSfSprite = new sf::Sprite;
-	sprite->mSfSprite->setTexture(*texture,1);
+	sprite->mSfSprite = *ResourceManager::GetmfSprite(filename);
+	sprite->mSfSprite.setTexture(*ResourceManager::GetTexture(filename));
 	sprite->mRefCount +=1;
 
 	//Set Physics Dimensions
-	int l = sprite->mSfSprite->getTexture()->getSize().x / ANIMATION_FRAME_LENGTH;
-	int w = sprite->mSfSprite->getTexture()->getSize().y / ANIMATION_FRAME_LENGTH;
+	int l = sprite->mSfSprite.getTexture()->getSize().x / ANIMATION_FRAME_LENGTH;
+	int w = sprite->mSfSprite.getTexture()->getSize().y / ANIMATION_FRAME_LENGTH;
 
 	rect = malloc(sizeof(sf::IntRect)* l * w);
 	sprite->mFrameBB = (sf::IntRect*)rect;
@@ -170,9 +163,9 @@ Sprite *LoadSprite(char* filename)
 	strcpy(sprite->mFileName,filename);
 
 	//Set Animation Dimensions
-	sprite->mFramesPerLine = sprite->mSfSprite->getTexture()->getSize().x / ANIMATION_FRAME_LENGTH;
-	sprite->mWidth = sprite->mSfSprite->getTexture()->getSize().x;
-	sprite->mHeight = sprite->mSfSprite->getTexture()->getSize().y;
+	sprite->mFramesPerLine = sprite->mSfSprite.getTexture()->getSize().x / ANIMATION_FRAME_LENGTH;
+	sprite->mWidth = sprite->mSfSprite.getTexture()->getSize().x;
+	sprite->mHeight = sprite->mSfSprite.getTexture()->getSize().y;
 
 	//Setup Animation Data
 	sprite->mAnimation.maxFrames = sprite->mFramesPerLine * (sprite->mHeight / ANIMATION_FRAME_HEIGHT);
@@ -180,7 +173,7 @@ Sprite *LoadSprite(char* filename)
 	sprite->mAnimation.mpf = ANIMATION_DEFAULT_MPF;
 	sprite->mAnimation.oscillate = false;
 
-	sprite->SetFrameBB();
+	//sprite->SetFrameBB();
 
 	return &SpriteList[i];
 }
@@ -193,12 +186,10 @@ void Sprite::FreeSprite()
 	}
 	if(mRefCount <= 0)
 	{
-		//delete mSfSprite->getTexture();
-		//delete mSfSprite;
-		//delete mFrameBB;
+		ResourceManager::FreemfSprite(mFileName);
+		delete mFrameBB;
 		strcpy(mFileName ,"\0");
 		mRefCount = 0;
-		mSfSprite = NULL;
 	}
 }
 

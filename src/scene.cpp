@@ -10,11 +10,11 @@
 #include "include\physics.h"
 #include "include\scene.h"
 
-sf::Shader shader;
 ContactListener CLInstance;
 
 Scene::Scene()
 {
+
 	Entity* ent;
 	Box *newBox;
 
@@ -60,14 +60,9 @@ Scene::Scene()
 	poly->init(m_world,CreateVec2D(100,0),CreateVec2D(0,0));
 	ent = CreateEntity();
 	ent->SetBody(poly);
-
-	shader.loadFromFile("shaders/colorShading.frag",sf::Shader::Fragment);
-	if (!shader.isAvailable()) {
-		printf("The shader is not available\n");
-	}
 }
 Scene::~Scene(){
-
+	m_world->~b2World();
 
 }
 void Scene::RemoveEntity(Entity* ent)
@@ -81,9 +76,6 @@ void Scene::Draw(sf::RenderTarget &target)
 	for(int i = 0; i < MAX_ENTITIES;++i)
 	{
 		if(gEntities[i].mBody != nullptr)
-			if(i == 10)
-			target.draw(*gEntities[i].mBody->GetShape(),&shader);
-			else
 			target.draw(*gEntities[i].mBody->GetShape());
 	}
 

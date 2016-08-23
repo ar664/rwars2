@@ -156,10 +156,7 @@ void EntitySystemShutdown()
 	{
 		if(gEntities[i].mInUse)
 		{
-			if(gEntities[i].mSpriteArray)
-			{
 				gEntities[i].Free();
-			}
 		}
 
 	}
@@ -214,8 +211,8 @@ void Entity::Draw(sf::RenderTarget& target)
 		mCurrentFrame / mCurrentSprite->mFramesPerLine * ANIMATION_FRAME_LENGTH,
 		ANIMATION_FRAME_LENGTH,
 		ANIMATION_FRAME_LENGTH);
-	mCurrentSprite->mSfSprite->setTextureRect(rect);
-	target.draw(*mCurrentSprite->mSfSprite,t.getTransform());
+	mCurrentSprite->mSfSprite.setTextureRect(rect);
+	target.draw(mCurrentSprite->mSfSprite,t.getTransform());
 
 	//Update Frames for animating
 	if(!paused && mLastDrawTime)

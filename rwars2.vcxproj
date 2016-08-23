@@ -18,13 +18,13 @@
     <ClCompile Include="src\entity.cpp" />
     <ClCompile Include="src\fgen.cpp" />
     <ClCompile Include="src\globals.cpp" />
-	<ClCompile Include="src\GLSLProgram.cpp" />
     <ClCompile Include="src\graphics.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\matrix.cpp" />
     <ClCompile Include="src\particle.cpp" />
     <ClCompile Include="src\physics.cpp" />
     <ClCompile Include="src\player.cpp" />
+    <ClCompile Include="src\resourcemanager.cpp" />
     <ClCompile Include="src\scene.cpp" />
     <ClCompile Include="src\shape.cpp" />
     <ClCompile Include="src\sprite.cpp" />
@@ -37,7 +37,6 @@
     <ClInclude Include="include\entity.h" />
     <ClInclude Include="include\fgen.h" />
     <ClInclude Include="include\globals.h" />
-	<ClCompile Include="include\GLSLProgram.h" />
     <ClInclude Include="include\graphics.h" />
     <ClCompile Include="include\input.h" />
     <ClInclude Include="include\main.h" />
@@ -45,6 +44,7 @@
     <ClInclude Include="include\particle.h" />
     <ClInclude Include="include\physics.h" />
     <ClInclude Include="include\player.h" />
+	<ClCompile Include="include\resourcemanager.h" />
     <ClInclude Include="include\scene.h" />
     <ClInclude Include="include\shape.h" />
     <ClInclude Include="include\sprite.h" />

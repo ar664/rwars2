@@ -1,10 +1,7 @@
 \\Sprites (In Order of Characters, Platforms, Backgrounds) 
 sprites/Crate.png
-<<<<<<< HEAD
-\\Sounds (In Order of Characters, Songs, other)
-
-=======
+sprites/sprites/rwars_title_pixel.png
  
 \\Sounds (In Order of Characters, Songs, other)
 audio/songs/memory.ogg audio/songs/thunder.wav
->>>>>>> ComponentSystem
+

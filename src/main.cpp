@@ -6,6 +6,7 @@
 #include <SFML/Window.hpp>
 #include <iostream>
 #include <string.h>
+#include "include\resourcemanager.h"
 #include "fgen.h"
 #include "physics.h"
 #include "audio.h"
@@ -25,7 +26,7 @@ Scene *gScene;
 Entity test, test2;
 GameState gGameState;
 
-sf::Texture splashTexture;
+Sprite splashSprite;
 int main(int argc,char *argv[])
 {
 	Start();
@@ -124,19 +125,15 @@ void Start()
 	Init_Graphics(WINDOW_WIDTH,WINDOW_HEIGHT,"RWARS");
 	SpriteListInit();
 	EntitySystemInit();
-	CallbackInitSystem();
+	//CallbackInitSystem();
 	
-	gGameState = Playing;
+	gGameState = Splash;
 	//LoadAssets();
 	gGrid = new Grid(6,6,100);
 	gScene = new Scene;
 	gEntities[10].AddComponent(COMPONENT_PLAYER);
-	CallbackInitSystem();
 	gClock.restart();
-	//Load Splash
-	if(!splashTexture.loadFromFile("sprites/rwars_title_pixel.png"))
-		printf("Failed to load Splash");
-
+	splashSprite = *LoadSprite("sprites/rwars_title_pixel.png");
 	while(!IsExiting())
 		Loop();
 	gRenderWindow.close();
@@ -154,16 +151,20 @@ void Loop()
 	int i;
 	gClock.restart();
 	float frameStart = gClock.getElapsedTime().asSeconds();
-	sf::Sprite splashSprite;
-	splashSprite.setTexture(splashTexture);
-	splashSprite.move(0,WINDOW_HEIGHT/4);
+	splashSprite.mSfSprite.move(0,WINDOW_HEIGHT/4);
 	while(gRenderWindow.isOpen())
 	{
 		gRenderWindow.clear();		//Clears the window
+		while(gRenderWindow.pollEvent(gEvent))
+					{
+						HandleEvent(gEvent);
+						//doubleg
+						//AudioLoop(0);
+					}
 		switch(gGameState)
 		{
 			case Splash:
-				gRenderWindow.draw(splashSprite);
+				gRenderWindow.draw(splashSprite.mSfSprite);
 				if(sf::Keyboard::isKeyPressed(sf::Keyboard::Return))
 					gGameState = Playing;
 				break;
@@ -182,17 +183,12 @@ void Loop()
 					}
 
 					gScene->Draw(gRenderWindow);
-					while(gRenderWindow.pollEvent(gEvent))
-					{
-						HandleEvent(gEvent);
-						//doubleg
-						//AudioLoop(0);
-					}
 					CallbackRunSystem();
 				break;
 			default:
 				break;
 			}
+
 		gRenderWindow.display();
 	}
 

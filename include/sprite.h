@@ -26,7 +26,7 @@ public:
 	int				mFrameBBSet;
 	char			mFileName[128];
 	Animation		mAnimation;
-	sf::Sprite*     mSfSprite;
+	sf::Sprite		mSfSprite;
 	sf::IntRect*	mFrameBB;		//Frame Bounding Box
 	~Sprite(void);
 	void FreeSprite();
