@@ -3,12 +3,28 @@
 #include <vector>
 #include "entity.h"
 #include "shape.h"
-
+#include "include\Box2D\Box2D.h"
 
 const float Gravity_constant = 6.3;
 const float Damping_constant = .99;	//Acts like wind resistance
 
 struct Polygon;
+
+class ContactListener :public b2ContactListener
+{
+public:
+	virtual void BeginContact(b2Contact* contact);
+	virtual void EndContact(b2Contact* contact);
+    // Get the first fixture in this contact
+    b2Fixture* GetFixtureA();
+  
+    // Get the second fixture in this contact
+    b2Fixture* GetFixtureB();
+
+
+};
+
+
 /**
 *This struct stores information about 2 entities that collided and is used to 
 *physics updates

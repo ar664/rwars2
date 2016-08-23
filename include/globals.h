@@ -14,7 +14,7 @@
 #define WINDOW_WIDTH		800
 #define WINDOW_HEIGHT		600
 
-
+#define	GRAVITY				9.8f
 #define PPM	30.0f
 #define MPP	(1.0f/PIXELS_PER_METER)
 
@@ -33,7 +33,6 @@ extern sf::Clock gClock;
 extern const int gFrameRate;
 extern float deltaTime;
 extern Scene *gScene;
-
 
 
 

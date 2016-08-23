@@ -18,6 +18,7 @@
     <ClCompile Include="src\entity.cpp" />
     <ClCompile Include="src\fgen.cpp" />
     <ClCompile Include="src\globals.cpp" />
+	<ClCompile Include="src\GLSLProgram.cpp" />
     <ClCompile Include="src\graphics.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\matrix.cpp" />
@@ -36,6 +37,7 @@
     <ClInclude Include="include\entity.h" />
     <ClInclude Include="include\fgen.h" />
     <ClInclude Include="include\globals.h" />
+	<ClCompile Include="include\GLSLProgram.h" />
     <ClInclude Include="include\graphics.h" />
     <ClCompile Include="include\input.h" />
     <ClInclude Include="include\main.h" />

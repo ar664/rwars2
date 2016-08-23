@@ -19,16 +19,13 @@
 
 const char *ANIMATION_IDLE_STR = "idle";
 float gDeltaTime = (float)1/(float)gFrameRate;
-float deltaTime = 0;
-int gMouseX = 0,gMouseY = 0;
 char *test_files[] = {"sprites/Crate.png", 0};
+float deltaTime = 0;
 Scene *gScene;
-Entity* ent1, *ent2,*ent3 ,*ent4,*ent5,*ent6;
 Entity test, test2;
 GameState gGameState;
-//Character *test_char;
-Polygon *p,*p2,*p3;
 
+sf::Texture splashTexture;
 int main(int argc,char *argv[])
 {
 	Start();
@@ -127,12 +124,19 @@ void Start()
 	Init_Graphics(WINDOW_WIDTH,WINDOW_HEIGHT,"RWARS");
 	SpriteListInit();
 	EntitySystemInit();
+	CallbackInitSystem();
+	
 	gGameState = Playing;
 	//LoadAssets();
 	gGrid = new Grid(6,6,100);
 	gScene = new Scene;
+	gEntities[10].AddComponent(COMPONENT_PLAYER);
 	CallbackInitSystem();
 	gClock.restart();
+	//Load Splash
+	if(!splashTexture.loadFromFile("sprites/rwars_title_pixel.png"))
+		printf("Failed to load Splash");
+
 	while(!IsExiting())
 		Loop();
 	gRenderWindow.close();
@@ -150,39 +154,52 @@ void Loop()
 	int i;
 	gClock.restart();
 	float frameStart = gClock.getElapsedTime().asSeconds();
-	
+	sf::Sprite splashSprite;
+	splashSprite.setTexture(splashTexture);
+	splashSprite.move(0,WINDOW_HEIGHT/4);
 	while(gRenderWindow.isOpen())
 	{
 		gRenderWindow.clear();		//Clears the window
-		//	Handle Physics -- This is so that there is a fixed update for physics
-
-		accumulator += gClock.getElapsedTime().asSeconds() - frameStart; // Store Time of last frame
-		frameStart = gClock.getElapsedTime().asSeconds();				// Store Time of new frame
-		if(accumulator > 0.2f)
-			accumulator = 0.2f;
-		if(accumulator > gDeltaTime)
+		switch(gGameState)
 		{
-			deltaTime = gClock.getElapsedTime().asSeconds() /frameStart;
-			gScene->Update();
-			accumulator -= gDeltaTime;
-		}
+			case Splash:
+				gRenderWindow.draw(splashSprite);
+				if(sf::Keyboard::isKeyPressed(sf::Keyboard::Return))
+					gGameState = Playing;
+				break;
+			case Playing:
+					//	Handle Physics -- This is so that there is a fixed update for physics
 
-		gScene->Draw(gRenderWindow);
-		gRenderWindow.display();						//Displays whatever is drawn to the window
-		while(gRenderWindow.pollEvent(gEvent))
-		{
-			HandleEvent(gEvent);
-			//doubleg
-			//AudioLoop(0);
-		}
-		//CallbackRunSystem();
+					accumulator += gClock.getElapsedTime().asSeconds() - frameStart; // Store Time of last frame
+					frameStart = gClock.getElapsedTime().asSeconds();				// Store Time of new frame
+					if(accumulator > 0.2f)
+						accumulator = 0.2f;
+					if(accumulator > gDeltaTime)
+					{
+						deltaTime = gClock.getElapsedTime().asSeconds() /frameStart;
+						gScene->Update();
+						accumulator -= gDeltaTime;
+					}
+
+					gScene->Draw(gRenderWindow);
+					while(gRenderWindow.pollEvent(gEvent))
+					{
+						HandleEvent(gEvent);
+						//doubleg
+						//AudioLoop(0);
+					}
+					CallbackRunSystem();
+				break;
+			default:
+				break;
+			}
+		gRenderWindow.display();
 	}
 
 }
 void HandleEvent(sf::Event Event)
 {
 	//Close window
-	//gScene->Players[ent1->mID].HandleInput(Event);
 	switch(Event.type)
 	{
 	case sf::Event::Closed:
@@ -191,17 +208,6 @@ void HandleEvent(sf::Event Event)
 		break;
 	default:
 		break;
-	}
-}
-void HandleInput()
-{
-	int i;
-	for(i = 0;i < numEntities;i++ )
-	{
-		if(gEntities[i].HasComponent(COMPONENT_PLAYER))
-		{
-			gScene->Players[gEntities[i].mID].HandleInput();
-		}
 	}
 }
 

@@ -41,7 +41,4 @@ enum GameState{
 void Start();
 bool IsExiting();
 
-void HandleInput();
-
-
 #endif

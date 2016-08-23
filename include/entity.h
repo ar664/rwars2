@@ -61,11 +61,11 @@ private:
 	int					mNextFrameTime;
 	int					mThinkRate;
 	int					mSpeed;
+	int					mNumContacts;
+
 	Vec2D				mDimension;
 	Cell*				mCell;
-	void				ResolveVelocity(Manifold *m);
-
-
+	
 public:
 	sf::Int64			mMask;
 	int					mID;
@@ -110,13 +110,17 @@ public:
 	Vec2D			GetDimension();
 	Vec2D			GetVelocity();
 	Vec2D			GetPosition();
+	pShape*			GetShape(){return mBody;};
 	//Setters
 	void			SetCurrentAnimation(int anim);
 	void			SetCell(Cell* cell);
 	void			SetPosition(Vec2D vec);
 	void			SetDimensions(Vec2D vec);
 	void			SetVelocity(Vec2D vec);
-
+	void			IncrementContact() { mNumContacts++; };
+	void			DecrementContact() { mNumContacts--; };
+	void			ChangeBodyColor(sf::Color color);
+	void			SetBody(pShape* shape);
 	//Constructors
 	void	LoadSprites(char **SpriteFiles);
 	void	LoadSounds(char **SoundFiles);

@@ -5,6 +5,8 @@
 #include "include\components.h"
 
 
+
+
 class Scene
 {
 public:
@@ -13,10 +15,11 @@ public:
 	PlayerComponent			Players		[MAX_ENTITIES];
 	void Draw(sf::RenderTarget &target);
 	void Update();
-
+	void RemoveEntity(Entity* ent);
 private:
 	Entity *mEntityList;
 	b2World* m_world;
+	std::vector<Entity*> EntitiesScheduledForRemoval;
 };
 
 #endif

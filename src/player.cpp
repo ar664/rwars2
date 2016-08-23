@@ -27,11 +27,13 @@
 //
 void PlayerComponent::HandleInput()
 {
-	/*
+	
 	if (sf::Keyboard::isKeyPressed(KEY_MOVE_RIGHT))
 	{
 		printf("MoveRight\n");
-		gEntities[mID].SetVelocity(CreateVec2D(6,0));
+		gEntities[mID].mBody->GetBody()->SetLinearVelocity(b2Vec2(2,
+			gEntities[mID].mBody->GetBody()->GetLinearVelocity().y));
+
 	}	
 	if (sf::Keyboard::isKeyPressed(KEY_MOVE_UP))
 	{
@@ -43,12 +45,14 @@ void PlayerComponent::HandleInput()
 	}
 	if (sf::Keyboard::isKeyPressed(KEY_MOVE_LEFT))
 	{
-			gEntities[mID].mBody->SetVelocity(CreateVec2D(-6,0));
+		gEntities[mID].mBody->GetBody()->SetLinearVelocity(b2Vec2(-2,
+			gEntities[mID].mBody->GetBody()->GetLinearVelocity().y));
+
 	}
 	if (sf::Keyboard::isKeyPressed(KEY_JUMP))
 	{
-			gEntities[mID].mBody->SetVelocity(CreateVec2D(gEntities[mID].mBody->GetVelocity().x
-				,-6));
+		gEntities[mID].mBody->GetBody()->SetLinearVelocity(b2Vec2(gEntities[mID].mBody->GetBody()->GetLinearVelocity().x,
+			-5));	
 	}
 	/*
 	switch(sf::Keyboard::)

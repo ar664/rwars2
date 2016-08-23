@@ -58,7 +58,6 @@ void Box::init(b2World* world,const Vec2D position,const Vec2D dimensions)
 	mBody = world->CreateBody(&mBodyDef);
 	mBody->CreateFixture(&mFixture);
 	mShape->setPosition(mBody->GetPosition().x*PPM, mBody->GetPosition().y*PPM);
-	sprite = LoadSprite("sprites/Crate.png");
 
 }
 
@@ -97,7 +96,6 @@ void Polygon::init(b2World* world,const Vec2D position,const Vec2D dimensions)
 	mBody = world->CreateBody(&mBodyDef);
 	mBody->CreateFixture(&mFixture);
 	mShape->setPosition(mBody->GetPosition().x*PPM, mBody->GetPosition().y*PPM);
-	sprite = LoadSprite("sprites/Crate.png");
 }
 
 void pShape::SetPoints(sf::Vector2f* points,int count)
@@ -110,3 +108,4 @@ void pShape::SetPoints(sf::Vector2f* points,int count)
 	}
 
 }
+

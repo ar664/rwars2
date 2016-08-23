@@ -14,10 +14,10 @@ public:
 	b2Body*				GetBody(){return mBody;};
 	b2FixtureDef		GetFixture(){return mFixture;};
 	sf::Shape*			GetShape(){return mShape;};
-	Sprite*				sprite;
 	Vec2D				GetDimensions(){return mDimensions;};
 	int getN()			{return n;};
 	void				SetPoints(sf::Vector2f* points,int count);
+
 protected:
 	b2Body*				mBody;
 	b2FixtureDef		mFixture;

@@ -7,6 +7,41 @@
 
 Grid* gGrid;
 
+void ContactListener::BeginContact(b2Contact* contact) {
+  
+      //check if fixture A was a Entity
+      void* bodyUserData = contact->GetFixtureA()->GetBody()->GetUserData();
+      if ( bodyUserData )
+	  {
+        static_cast<Entity*>( bodyUserData )->IncrementContact();
+		static_cast<Entity*>( bodyUserData )->ChangeBodyColor(sf::Color(0,255,0,255));
+	  }
+      //check if fixture B was a Entity
+      bodyUserData = contact->GetFixtureB()->GetBody()->GetUserData();
+      if ( bodyUserData )
+	  {
+        static_cast<Entity*>( bodyUserData )->IncrementContact();
+		static_cast<Entity*>( bodyUserData )->ChangeBodyColor(sf::Color(0,255,0,255));
+	  }
+    };
+
+void ContactListener::EndContact(b2Contact* contact) {
+  
+      //check if fixture A was a Entity
+      void* bodyUserData = contact->GetFixtureA()->GetBody()->GetUserData();
+      if ( bodyUserData )
+	  {
+        static_cast<Entity*>( bodyUserData )->DecrementContact();
+	  }
+      //check if fixture B was a Entity
+      bodyUserData = contact->GetFixtureB()->GetBody()->GetUserData();
+      if ( bodyUserData )
+	  {
+        static_cast<Entity*>( bodyUserData )->DecrementContact();
+
+	  }
+  
+    }
 /**
  * @brief Constructer for Grid
  * @author	Jason

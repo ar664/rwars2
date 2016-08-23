@@ -67,6 +67,7 @@ void Entity::Free()
 	}
 	if(mBody)
 	{
+		mBody->GetBody()->GetWorld()->DestroyBody(mBody->GetBody());
 		free(mBody);
 	}
 	//Reset you own memory
@@ -298,71 +299,16 @@ void Entity::SetCurrentAnimation(int anim)
 	mCurrentSprite = mSpriteArray[anim];
 	mCurrentFrame = 0;
 }
-/*
-
-Vec2D RigidBody::GetVelocity()
+void Entity::ChangeBodyColor(sf::Color color)
 {
-	return velocity;
-}
-void RigidBody::SetVelocity(Vec2D vec)
-{
-	velocity = vec;
-}
-Vec2D RigidBody::GetAcceleration()
-{
-	return acceleration;
-}
-RigidBody::RigidBody(rShape* s)
-{
-	s->rbody = this;
-	shape = s;
-	isAwake = 1;
-	SetVelocity(CreateVec2D(0,0));
-	angularVelocity = 0;
-	torque = 0;
-	force = CreateVec2D( 0, 0 );
-	restitution =0;
-	staticFriction = .03;
-	dynamicFriction = .03;
-	zConstraint = 0;
-	//shape->Initialize( );
-
-}
-void RigidBody::SetAcceleration(Vec2D vec)
-{
-	acceleration = vec;
-}
-void RigidBody::SetOrientation(float radians)
-{
-	shape->SetOrientation(radians);
-	orientation = radians;
+	mBody->GetShape()->setFillColor(color);
 }
 
-void RigidBody::SetPosition(Vec2D vec)
+void Entity::SetBody(pShape* shape)
 {
-	position = vec;
+	mBody = shape;
+	mBody->GetBody()->SetUserData(this);
 }
-Vec2D RigidBody::GetPosition()
-{
-	return position;
-}
-void RigidBody::SetAngVelocity(float i)
-{
-	angularVelocity = i;
-}
-
-float RigidBody::GetAngVelocity()
-{
-	return angularVelocity;
-}
-void RigidBody::SetColor(float red,float green , float blue)
-{
-	r = red;
-	g = green;
-	b = blue;
-
-}*/
-
 bool Entity::HasComponent(sf::Int64 component)
 {
 	if (mMask & component == component)
