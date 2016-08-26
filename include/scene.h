@@ -5,6 +5,9 @@
 #include "include\components.h"
 
 
+/**
+* This class is used to manage Entities and components.
+*/
 
 
 class Scene
@@ -16,6 +19,7 @@ public:
 	void Draw(sf::RenderTarget &target);
 	void Update();
 	void RemoveEntity(Entity* ent);
+	b2World*		GetWorld(){return m_world;};
 private:
 	Entity *mEntityList;
 	b2World* m_world;

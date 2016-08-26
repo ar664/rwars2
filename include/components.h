@@ -9,7 +9,10 @@ typedef enum
 	COMPONENT_PLAYER = 1 << 0,
 	COMPONENT_ENTITY = 1 << 1
 }ComponentMask;
-
+/**
+*@brief This is the parent component class. Instead of using Inheritence, Entities will contain Components
+*		to define what type of Entity they are
+*/
 
 class Component
 {
@@ -18,6 +21,9 @@ public:
 	~Component(void);
 
 };
+/**
+*@brief This is the PlayerComponent which hosts all the methods and variables that define a player
+*/
 
 class PlayerComponent : public Component
 {
@@ -64,6 +70,11 @@ public:
 	int GetState();
 
 };
+
+/**
+* This is the Controls for a player
+*		Later i have to make it so that its loaded from a file
+*/
 static const sf::Keyboard::Key KEY_ATTACK		=	sf::Keyboard::E;
 static const sf::Keyboard::Key KEY_JUMP			=	sf::Keyboard::Space;
 static const sf::Keyboard::Key KEY_MOVE_LEFT		=	sf::Keyboard::A;

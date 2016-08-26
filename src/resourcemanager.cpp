@@ -76,13 +76,15 @@ mfSpriteCache* ResourceManager::GetmfSpriteCache()
 }
 void ResourceManager::FreeCaches()
 {
+	{
 	mfSpriteCache* spriteCache = GetmfSpriteCache();
 	auto it = spriteCache->GetSpriteMap()->begin();
 	 while(it!= spriteCache->GetSpriteMap()->end()) {
 		 ResourceManager::FreemfSprite(it->first);
 		 it = spriteCache->GetSpriteMap()->begin();
 	 }
-	 
+
+}
 }
 sf::Sprite* mfSpriteCache::GetmfSprite(char* filepath)
 {

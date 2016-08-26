@@ -26,6 +26,7 @@
 extern int numSprites;
 extern int numEntities;
 extern float gDeltaTime;
+extern const int gFrameRate;
 extern Grid* gGrid;
 extern sf::RenderWindow gRenderWindow;
 extern sf::Event gEvent;

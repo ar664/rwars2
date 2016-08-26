@@ -1,3 +1,4 @@
+#include "include\globals.h"
 #include "shape.h"
 
 
@@ -37,7 +38,7 @@ Polygon::~Polygon()
 
 }
 
-void Box::init(b2World* world,const Vec2D position,const Vec2D dimensions)
+void Box::init(b2World* world,const Vec2D position,const Vec2D dimensions,bool fixedRot)
 {
 	mShape = new sf::RectangleShape(sf::Vector2f(dimensions.x,dimensions.y));
 	mShape->setOrigin(dimensions.x/2,dimensions.y/2);
@@ -45,13 +46,14 @@ void Box::init(b2World* world,const Vec2D position,const Vec2D dimensions)
 	
 	mDimensions = dimensions;
 	//Make Body
+	mBodyDef.fixedRotation = fixedRot;
 	mBodyDef.type = b2_dynamicBody;
 	mBodyDef.angle = 0;
 	mBodyDef.position.Set(position.x/PPM,position.y/PPM-n*5/PPM);
 	//Create Fixture
 	mBodyShape.SetAsBox((dimensions.x/2)/PPM,(dimensions.y/2)/PPM);
 	
-	
+
 	mFixture.shape = &mBodyShape;
 	mFixture.density = 1.0f;
 	mFixture.friction = 0.3f;
@@ -61,7 +63,30 @@ void Box::init(b2World* world,const Vec2D position,const Vec2D dimensions)
 
 }
 
-void Polygon::init(b2World* world,const Vec2D position,const Vec2D dimensions)
+void Box::UpdateBoxShape(Vec2D dimensions)
+{
+	mDimensions = dimensions;
+	mBody->DestroyFixture(mBody->GetFixtureList());
+
+	b2PolygonShape polygonShape;
+	polygonShape.SetAsBox((dimensions.x/2)/PPM,(dimensions.y/2)/PPM);
+	mBodyShape = polygonShape;
+
+
+	b2FixtureDef Fixture;
+
+	Fixture.shape = &mBodyShape;
+	Fixture.density = 1.0f;
+	Fixture.friction = 0.3f;
+	mFixture = Fixture;
+	
+	mBody->CreateFixture(&mFixture);
+	
+
+}
+
+
+void Polygon::init(b2World* world,const Vec2D position,const Vec2D dimensions,bool fixedRot)
 {
 
 	if(mPoints == nullptr)
@@ -77,9 +102,10 @@ void Polygon::init(b2World* world,const Vec2D position,const Vec2D dimensions)
 	}
 	mShape = convex;
 	mShape->setOrigin(0,0);
-	mShape->setFillColor(sf::Color(0,255,0,255));
+	mShape->setFillColor(sf::Color(255,0,0,50));
 	//Make Body
 	mBodyDef.type = b2_dynamicBody;
+	//mBodyDef.fixedRotation = true;
 	mBodyDef.angle = 0;
 	mBodyDef.position.Set(position.x/PPM,position.y/PPM-n*5/PPM);
 	//Create Fixture

@@ -127,13 +127,16 @@ void Start()
 	EntitySystemInit();
 	//CallbackInitSystem();
 	
-	gGameState = Splash;
+	gGameState =Playing;
 	//LoadAssets();
 	gGrid = new Grid(6,6,100);
 	gScene = new Scene;
 	gEntities[10].AddComponent(COMPONENT_PLAYER);
 	gClock.restart();
+	Sprite sprite ;
 	splashSprite = *LoadSprite("sprites/rwars_title_pixel.png");
+	
+	SetData(gEntities[10].mCurrentSprite,"BoxData/Gill-Sawfish");
 	while(!IsExiting())
 		Loop();
 	gRenderWindow.close();
@@ -149,46 +152,45 @@ void Loop()
 {
 	float accumulator = 0;				//For Physics Update
 	int i;
-	gClock.restart();
 	float frameStart = gClock.getElapsedTime().asSeconds();
-	splashSprite.mSfSprite.move(0,WINDOW_HEIGHT/4);
+	splashSprite.mSfSprite->move(0,WINDOW_HEIGHT/4);
 	while(gRenderWindow.isOpen())
 	{
 		gRenderWindow.clear();		//Clears the window
+		//For Fixed Physics updates
+		float currentTime = gClock.getElapsedTime().asSeconds();
+		accumulator += gClock.getElapsedTime().asSeconds() - frameStart; // Store Time of last frame
+		frameStart = currentTime;				// Store Time of new frame
+		if(accumulator > 0.2f)
+			accumulator = 0.2f;
+		
 		while(gRenderWindow.pollEvent(gEvent))
 					{
 						HandleEvent(gEvent);
 						//doubleg
 						//AudioLoop(0);
 					}
+
 		switch(gGameState)
 		{
 			case Splash:
-				gRenderWindow.draw(splashSprite.mSfSprite);
+				gRenderWindow.draw(*splashSprite.mSfSprite);
 				if(sf::Keyboard::isKeyPressed(sf::Keyboard::Return))
 					gGameState = Playing;
 				break;
 			case Playing:
-					//	Handle Physics -- This is so that there is a fixed update for physics
-
-					accumulator += gClock.getElapsedTime().asSeconds() - frameStart; // Store Time of last frame
-					frameStart = gClock.getElapsedTime().asSeconds();				// Store Time of new frame
-					if(accumulator > 0.2f)
-						accumulator = 0.2f;
-					if(accumulator > gDeltaTime)
+					while(accumulator >= gDeltaTime)
 					{
-						deltaTime = gClock.getElapsedTime().asSeconds() /frameStart;
+						deltaTime = accumulator/gDeltaTime;
 						gScene->Update();
 						accumulator -= gDeltaTime;
 					}
-
 					gScene->Draw(gRenderWindow);
 					CallbackRunSystem();
 				break;
 			default:
 				break;
 			}
-
 		gRenderWindow.display();
 	}
 
@@ -206,5 +208,4 @@ void HandleEvent(sf::Event Event)
 		break;
 	}
 }
-
 

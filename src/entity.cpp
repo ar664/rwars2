@@ -2,6 +2,8 @@
 #include <SFML/Audio.hpp>
 #include <string.h>
 #include <malloc.h>
+#include "include\rapidjson\filereadstream.h"
+#include "include\rapidjson\document.h"
 #include "shape.h"
 #include "globals.h"
 #include "physics.h"
@@ -10,6 +12,9 @@
 Entity *gEntities = NULL;
 int numEntities = 0;
 bool	paused = false;		//temp variable until pause gamestate is a thing
+
+using namespace rapidjson;
+
 
 void Entity::LoadSprites(char **SpriteFiles)
 {
@@ -51,7 +56,32 @@ void Entity::LoadSounds(char** SoundFiles)
 	}
 	mSounds[i] = NULL;
 }
+void Entity::SetSpriteArray(char* filePath)
+{
+	Document document;
+	char fileName[155];
+	char spriteFileName[155];
+	int numFrames;
 
+	strcpy(fileName,filePath);
+	strcat(fileName,".json");
+	
+	FILE *file = fopen(fileName,"rb");
+
+	char buffer[65536];
+	FileReadStream frs(file,buffer,sizeof(buffer));
+	//Parse the FileReadStream and close file
+	document.ParseStream(frs);
+	fclose(file);
+	assert(document.IsObject());
+	assert(document.HasMember("Assets"));
+	
+
+}
+
+/**
+*@brief Frees an Entity and its pointers
+*/
 void Entity::Free()
 {
 	int i;
@@ -73,6 +103,10 @@ void Entity::Free()
 	//Reset you own memory
 	memset(this, 0, sizeof(Entity));
 }
+/**
+*@brief Returns a free Entity from an array of Entities
+*@return	Entity Pointer
+*/
 Entity* CreateEntity()
 {
 	int i;
@@ -90,25 +124,10 @@ Entity* CreateEntity()
 	}
 
 }
-
-Entity* EntityGetFree()
-{
-	int i;
-	if(!gEntities)
-	{
-		return NULL;
-	}
-
-	for(i = 0; i < MAX_ENTITIES; i++)
-	{
-		if(!gEntities[i].mInUse)
-		{
-			return &gEntities[i];
-		}
-	}
-	return NULL;
-}
-
+/**
+*@brief Allocates Memory for Entity Array
+*@returns	True if success, false if failed
+*/
 bool EntitySystemInit()
 {
 	if(gEntities)
@@ -144,7 +163,9 @@ void EntitySystemStep()
 		}
 	}
 }
-
+/**
+*@brief	 Calls each Entities Free function
+*/
 void EntitySystemShutdown()
 {
 	int i;
@@ -166,53 +187,32 @@ void Entity::SetCell(Cell* cell)
 {
 	mCell = cell;
 }
-/*
-void Entity::SetPosition(Vec2D vec)
-{
-	if(mBody != nullptr)
-	{
-		mBody->SetPosition(vec);
-	}
-}
-
-Vec2D Entity::GetPosition()
-{
-	if(mBody != nullptr)
-	{
-		return mBody->GetPosition();
-	}
-}
-void Entity::SetDimensions(Vec2D vec)
-{
-	mDimension.x = vec.x;
-	mDimension.y= vec.y;
-}
-
-void Entity::SetVelocity(Vec2D vec)
-{
-	if(mBody != nullptr)
-		mBody->velocity = vec;
-}
+/**
+*@brief Draws the players sprite at the given transform
+*@param Window to draw on
 */
 void Entity::Draw(sf::RenderTarget& target)
 {
 	int delta = 0;
 	sf::Transformable t;
-	//t.setPosition(mBody->position.x,mBody->position.y);
-	if(!mSpriteArray)
-	{
-		return;
-	}
-	if(!mCurrentSprite)
-	{
-		mCurrentSprite = mSpriteArray[0];
-	}
+	t.setPosition(mBody->GetBody()->GetPosition().x*PPM-(mCurrentSprite->mFrameBB[0].left)-mBody->GetDimensions().x/2,
+		mBody->GetBody()->GetPosition().y*PPM-(mCurrentSprite->mFrameBB[0].top)-mBody->GetDimensions().y/2);
+	//mBody->GetBodyShape().SetAsBox((mCurrentSprite->mFrameBB[mCurrentFrame].width)/PPM,
+		//(mCurrentSprite->mFrameBB[mCurrentFrame].height)/PPM);
+	//if(!mSpriteArray)
+	//{
+	//	return;
+	//}
+	//if(!mCurrentSprite)
+	//{
+	//	mCurrentSprite = mSpriteArray[0];
+	//}
 	sf::IntRect rect(mCurrentFrame % mCurrentSprite->mFramesPerLine * ANIMATION_FRAME_LENGTH,
 		mCurrentFrame / mCurrentSprite->mFramesPerLine * ANIMATION_FRAME_LENGTH,
 		ANIMATION_FRAME_LENGTH,
 		ANIMATION_FRAME_LENGTH);
-	mCurrentSprite->mSfSprite.setTextureRect(rect);
-	target.draw(mCurrentSprite->mSfSprite,t.getTransform());
+	mCurrentSprite->mSfSprite->setTextureRect(rect);
+	target.draw(*mCurrentSprite->mSfSprite,t.getTransform());
 
 	//Update Frames for animating
 	if(!paused && mLastDrawTime)
@@ -223,7 +223,7 @@ void Entity::Draw(sf::RenderTarget& target)
 	mNextFrameTime -= delta;
 	if(mNextFrameTime <= 0)
 	{
-		if( mCurrentFrame < mCurrentSprite->mAnimation.maxFrames -1)
+		if( mCurrentFrame < mCurrentSprite->mAnimation.maxFrames -2)
 		{
 			mCurrentFrame++;
 		} else
@@ -245,11 +245,20 @@ Cell* Entity::GetCell()
 	return mCell;
 }
 //initially this is going to be a void virtual because different entities will different physics behaviors
+
+/**
+*@brief This updates info for physics and whatnot
+*/
 void Entity::Update(float deltaTime)
 {
+		Vec2D dim = CreateVec2D(gEntities[10].mCurrentSprite->mFrameBB[gEntities[10].mCurrentFrame].width,
+				gEntities[10].mCurrentSprite->mFrameBB[gEntities[10].mCurrentFrame].height);
+
+		static_cast<Box*>(gEntities[10].mBody)->UpdateBoxShape(dim);
+
 		//PrePhysics
-		mBody->GetShape()->setRotation( mBody->GetBody()->GetAngle()*(180/3.14159265359)  );
-		mBody->GetShape()->setPosition( mBody->GetBody()->GetPosition().x*PPM, mBody->GetBody()->GetPosition().y*PPM);
+		//mBody->GetShape()->setRotation( mBody->GetBody()->GetAngle()*(180/3.14159265359)  );
+		//mBody->GetShape()->setPosition( mBody->GetBody()->GetPosition().x*PPM, mBody->GetBody()->GetPosition().y*PPM);
 		//Grid Detection via Cells
 		Cell *newCell = gGrid->getCell(CreateVec2D(getPosition().x,getPosition().y));
 		if(newCell != GetCell())
@@ -266,16 +275,8 @@ void Entity::Update(float deltaTime)
 		}
 }
 
-/*
-Vec2D Entity::GetDimension()
-{
-	return mDimension;
-}
-
-Vec2D Entity::GetVelocity()
-{
-	return mBody->velocity;
-}
+/**
+*@brief Used to set the current Animation 
 */
 void Entity::SetCurrentAnimation(int anim)
 {
@@ -296,16 +297,29 @@ void Entity::SetCurrentAnimation(int anim)
 	mCurrentSprite = mSpriteArray[anim];
 	mCurrentFrame = 0;
 }
+/**
+*@brief This is used to change the color of the body.
+*		This is mostly used for debugging purposes
+*@param The color
+*/
 void Entity::ChangeBodyColor(sf::Color color)
 {
 	mBody->GetShape()->setFillColor(color);
 }
-
+/**
+*@brief Takes in a shape that contains the body for physics
+*@param The body/shape
+*/
 void Entity::SetBody(pShape* shape)
 {
 	mBody = shape;
 	mBody->GetBody()->SetUserData(this);
 }
+/**
+*@brief Checks to see if this entity contains this component
+*@param The component
+*@return true if it has, false if it doesnt
+*/
 bool Entity::HasComponent(sf::Int64 component)
 {
 	if (mMask & component == component)
@@ -314,6 +328,10 @@ bool Entity::HasComponent(sf::Int64 component)
 		return false;
 
 }
+/**
+*@brief Adds a component to the Entities component Mask
+*@param The component ENUM
+*/
 void Entity::AddComponent(sf::Int64 component)
 {
 	if(gScene != nullptr)

@@ -9,7 +9,10 @@ const float Gravity_constant = 6.3;
 const float Damping_constant = .99;	//Acts like wind resistance
 
 struct Polygon;
-
+/**
+* This Class overiddes some of Box2d's functions to define behaviors
+*	On contact and at the end of contact
+*/
 class ContactListener :public b2ContactListener
 {
 public:

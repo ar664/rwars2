@@ -9,6 +9,7 @@
 
 
 class pShape;
+class Sprite;
 struct rShape;
 struct Cell;
 struct Manifold;
@@ -42,42 +43,31 @@ class Grid;
  *		*mCallbacks		-	*This may be neccessary for some entities that want to make a specific action happen at the end of certain sounds.
  */
 
-/**
-* RigidBody struct used for physics calculations
-*	float		mass			-	Entities with infinite mass have a mass of 0
-*	Vec2D		velocity		-	Every physics update, this will be used in conjunction with other forces to move the body
-*	Vec2D		force			-	This is the amount of force applied to the object by external forces
-*	float		staticFriction
-*	float		dynamicFriction
-*	*Note that rigidBodys have two frictions. One is for when the object is at rest and the other is used when the 
-*		object is in motion
-*	float		restitution		-	Used for Bounce(higher the value,the higher the bounce).Values over 20 start to get wierd bounce behavior
-*	float		density			-	Not being used at the moment but may switch to it inorder to determine mass
-*/
+
 class Entity: public sf::Transformable 
 {
 private:
-	sf::Uint32			mLastDrawTime;
-	int					mNextFrameTime;
-	int					mThinkRate;
-	int					mSpeed;
-	int					mNumContacts;
+	sf::Uint32				mLastDrawTime;
+	int						mNextFrameTime;
+	int						mThinkRate;
+	int						mSpeed;
+	int						mNumContacts;
 
-	Vec2D				mDimension;
-	Cell*				mCell;
+	Vec2D					mDimension;
+	Cell*					mCell;
 	
 public:
-	sf::Int64			mMask;
-	int					mID;
-	int					mInUse;
-	int					mCellIndex;
+	sf::Int64				mMask;
+	int						mID;
+	int						mInUse;
+	int						mCellIndex;
 	
-	int					mNextThinkTime;
-	int					mCurrentFrame;
-	int					mNumSprites;
-	Sprite**			mSpriteArray;
-	Sprite*				mCurrentSprite;	
-
+	int						mNextThinkTime;
+	int						mCurrentFrame;
+	int						mNumSprites;
+	Sprite**				mSpriteArray;
+	std::map<char*,Sprite*>	mSpriteMap;
+	Sprite*					mCurrentSprite;	
 	//Box2D Stuff
 	pShape*				mBody;
 
@@ -121,6 +111,7 @@ public:
 	void			DecrementContact() { mNumContacts--; };
 	void			ChangeBodyColor(sf::Color color);
 	void			SetBody(pShape* shape);
+	void			SetSpriteArray(char* filePath);
 	//Constructors
 	void	LoadSprites(char **SpriteFiles);
 	void	LoadSounds(char **SoundFiles);

@@ -6,7 +6,10 @@
 #include "physics.h"
 
 Grid* gGrid;
-
+/**
+*@brief This overides Box2Ds event listener, detects contact between two bodies
+*@param The contact data
+*/
 void ContactListener::BeginContact(b2Contact* contact) {
   
       //check if fixture A was a Entity
@@ -14,17 +17,18 @@ void ContactListener::BeginContact(b2Contact* contact) {
       if ( bodyUserData )
 	  {
         static_cast<Entity*>( bodyUserData )->IncrementContact();
-		static_cast<Entity*>( bodyUserData )->ChangeBodyColor(sf::Color(0,255,0,255));
 	  }
       //check if fixture B was a Entity
       bodyUserData = contact->GetFixtureB()->GetBody()->GetUserData();
       if ( bodyUserData )
 	  {
         static_cast<Entity*>( bodyUserData )->IncrementContact();
-		static_cast<Entity*>( bodyUserData )->ChangeBodyColor(sf::Color(0,255,0,255));
 	  }
     };
-
+/**
+*@brief This overides Box2Ds event listener, detects contact between two bodies
+*@param The contact data
+*/
 void ContactListener::EndContact(b2Contact* contact) {
   
       //check if fixture A was a Entity

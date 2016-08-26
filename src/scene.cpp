@@ -44,22 +44,17 @@ Scene::Scene()
 		ent = CreateEntity();
 		newBox = new Box();
 		newBox->init(m_world,CreateVec2D(xDist(randGenerator),yDist(randGenerator))
-			,CreateVec2D(50,20));
+			,CreateVec2D(50,20),false);
 		ent->SetBody(newBox);
 
 	}
-	Polygon* poly = new Polygon();
-	sf::Vector2f points[6];
-	points[0] = sf::Vector2f(0,0);
-	points[1] = sf::Vector2f(10,0);
-	points[2] = sf::Vector2f(20,10);
-	points[3] = sf::Vector2f(20,30);
-	points[4] = sf::Vector2f(0,30);
-	points[5] = sf::Vector2f(-10,20);
-	poly->SetPoints(points,6);
-	poly->init(m_world,CreateVec2D(100,0),CreateVec2D(0,0));
 	ent = CreateEntity();
-	ent->SetBody(poly);
+	newBox = new Box();
+	newBox->init(m_world,CreateVec2D(100,100)
+		,CreateVec2D(114,114),true);
+	ent->SetBody(newBox);
+	//SetData(ent->mSpriteArray,"Gill-Sawfish");
+	ent->mCurrentSprite = LoadSprite("sprites/Gill-Sawfish/idle.png");
 }
 Scene::~Scene(){
 	m_world->~b2World();
@@ -72,11 +67,34 @@ void Scene::RemoveEntity(Entity* ent)
 
 void Scene::Draw(sf::RenderTarget &target)
 {
-	sf::Transformable t;
 	for(int i = 0; i < MAX_ENTITIES;++i)
 	{
-		if(gEntities[i].mBody != nullptr)
+		if(i == 10)
+		{
+			sf::RectangleShape mShape;
+			Vec2D dim;
+			
+			mShape.setSize(sf::Vector2f(gEntities[10].mBody->GetDimensions().x,
+				gEntities[10].mBody->GetDimensions().y));
+			mShape.setOrigin(gEntities[10].mBody->GetDimensions().x/2,
+				gEntities[10].mBody->GetDimensions().y/2);
+			mShape.setFillColor(sf::Color(255,0,0,255));
+			
+			mShape.setRotation( gEntities[10].mBody->GetBody()->GetAngle()*(180/3.14159265359)  );
+			mShape.setPosition( gEntities[10].mBody->GetBody()->GetPosition().x*PPM, gEntities[10].mBody->GetBody()->GetPosition().y*PPM);
+			gEntities[i].mBody->SetShape(&mShape);
+			
 			target.draw(*gEntities[i].mBody->GetShape());
+			gEntities[10].Draw(target);
+		}
+		else if(gEntities[i].mBody != nullptr)
+		{
+			gEntities[i].mBody->GetShape()->setRotation( gEntities[i].mBody->GetBody()->GetAngle()*(180/3.14159265359)  );
+			gEntities[i].mBody->GetShape()->setPosition( gEntities[i].mBody->GetBody()->GetPosition().x*PPM, 
+				gEntities[i].mBody->GetBody()->GetPosition().y*PPM);
+		
+			target.draw(*gEntities[i].mBody->GetShape());
+		}
 	}
 
 }
@@ -84,7 +102,6 @@ void Scene::Draw(sf::RenderTarget &target)
 void Scene::Update()
 {
 	//Step through the physics simulation
-	m_world->Step(gDeltaTime,8,6);
 	for(int i = 0; i < MAX_ENTITIES;++i)
 	{
 		if(gEntities[i].mBody != nullptr)
@@ -96,6 +113,7 @@ void Scene::Update()
 			gEntities[i].Update(gDeltaTime);
 		}
 	}
+	m_world->Step(gDeltaTime,8,6);
 	//Process Entities Scheduled for removal
 	std::vector<Entity*>::iterator it = EntitiesScheduledForRemoval.begin();
 	std::vector<Entity*>::iterator end = EntitiesScheduledForRemoval.end();

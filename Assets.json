@@ -1,0 +1,38 @@
+{
+	"Assets":
+	[
+		{
+			"Sounds":
+			[
+				{
+					"For?": "blah",
+					"FilePaths":
+					[
+						{
+							"FilePath": ""
+						},
+						{
+							"FilePath": ""
+						}
+					]
+				}
+			],
+			"Sprites":
+			[
+				{
+					"Name": "GillSaw-Fish",
+					"Sprites":
+					[
+						{
+							"FilePath" : "sprites/Gill-Sawfish/idle.png"
+						},
+						{
+							"FilePath" : "sprites/Gill-Sawfish/run.png"
+						}
+					
+					]
+				}
+			]
+		}
+	]
+}

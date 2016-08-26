@@ -16,7 +16,7 @@ typedef struct AnimationData{
 	bool			oscillate;
 }Animation;
 
-typedef class Sprite 
+class Sprite
 {
 public:
 	int				mRefCount;
@@ -26,14 +26,14 @@ public:
 	int				mFrameBBSet;
 	char			mFileName[128];
 	Animation		mAnimation;
-	sf::Sprite		mSfSprite;
+	sf::Sprite*		mSfSprite;
 	sf::IntRect*	mFrameBB;		//Frame Bounding Box
 	~Sprite(void);
 	void FreeSprite();
 	void SetFrameBB();
 };
-
-Sprite *LoadSprite(char* filename);
+Sprite* SetData(Sprite* sprite,const char* charName);
+Sprite* LoadSprite(char* filename);
 void CloseSpriteList();
 void SpriteListInit();
 

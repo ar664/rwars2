@@ -4,6 +4,9 @@
 #include <map>
 
 
+/**
+* This class is used to manage the textures
+*/
 
 class TextureCache
 {
@@ -16,6 +19,10 @@ private:
 	std::map<char*,sf::Texture*> mTextureMap;
 
 };
+/**
+* This class is used to manage the sf::sprites
+*/
+
 class mfSpriteCache
 {
 public:
@@ -28,6 +35,9 @@ private:
 	std::map<char*,sf::Sprite*> mmfSpriteMap;
 
 };
+/**
+* This class is used to manage the texture cache and sf::sprite cache
+*/
 
 class ResourceManager
 {
