@@ -133,10 +133,11 @@ void Start()
 	gScene = new Scene;
 	gEntities[10].AddComponent(COMPONENT_PLAYER);
 	gClock.restart();
-	Sprite sprite ;
 	splashSprite = *LoadSprite("sprites/rwars_title_pixel.png");
+	SetHitBoxData(gEntities[10].mCurrentSprite,"BoxData/Gill-Sawfish");
+	ResourceManager::AddAsset("Assets.json");
+	ResourceManager::LoadCharacterSpriteAssets("Gill-Sawfish",gEntities[10].mSpriteArray); 
 	
-	SetData(gEntities[10].mCurrentSprite,"BoxData/Gill-Sawfish");
 	while(!IsExiting())
 		Loop();
 	gRenderWindow.close();

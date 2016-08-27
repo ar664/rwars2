@@ -1,38 +1,42 @@
 {
-	"Assets":
+	"Sounds":
 	[
 		{
-			"Sounds":
+			"For?": "blah",
+			"FilePaths":
 			[
 				{
-					"For?": "blah",
-					"FilePaths":
-					[
-						{
-							"FilePath": ""
-						},
-						{
-							"FilePath": ""
-						}
-					]
+					"FilePath": ""
+				},
+				{
+					"FilePath": ""
 				}
-			],
+			]
+		}
+	],
+	"CharacterSprites":
+	[
+		{
+			"Name": "Gill-Sawfish",
 			"Sprites":
 			[
 				{
-					"Name": "GillSaw-Fish",
-					"Sprites":
-					[
-						{
-							"FilePath" : "sprites/Gill-Sawfish/idle.png"
-						},
-						{
-							"FilePath" : "sprites/Gill-Sawfish/run.png"
-						}
-					
-					]
+					"Name" : "idle",
+					"FilePath" : "sprites/Gill-Sawfish/idle.png"
+				},
+				{
+					"Name" : "run",
+					"FilePath" : "sprites/Gill-Sawfish/run.png"
 				}
+			
 			]
+		}
+	],
+	"HitBoxData":
+	[
+		{
+			"Name" : "Gill-Sawfish",
+			"FilePath": "BoxData/Gill-Sawfish.json"
 		}
 	]
 }

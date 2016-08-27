@@ -66,7 +66,6 @@ public:
 	int						mCurrentFrame;
 	int						mNumSprites;
 	Sprite**				mSpriteArray;
-	std::map<char*,Sprite*>	mSpriteMap;
 	Sprite*					mCurrentSprite;	
 	//Box2D Stuff
 	pShape*				mBody;

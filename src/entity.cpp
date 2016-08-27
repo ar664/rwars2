@@ -117,7 +117,7 @@ Entity* CreateEntity()
 		gEntities[i].mInUse = 1;
 		gEntities[i].mID = i;
 		numEntities +=1;
-		
+		gEntities[i].mSpriteArray = new Sprite* [25];
 		gEntities[i].mMask = COMPONENT_ENTITY;
 		return &gEntities[i];
 

@@ -130,7 +130,7 @@ void Sprite::SetFrameBB()
 }
 
 
-Sprite* SetData(Sprite* spriteArray,const char* charName)
+Sprite* SetHitBoxData(Sprite* spriteArray,const char* charName)
 {
 	Document document;
 	char fileName[155];

@@ -2,6 +2,9 @@
 #define _RESOURCEMANAGER_H
 #include <SFML/Graphics.hpp>
 #include <map>
+#include "include\sprite.h"
+#include "include\rapidjson\filereadstream.h"
+#include "include\rapidjson\document.h"
 
 
 /**
@@ -50,9 +53,15 @@ public:
 	static void ResourceManager::FreeTexture(char* texturePath);
 	static void ResourceManager::FreemfSprite(char* spritePath);
 	static void ResourceManager::FreeCaches();
+	static bool ResourceManager::AddAsset(char* assetPath);
+	static void	
+		ResourceManager::LoadCharacterSpriteAssets(char* characterName,Sprite** spriteDoublePointer);
+
+
 private:
-	static TextureCache mTextureCache;
-	static mfSpriteCache mmfSpriteCache;
+	static TextureCache			mTextureCache;
+	static mfSpriteCache		mmfSpriteCache;
+	static rapidjson::Document	mAssetCache;
 
 
 };

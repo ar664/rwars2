@@ -32,7 +32,7 @@ public:
 	void FreeSprite();
 	void SetFrameBB();
 };
-Sprite* SetData(Sprite* sprite,const char* charName);
+Sprite* SetHitBoxData(Sprite* sprite,const char* charName);
 Sprite* LoadSprite(char* filename);
 void CloseSpriteList();
 void SpriteListInit();

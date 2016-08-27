@@ -2,7 +2,8 @@
 
 TextureCache ResourceManager::mTextureCache;
 mfSpriteCache ResourceManager::mmfSpriteCache;
-
+rapidjson::Document ResourceManager::mAssetCache;
+using namespace rapidjson;
 TextureCache::TextureCache()
 {
 
@@ -121,4 +122,75 @@ std::map<char*,sf::Sprite*>* mfSpriteCache::GetSpriteMap()
 {
 	return &mmfSpriteMap;
 
+}
+bool ResourceManager::AddAsset(char* assetPath)
+{
+	char fileName[155];
+
+	strcpy(fileName,assetPath);
+	
+	FILE *file = fopen(fileName,"rb");
+	if(file == nullptr)
+	{
+		printf("Unable to open file: %s",assetPath);
+		return false;
+	}
+	char buffer[65536];
+	FileReadStream frs(file,buffer,sizeof(buffer));
+	//Parse the FileReadStream and close file
+	mAssetCache.ParseStream(frs);
+	fclose(file);
+	assert(mAssetCache.IsObject());
+	
+
+	return true;
+}
+void ResourceManager::LoadCharacterSpriteAssets(char* characterName,Sprite** spriteDoublePointer)
+{
+	int count = 0;
+	assert(mAssetCache.HasMember("CharacterSprites"));
+	for(Value::ConstMemberIterator aIt =mAssetCache.MemberBegin();
+		aIt != mAssetCache.MemberEnd(); ++aIt)
+	{
+		if(strcmp(aIt->name.GetString(),"CharacterSprites") == 0)
+		{
+			assert(aIt->value.IsArray());
+			const Value& charSpriteArray = aIt->value;
+			for (SizeType j = 0; j < charSpriteArray.Size(); j++)
+			{
+				for(Value::ConstMemberIterator spriteIt = charSpriteArray[j].MemberBegin();
+								spriteIt != charSpriteArray[j].MemberEnd(); ++spriteIt)
+				{
+					if(strcmp(spriteIt->value.GetString(),characterName)==0)
+					{
+						spriteIt++;
+						assert(spriteIt->value.IsArray());
+						const Value& spriteArray = spriteIt->value;
+						for(SizeType k = 0; k < spriteArray.Size();k++)
+						{
+							for(Value::ConstMemberIterator sIt = spriteArray[k].MemberBegin();
+								sIt != spriteArray[k].MemberEnd(); ++sIt)
+							{
+								char* na = new char[128];
+								strcpy(na,sIt->value.GetString());
+								sIt++;
+								char filePath[128];
+								strcpy(filePath,sIt->value.GetString());
+								std::pair<char*,Sprite*> p (na,LoadSprite(filePath));
+								spriteDoublePointer[count] = LoadSprite(filePath);
+								count++;
+						
+							}	
+						}
+
+					}
+
+
+				}
+
+			}
+
+		}
+
+	}
 }
