@@ -32,7 +32,11 @@ void PlayerComponent::HandleInput()
 	{
 		gEntities[mID].mBody->GetBody()->SetLinearVelocity(b2Vec2(2,
 			gEntities[mID].mBody->GetBody()->GetLinearVelocity().y));
-		gEntities[mID].mIsFlipped = 1;
+		if(gEntities[mID].mIsFlipped != 1)
+		{
+			gEntities[mID].mIsFlipped = 1;
+			FlipFixtures(gEntities[mID].mBody->GetBody()->GetFixtureList());
+		}
 		gScene->Players[mID].ChangeState(P_State_Running);
 	}	
 	else if (sf::Keyboard::isKeyPressed(KEY_MOVE_UP))
@@ -47,7 +51,11 @@ void PlayerComponent::HandleInput()
 	{
 		gEntities[mID].mBody->GetBody()->SetLinearVelocity(b2Vec2(-2,
 			gEntities[mID].mBody->GetBody()->GetLinearVelocity().y));
-		gEntities[mID].mIsFlipped = 0;
+		if(gEntities[mID].mIsFlipped != 0)
+		{
+			gEntities[mID].mIsFlipped = 0;
+			FlipFixtures(gEntities[mID].mBody->GetBody()->GetFixtureList());
+		}
 		gScene->Players[mID].ChangeState(P_State_Running);
 	}
 	if (sf::Keyboard::isKeyPressed(KEY_JUMP))

@@ -83,6 +83,30 @@ void Box::UpdateBoxShape(Vec2D dimensions)
 
 }
 
+/**
+*@brief This function Flips the fixtures of a b2Body on the x-axis
+*@param A list of fixtures to flip
+*/
+void FlipFixtures(b2Fixture* fixtures)
+{
+	b2PolygonShape* shape;
+	FixtureData* fData;
+	for(b2Fixture* f = fixtures;f; f = f->GetNext())
+	{
+		fData = (FixtureData*)f->GetUserData();
+		if(fData->mType == BaseBox)
+			continue;
+		int sizex,sizey;
+		shape = (b2PolygonShape*)f->GetShape();
+		sizex = shape->GetVertex(1).x - shape->GetVertex(0).x;
+		sizey = shape->GetVertex(2).y - shape->GetVertex(1).y;
+	
+		b2Vec2 prev = b2Vec2(shape->m_centroid.x,+shape->m_centroid.y);
+		prev.x = -prev.x;
+		shape->SetAsBox(50/2/PPM,50/2/PPM,prev,0);
+	}
+
+}
 
 void Polygon::init(b2World* world,const Vec2D position,const Vec2D dimensions,bool fixedRot)
 {

@@ -5,14 +5,13 @@
 			"AnimName" : "idle",
 			"NumFrames": 7,
 			"BaseBoxes"	: 1,
-			"HurtBoxes" : 3,
+			"HurtBoxes" : 2,
 			"HitBoxes" 	: 0,
 			"BaseBoxDef": [200,200],
 			"SpriteAxis": [190,245],
 			"HurtBoxDef":
 				{
 					"2":{"LengthOfFrame":100,"HurtBoxOffset":[0,-60],"HurtBoxDimensions":[50,50]},
-					"3":{"LengthOfFrame":100,"HurtBoxOffset":[60,-30],"HurtBoxDimensions":[50,50]},
 					"4":{"LengthOfFrame":100,"HurtBoxOffset":[-60,-30],"HurtBoxDimensions":[50,50]}
 				}
 		}

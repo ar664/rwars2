@@ -44,6 +44,8 @@ protected:
 	int					mPointCount;
 	static int n;
 };
+void FlipFixtures(b2Fixture* fixtures);
+
 
 class Box : public pShape
 {
