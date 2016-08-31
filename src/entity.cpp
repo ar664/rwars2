@@ -195,6 +195,11 @@ void Entity::Draw(sf::RenderTarget& target)
 {
 	int delta = 0;
 	sf::Transformable t;
+	b2Vec2 p = b2Vec2((mBody->GetBody()->GetPosition().x + 
+		static_cast<b2PolygonShape*>(mBody->GetBaseFixture()->GetShape())->m_centroid.x)*PPM,
+		(mBody->GetBody()->GetPosition().y + 
+		static_cast<b2PolygonShape*>(mBody->GetBaseFixture()->GetShape())->m_centroid.y)*PPM);
+
 	if(!mSpriteArray)
 	{
 		return;
@@ -207,24 +212,19 @@ void Entity::Draw(sf::RenderTarget& target)
 		mCurrentFrame / mCurrentSprite->mFramesPerLine * ANIMATION_FRAME_LENGTH,
 		ANIMATION_FRAME_LENGTH,
 		ANIMATION_FRAME_LENGTH);
-
-	//Check to see if flipped
 	if(mIsFlipped)
 	{
-		mCurrentSprite->mSfSprite->setTextureRect(sf::IntRect(rect.left+ANIMATION_FRAME_LENGTH,
-			rect.top,-ANIMATION_FRAME_LENGTH,ANIMATION_FRAME_LENGTH));
-		
-		t.setPosition(mBody->GetBody()->GetPosition().x*PPM-(ANIMATION_FRAME_LENGTH-mCurrentSprite->mFrameBB[mCurrentFrame].left)+mBody->GetDimensions().x/2,
-			mBody->GetBody()->GetPosition().y*PPM-(mCurrentSprite->mFrameBB[mCurrentFrame].top)-mBody->GetDimensions().y/2);
-
-	}	else
-	{
-		t.setPosition(mBody->GetBody()->GetPosition().x*PPM-(mCurrentSprite->mFrameBB[mCurrentFrame].left)-mBody->GetDimensions().x/2,
-		mBody->GetBody()->GetPosition().y*PPM-(mCurrentSprite->mFrameBB[mCurrentFrame].top)-mBody->GetDimensions().y/2);
-	
-		mCurrentSprite->mSfSprite->setTextureRect(rect);
+		rect = sf::IntRect(rect.left+ANIMATION_FRAME_LENGTH,rect.top,-rect.width,rect.height);
+		t.setPosition(p.x-(ANIMATION_FRAME_LENGTH-mCurrentSprite->mSpriteAxis.x-20),
+			p.y-mCurrentSprite->mSpriteAxis.y);
 	}
-			//target.draw(*mCurrentSprite->mSfSprite,t.getTransform());
+	else
+	{
+	t.setPosition(p.x-mCurrentSprite->mSpriteAxis.x-20,
+		p.y-mCurrentSprite->mSpriteAxis.y);
+	}
+	mCurrentSprite->mSfSprite->setTextureRect(rect);
+	target.draw(*mCurrentSprite->mSfSprite,t.getTransform());
 	//Update Frames for animating
 	if(!paused && mLastDrawTime)
 	{
@@ -342,6 +342,39 @@ void Entity::SetBody(pShape* shape)
 {
 	mBody = shape;
 	mBody->GetBody()->SetUserData(this);
+}
+
+
+void Entity::SetBodyFixtures(FixtureData* data)
+{
+	mBody->GetBody()->DestroyFixture(mBody->GetBody()->GetFixtureList());
+	b2Fixture* f;
+	for(int i = 0; i < mCurrentSprite->mHurtBoxCount;i++)
+	{
+		b2PolygonShape polygonShape;
+		if(data[i].mType != BaseBox)
+		{
+		polygonShape.SetAsBox((data[i].mDimensions.x/2)/PPM,(data[i].mDimensions.y/2)/PPM
+			,b2Vec2(data[i].mOffset.x/PPM,data[i].mOffset.y/PPM),0);
+		}
+		else
+		{
+			//continue;
+			polygonShape.SetAsBox((data[i].mDimensions.x/2)/PPM,(data[i].mDimensions.y/2)/PPM);
+		}
+
+		b2FixtureDef Fixture;
+
+		Fixture.shape = &polygonShape;
+		Fixture.density = 1.0f;
+		Fixture.friction = 0.3f;
+
+		f= mBody->GetBody()->CreateFixture(&Fixture);
+		if(data[i].mType == BaseBox)
+			mBody->SetBaseBody(f);
+		f->SetUserData(&data[i]);
+
+	}
 }
 /**
 *@brief Checks to see if this entity contains this component

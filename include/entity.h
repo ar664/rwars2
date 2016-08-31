@@ -8,16 +8,17 @@
 #include "include\components.h"
 
 
-class pShape;
-class Sprite;
-struct rShape;
-struct Cell;
-struct Manifold;
+class		pShape;
+class		Sprite;
+struct		FixtureData;
+struct		rShape;
+struct		Cell;
+struct		Manifold;
 
-class Grid;
+class		Grid;
 
-#define MAX_ENTITIES	1000
-#define MAX_ANIMATIONS	15
+#define		MAX_ENTITIES	1000
+#define		MAX_ANIMATIONS	15
 
 /**
  * The Entity class which is used for inheritance. Basic properties.
@@ -69,10 +70,10 @@ public:
 	Sprite**				mSpriteArray;
 	Sprite*					mCurrentSprite;	
 	//Box2D Stuff
-	pShape*				mBody;
+	pShape*					mBody;
 
 
-	sf::SoundBuffer**	mSounds;
+	sf::SoundBuffer**		mSounds;
 
 
 
@@ -84,14 +85,14 @@ public:
  *
  * @note Graphics timings don't get updated when paused.
  */
-	void Draw(sf::RenderTarget &target);
-	void Update(float deltaTime);
+	void			Draw(sf::RenderTarget &target);
+	void			Update(float deltaTime);
 
 /**
  * @breif Empty think function, to be overridden by children who inherit it.
  *
  */
-	virtual void Think();
+	virtual void	Think();
 
 
 	//Getters
@@ -107,17 +108,22 @@ public:
 	void			SetPosition(Vec2D vec);
 	void			SetDimensions(Vec2D vec);
 	void			SetVelocity(Vec2D vec);
+	
 	void			IncrementContact() { mNumContacts++; };
 	void			DecrementContact() { mNumContacts--; };
+	
 	void			SetBody(pShape* shape);
+	void			SetBodyFixtures(FixtureData* data);
+
 	void			SetSpriteArray(char* filePath);
 	//Constructors
-	void	LoadSprites(char **SpriteFiles);
-	void	LoadSounds(char **SoundFiles);
-	void	Free();
+	void			LoadSprites(char **SpriteFiles);
+	void			LoadSounds(char **SoundFiles);
+	void			Free();
+	
 	//Component Methods
-	void	AddComponent(sf::Int64 component);
-	bool	HasComponent(sf::Int64 component);
+	void			AddComponent(sf::Int64 component);
+	bool			HasComponent(sf::Int64 component);
 };
 
 

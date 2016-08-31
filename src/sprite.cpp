@@ -6,6 +6,7 @@
 #include "include\rapidjson\filereadstream.h"
 #include "include\rapidjson\document.h"
 #include "include\resourcemanager.h"
+#include "shape.h"
 #include "vectors.h"
 #include "globals.h"
 #include "sprite.h"
@@ -131,7 +132,7 @@ void Sprite::SetFrameBB()
 }
 
 
-Sprite* SetHitBoxData(Sprite* spriteArray,const char* charName)
+void SetData(Sprite* sprite,const char* charName)
 {
 	Document document;
 	char fileName[155];
@@ -148,7 +149,7 @@ Sprite* SetHitBoxData(Sprite* spriteArray,const char* charName)
 	//Parse the FileReadStream and close file
 	document.ParseStream(frs);
 	fclose(file);
-
+	/*
 	assert(document.IsObject());
 	assert(document.HasMember("HitBoxData"));
 	for(Value::ConstMemberIterator hitBoxItr =document.MemberBegin();
@@ -219,8 +220,98 @@ Sprite* SetHitBoxData(Sprite* spriteArray,const char* charName)
 
 			}
 		}
+	}*/
+	assert(document.IsObject());
+	assert(document.HasMember("AnimationData"));
+
+	FixtureData* hurtData;
+	int boxes = 0;
+
+	for(Value::ConstMemberIterator AnimationData =document.MemberBegin();
+		AnimationData != document.MemberEnd(); ++AnimationData)
+	{
+		if(AnimationData->value.IsArray())
+		{
+			const Value& AnimData = document["AnimationData"];
+			for (SizeType i = 0; i < AnimData.Size(); i++)
+			{
+				//Iterate through the members of the object
+				for(Value::ConstMemberIterator data =AnimData[i].MemberBegin();
+					data != AnimData[i].MemberEnd(); ++data)
+				{
+					if(strcmp(data->name.GetString(),"BaseBoxes") == 0)
+					{
+						boxes += data->value.GetInt();
+					}
+					else if(strcmp(data->name.GetString(),"HurtBoxes") == 0 )
+					{
+						boxes += data->value.GetInt();
+					}
+					else if(strcmp(data->name.GetString(),"HitBoxes") == 0 )
+					{
+						boxes += data->value.GetInt();
+					}
+					else if(strcmp(data->name.GetString(),"BaseBoxDef") == 0 )
+					{
+						hurtData = new FixtureData[boxes];
+						sprite->mHurtBoxCount = boxes;
+						const Value& fData = data->value;
+						for (SizeType j = 0; j < fData.Size(); j++)
+						{
+							hurtData[0].mOffset = b2Vec2(fData[j].GetInt(),fData[j++].GetInt());
+							hurtData[0].mDimensions = b2Vec2(50,20);
+							hurtData[0].mColor= sf::Color(0,255,0,100);
+							hurtData[0].mType= BaseBox;
+						}
+					}
+					else if(strcmp(data->name.GetString(),"SpriteAxis") == 0 )
+					{	
+						const Value& fData = data->value;
+						for (SizeType j = 0; j < fData.Size(); j++)
+						{
+							sprite->mSpriteAxis = sf::Vector2f(fData[j].GetInt(),fData[j+1].GetInt());
+							j++;
+						}
+					}
+					else if(strcmp(data->name.GetString(),"HurtBoxDef") == 0 )
+					{
+						const Value& fData = data->value;
+						int frameIndex = 1;
+						//Iterate through members
+						for(Value::ConstMemberIterator data2 =fData.MemberBegin();
+							data2 != fData.MemberEnd(); ++data2)
+						{
+							for(Value::ConstMemberIterator data3 =data2->value.MemberBegin();
+								data3 != data2->value.MemberEnd(); ++data3)
+							{
+								if(strcmp(data3->name.GetString(),"HurtBoxOffset") == 0)
+								{
+									const Value& fData2 = data3->value;
+									for (SizeType j = 0; j < fData2.Size(); j++)
+									{
+										hurtData[frameIndex].mType = HurtBox;
+										hurtData[frameIndex].mColor = sf::Color(0,0,255,100);
+										hurtData[frameIndex].mOffset = b2Vec2(fData2[j].GetInt(),fData2[j+1].GetInt());
+										j++;
+									}
+								}
+								else if(strcmp(data3->name.GetString(),"HurtBoxDimensions") == 0)
+								{
+									const Value& fData2 = data3->value;
+									for (SizeType j = 0; j < fData2.Size(); j++)
+									{
+										hurtData[frameIndex++].mDimensions= b2Vec2(fData2[j].GetInt(),fData2[j++].GetInt());
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 	}
-	return spriteArray;
+
+	sprite->mHurtBoxData = hurtData;
 }
 
 Sprite *LoadSprite(char* filename)

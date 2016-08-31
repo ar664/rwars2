@@ -141,8 +141,8 @@ void Start()
 	
 	//Entity Testing
 	gEntities[10].mCurrentSprite = gEntities[10].mSpriteArray[0];
-	SetHitBoxData(gEntities[10].mCurrentSprite,"BoxData/Gill-Sawfish");
-	
+	SetData(gEntities[10].mCurrentSprite,"BoxData/Gill-Sawfish");
+	gEntities[10].SetBodyFixtures(gEntities[10].mCurrentSprite->mHurtBoxData);
 	while(!IsExiting())
 		Loop();
 	gRenderWindow.close();
@@ -191,7 +191,9 @@ void Loop()
 						gScene->Update();
 						accumulator -= gDeltaTime;
 					}
+					gEntities[10].Draw(gRenderWindow);
 					gScene->DebugDraw(gRenderWindow);
+					
 					CallbackRunSystem();
 				break;
 			default:

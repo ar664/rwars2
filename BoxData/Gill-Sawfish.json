@@ -1,54 +1,20 @@
 {
-	"HitBoxData":
+	"AnimationData":
 	[
 		{
-			"DataType" : "Box",
 			"AnimName" : "idle",
 			"NumFrames": 7,
-			"BoxData" :
-			[
+			"BaseBoxes"	: 1,
+			"HurtBoxes" : 3,
+			"HitBoxes" 	: 0,
+			"BaseBoxDef": [200,200],
+			"SpriteAxis": [190,245],
+			"HurtBoxDef":
 				{
-					"FrameNum" : 1,
-					"TopLeft" :[168,145],
-					"BottomRight" :[240,254]
-				},
-				{
-					"FrameNum" : 2,
-					"TopLeft" :[168,145],
-					"BottomRight" :[240,254]
-				},
-				{
-					"FrameNum" : 3,
-					"TopLeft" :[168,145],
-					"BottomRight" :[240,254]
-				},
-				{
-					"FrameNum" : 4,
-					"TopLeft" :[168,145],
-					"BottomRight" :[240,254]
-				},
-				{
-					"FrameNum" : 5,
-					"TopLeft" :[168,145],
-					"BottomRight" :[240,254]
-				},
-				{
-					"FrameNum" : 6,
-					"TopLeft" :[168,145],
-					"BottomRight" :[240,254]
-				},
-				{
-					"FrameNum" : 7,
-					"TopLeft" :[168,145],
-					"BottomRight" :[240,254]
-				},
-				{
-					"FrameNum" : 8,
-					"TopLeft" :[168,145],
-					"BottomRight" :[240,254]
+					"2":{"LengthOfFrame":100,"HurtBoxOffset":[0,-60],"HurtBoxDimensions":[50,50]},
+					"3":{"LengthOfFrame":100,"HurtBoxOffset":[60,-30],"HurtBoxDimensions":[50,50]},
+					"4":{"LengthOfFrame":100,"HurtBoxOffset":[-60,-30],"HurtBoxDimensions":[50,50]}
 				}
-				
-			]
 		}
 	]
 }

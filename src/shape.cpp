@@ -53,8 +53,12 @@ void Box::init(b2World* world,const Vec2D position,const Vec2D dimensions,bool f
 	mFixture.density = 1.0f;
 	mFixture.friction = 0.3f;
 	mBody = world->CreateBody(&mBodyDef);
-	mBody->CreateFixture(&mFixture);
+	mBaseFixture = mBody->CreateFixture(&mFixture);
 
+	FixtureData* fixData = new FixtureData;
+	fixData->mColor = sf::Color(0,255,0,110);
+	fixData->mType = BaseBox;
+	mBody->GetFixtureList()->SetUserData(fixData);
 }
 
 void Box::UpdateBoxShape(Vec2D dimensions)
