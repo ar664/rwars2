@@ -58,6 +58,7 @@ private:
 	
 public:
 	sf::Int64				mMask;
+	int						mIsFlipped;
 	int						mID;
 	int						mInUse;
 	int						mCellIndex;
@@ -108,7 +109,6 @@ public:
 	void			SetVelocity(Vec2D vec);
 	void			IncrementContact() { mNumContacts++; };
 	void			DecrementContact() { mNumContacts--; };
-	void			ChangeBodyColor(sf::Color color);
 	void			SetBody(pShape* shape);
 	void			SetSpriteArray(char* filePath);
 	//Constructors

@@ -134,9 +134,14 @@ void Start()
 	gEntities[10].AddComponent(COMPONENT_PLAYER);
 	gClock.restart();
 	splashSprite = *LoadSprite("sprites/rwars_title_pixel.png");
-	SetHitBoxData(gEntities[10].mCurrentSprite,"BoxData/Gill-Sawfish");
+	
+	//Load Assets Testing
 	ResourceManager::AddAsset("Assets.json");
 	ResourceManager::LoadCharacterSpriteAssets("Gill-Sawfish",gEntities[10].mSpriteArray); 
+	
+	//Entity Testing
+	gEntities[10].mCurrentSprite = gEntities[10].mSpriteArray[0];
+	SetHitBoxData(gEntities[10].mCurrentSprite,"BoxData/Gill-Sawfish");
 	
 	while(!IsExiting())
 		Loop();
@@ -186,7 +191,7 @@ void Loop()
 						gScene->Update();
 						accumulator -= gDeltaTime;
 					}
-					gScene->Draw(gRenderWindow);
+					gScene->DebugDraw(gRenderWindow);
 					CallbackRunSystem();
 				break;
 			default:

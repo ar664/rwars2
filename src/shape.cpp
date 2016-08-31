@@ -7,9 +7,7 @@ int Box::n = 0;
 
 Box::Box()
 {
-	mShape = new sf::RectangleShape(sf::Vector2f(10.f,10.f));//(0,0,10,10,sf::Color(255,255,255));
-    mShape->setOrigin(5,5);
-	mShape->setFillColor(sf::Color(255,0,0,255));
+
 	//cout << 300/PPM << " : " << -300/PPM-n*5/PPM << endl;
     mBodyDef.position.Set(300.0f/PPM,-300.0f/PPM-n*5/PPM);
     n++;
@@ -40,9 +38,6 @@ Polygon::~Polygon()
 
 void Box::init(b2World* world,const Vec2D position,const Vec2D dimensions,bool fixedRot)
 {
-	mShape = new sf::RectangleShape(sf::Vector2f(dimensions.x,dimensions.y));
-	mShape->setOrigin(dimensions.x/2,dimensions.y/2);
-	mShape->setFillColor(sf::Color(255,0,0,255));
 	
 	mDimensions = dimensions;
 	//Make Body
@@ -59,7 +54,6 @@ void Box::init(b2World* world,const Vec2D position,const Vec2D dimensions,bool f
 	mFixture.friction = 0.3f;
 	mBody = world->CreateBody(&mBodyDef);
 	mBody->CreateFixture(&mFixture);
-	mShape->setPosition(mBody->GetPosition().x*PPM, mBody->GetPosition().y*PPM);
 
 }
 
@@ -94,15 +88,6 @@ void Polygon::init(b2World* world,const Vec2D position,const Vec2D dimensions,bo
 		printf("Points not set for polygon\n");
 		return;
 	}
-	sf::ConvexShape *convex = new sf::ConvexShape();
-	convex->setPointCount(mPointCount);
-	for(int i = 0;i < mPointCount;++i)
-	{
-		convex->setPoint(i,mPoints[i]);
-	}
-	mShape = convex;
-	mShape->setOrigin(0,0);
-	mShape->setFillColor(sf::Color(255,0,0,50));
 	//Make Body
 	mBodyDef.type = b2_dynamicBody;
 	//mBodyDef.fixedRotation = true;
@@ -121,7 +106,6 @@ void Polygon::init(b2World* world,const Vec2D position,const Vec2D dimensions,bo
 	mFixture.friction = 0.3f;
 	mBody = world->CreateBody(&mBodyDef);
 	mBody->CreateFixture(&mFixture);
-	mShape->setPosition(mBody->GetPosition().x*PPM, mBody->GetPosition().y*PPM);
 }
 
 void pShape::SetPoints(sf::Vector2f* points,int count)

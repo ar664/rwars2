@@ -21,6 +21,7 @@ void SpriteListInit()
 	memset(SpriteList,0,sizeof(Sprite) * MAX_SPRITES);
 	atexit(CloseSpriteList);
 
+
 }
 
 void CloseSpriteList()
@@ -249,6 +250,8 @@ Sprite *LoadSprite(char* filename)
 	sprite->mSfSprite = ResourceManager::GetmfSprite(filename);
 	sprite->mSfSprite->setTexture(*ResourceManager::GetTexture(filename));
 	sprite->mRefCount +=1;
+	sprite->mAnimation.frameInc = 1;
+	sprite->mAnimation.oscillate = false;
 	strcpy(sprite->mFileName,filename);
 	//Set Physics Dimensions
 	int l = sprite->mSfSprite->getTexture()->getSize().x / ANIMATION_FRAME_LENGTH;

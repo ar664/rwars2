@@ -3,13 +3,14 @@
 
 #include <SFML/Graphics.hpp>
 const int MAX_SPRITES = 500;
-#define ANIMATION_FRAME_LENGTH	256
-#define ANIMATION_FRAME_HEIGHT	256
-#define ANIMATION_DEFAULT_MPF	160
+#define ANIMATION_FRAME_LENGTH	255
+#define ANIMATION_FRAME_HEIGHT	255
+#define ANIMATION_DEFAULT_MPF	100
 #include "vectors.h"
 
 typedef struct AnimationData{
 	int				mpf;		//milliseconds per frame
+	int				frameInc;
 	int				heldFrame;
 	int				maxFrames;
 	int				holdFrame;

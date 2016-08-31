@@ -9,43 +9,43 @@
 			[
 				{
 					"FrameNum" : 1,
-					"TopLeft" :[144,145],
-					"BottomRight" :[254,254]
+					"TopLeft" :[168,145],
+					"BottomRight" :[240,254]
 				},
 				{
 					"FrameNum" : 2,
-					"TopLeft" :[159,144],
-					"BottomRight" :[254,254]
+					"TopLeft" :[168,145],
+					"BottomRight" :[240,254]
 				},
 				{
 					"FrameNum" : 3,
-					"TopLeft" :[156,144],
-					"BottomRight" :[254,254]
+					"TopLeft" :[168,145],
+					"BottomRight" :[240,254]
 				},
 				{
 					"FrameNum" : 4,
-					"TopLeft" :[154,141],
-					"BottomRight" :[254,254]
+					"TopLeft" :[168,145],
+					"BottomRight" :[240,254]
 				},
 				{
 					"FrameNum" : 5,
-					"TopLeft" :[159,139],
-					"BottomRight" :[254,254]
+					"TopLeft" :[168,145],
+					"BottomRight" :[240,254]
 				},
 				{
 					"FrameNum" : 6,
-					"TopLeft" :[156,141],
-					"BottomRight" :[254,254]
+					"TopLeft" :[168,145],
+					"BottomRight" :[240,254]
 				},
 				{
 					"FrameNum" : 7,
-					"TopLeft" :[156,141],
-					"BottomRight" :[254,254]
+					"TopLeft" :[168,145],
+					"BottomRight" :[240,254]
 				},
 				{
 					"FrameNum" : 8,
-					"TopLeft" :[156,141],
-					"BottomRight" :[254,254]
+					"TopLeft" :[168,145],
+					"BottomRight" :[240,254]
 				}
 				
 			]

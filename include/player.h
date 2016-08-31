@@ -31,6 +31,7 @@ typedef enum PlayerState
 // *		mNextStateChange	-	The next sf time State returns to Neutral and can be changed
 // */
 //
+/*
 class Character 
 {
 private:
@@ -51,33 +52,33 @@ public:
 	 * @brief Handles movement, lane switch, jump, and attack inputs
 	 * @param Event, player input to handle event
 	 */
-	void HandleInput(sf::Event Event);
-	/**
-	 * @brief Changes player state if enough time has passed since last state change
-	 * @param state, state player must change to
-	 */
-	void ChangeState(PlayerState state);
-	/**
-	 * @brief Handles updating player status and state
-	 */
-	void Update();
+//void HandleInput(sf::Event Event);
+///**
+// * @brief Changes player state if enough time has passed since last state change
+// * @param state, state player must change to
+// */
+//void ChangeState(PlayerState state);
+///**
+// * @brief Handles updating player status and state
+// */
+//void Update();
+//
+///**
+//  *@brief Handles updating player actions / interaction with world
+//*/
+//void Think();
+//
+///**
+// * @brief Handles Collision Events with other entities
+// * @param other, entity that touched this player
+// */
+////void Touch(Entity *other);
+//
+////int GetState();
+//
+//};
 
-	/**
-	  *@brief Handles updating player actions / interaction with world
-	*/
-	void Think();
+//extern Character **gCharacters;
 
-	/**
-	 * @brief Handles Collision Events with other entities
-	 * @param other, entity that touched this player
-	 */
-	//void Touch(Entity *other);
-
-	int GetState();
-
-};
-
-extern Character **gCharacters;
-
-Character * PlayerLoad(int num, char **sprites);
+//Character * PlayerLoad(int num, char **sprites);
 #endif

@@ -148,6 +148,7 @@ bool ResourceManager::AddAsset(char* assetPath)
 void ResourceManager::LoadCharacterSpriteAssets(char* characterName,Sprite** spriteDoublePointer)
 {
 	int count = 0;
+	int maxFrames = 0;
 	assert(mAssetCache.HasMember("CharacterSprites"));
 	for(Value::ConstMemberIterator aIt =mAssetCache.MemberBegin();
 		aIt != mAssetCache.MemberEnd(); ++aIt)
@@ -174,10 +175,12 @@ void ResourceManager::LoadCharacterSpriteAssets(char* characterName,Sprite** spr
 								char* na = new char[128];
 								strcpy(na,sIt->value.GetString());
 								sIt++;
+								maxFrames = sIt->value.GetInt();
+								sIt++;
 								char filePath[128];
 								strcpy(filePath,sIt->value.GetString());
-								std::pair<char*,Sprite*> p (na,LoadSprite(filePath));
 								spriteDoublePointer[count] = LoadSprite(filePath);
+								spriteDoublePointer[count]->mAnimation.maxFrames = maxFrames;
 								count++;
 						
 							}	

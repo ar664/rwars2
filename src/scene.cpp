@@ -51,10 +51,31 @@ Scene::Scene()
 	ent = CreateEntity();
 	newBox = new Box();
 	newBox->init(m_world,CreateVec2D(100,100)
-		,CreateVec2D(114,114),true);
+		,CreateVec2D(50,50),true);
 	ent->SetBody(newBox);
-	//SetData(ent->mSpriteArray,"Gill-Sawfish");
-	ent->mCurrentSprite = LoadSprite("sprites/Gill-Sawfish/idle.png");
+
+	b2PolygonShape polygonShape;
+    b2FixtureDef myFixtureDef;
+    myFixtureDef.shape = &polygonShape;
+    myFixtureDef.density = 1;
+
+	b2Vec2 pos;
+	pos = b2Vec2( 25/PPM,0); //radial placement
+    polygonShape.SetAsBox(50/2/PPM, 50/2/PPM, pos, 0 ); //a 2x2 rectangle
+	 ent->mBody->GetBody()->CreateFixture(&myFixtureDef); //add a fixture to the body
+	
+	pos = b2Vec2( -25/PPM,0); //radial placement
+    polygonShape.SetAsBox(50/2/PPM, 50/2/PPM, pos, 0 ); //a 2x2 rectangle
+	 ent->mBody->GetBody()->CreateFixture(&myFixtureDef); //add a fixture to the body
+	
+	pos = b2Vec2( 0,-25/PPM); //radial placement
+    polygonShape.SetAsBox(50/2/PPM, 50/2/PPM, pos, 0 ); //a 2x2 rectangle
+	 ent->mBody->GetBody()->CreateFixture(&myFixtureDef); //add a fixture to the body
+	
+	pos = b2Vec2( 0,25/PPM); //radial placement
+    polygonShape.SetAsBox(50/2/PPM, 50/2/PPM, pos, 0 ); //a 2x2 rectangle
+	 ent->mBody->GetBody()->CreateFixture(&myFixtureDef); //add a fixture to the body
+	
 }
 Scene::~Scene(){
 	m_world->~b2World();
@@ -64,41 +85,53 @@ void Scene::RemoveEntity(Entity* ent)
 {
 	EntitiesScheduledForRemoval.push_back(ent);
 }
+/**
+*@brief Used to draw the fixtures of a body(Assumes its a polygonshape)
+*@param The render window
+*/
 
+void Scene::DebugDraw(sf::RenderTarget &target)
+{
+	b2PolygonShape* shape;
+	sf::RectangleShape mShape(sf::Vector2f(0,0));
+
+	for(int i = 0; i < MAX_ENTITIES;++i)
+	{
+		if(gEntities[i].mBody != nullptr)
+		{
+			mShape.setFillColor(sf::Color(0,0,255,100));
+				for (b2Fixture* f = gEntities[i].mBody->GetBody()->GetFixtureList(); f; f = f->GetNext())
+				{
+					int sizex,sizey;
+					shape = static_cast<b2PolygonShape*>(f->GetShape());
+					sizex = shape->GetVertex(1).x*PPM - shape->GetVertex(0).x*PPM;
+					sizey = shape->GetVertex(2).y*PPM - shape->GetVertex(1).y*PPM;
+	
+					mShape.setSize(sf::Vector2f(sizex,sizey));
+					mShape.setOrigin(sizex/2,
+						sizey/2);
+					
+					mShape.setRotation( gEntities[i].mBody->GetBody()->GetAngle()*(180/3.14159265359)  );
+					mShape.setPosition( (f->GetBody()->GetPosition().x+shape->m_centroid.x)*PPM,
+						(f->GetBody()->GetPosition().y+shape->m_centroid.y)*PPM);
+					target.draw(mShape);
+				}
+			}
+		}
+}
 void Scene::Draw(sf::RenderTarget &target)
 {
 	for(int i = 0; i < MAX_ENTITIES;++i)
 	{
-		if(i == 10)
-		{
-			sf::RectangleShape mShape;
-			Vec2D dim;
-			
-			mShape.setSize(sf::Vector2f(gEntities[10].mBody->GetDimensions().x,
-				gEntities[10].mBody->GetDimensions().y));
-			mShape.setOrigin(gEntities[10].mBody->GetDimensions().x/2,
-				gEntities[10].mBody->GetDimensions().y/2);
-			mShape.setFillColor(sf::Color(255,0,0,255));
-			
-			mShape.setRotation( gEntities[10].mBody->GetBody()->GetAngle()*(180/3.14159265359)  );
-			mShape.setPosition( gEntities[10].mBody->GetBody()->GetPosition().x*PPM, gEntities[10].mBody->GetBody()->GetPosition().y*PPM);
-			gEntities[i].mBody->SetShape(&mShape);
-			
-			target.draw(*gEntities[i].mBody->GetShape());
-			gEntities[10].Draw(target);
-		}
-		else if(gEntities[i].mBody != nullptr)
-		{
-			gEntities[i].mBody->GetShape()->setRotation( gEntities[i].mBody->GetBody()->GetAngle()*(180/3.14159265359)  );
-			gEntities[i].mBody->GetShape()->setPosition( gEntities[i].mBody->GetBody()->GetPosition().x*PPM, 
-				gEntities[i].mBody->GetBody()->GetPosition().y*PPM);
 		
-			target.draw(*gEntities[i].mBody->GetShape());
+		if(gEntities[i].mBody != nullptr)
+		{
+
+			gEntities[i].Draw(target);
 		}
+		
 	}
-
 }
-
 void Scene::Update()
 {
 	//Step through the physics simulation

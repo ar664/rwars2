@@ -22,10 +22,12 @@
 			[
 				{
 					"Name" : "idle",
+					"Frames" : 8,
 					"FilePath" : "sprites/Gill-Sawfish/idle.png"
 				},
 				{
 					"Name" : "run",
+					"Frames" : 8,
 					"FilePath" : "sprites/Gill-Sawfish/run.png"
 				}
 			

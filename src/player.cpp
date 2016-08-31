@@ -30,29 +30,35 @@ void PlayerComponent::HandleInput()
 	
 	if (sf::Keyboard::isKeyPressed(KEY_MOVE_RIGHT))
 	{
-		printf("MoveRight\n");
 		gEntities[mID].mBody->GetBody()->SetLinearVelocity(b2Vec2(2,
 			gEntities[mID].mBody->GetBody()->GetLinearVelocity().y));
-
+		gEntities[mID].mIsFlipped = 1;
+		gScene->Players[mID].ChangeState(P_State_Running);
 	}	
-	if (sf::Keyboard::isKeyPressed(KEY_MOVE_UP))
+	else if (sf::Keyboard::isKeyPressed(KEY_MOVE_UP))
 	{
 			//ChangeState(P_State_Lane_Switch);
 	}
-	if (sf::Keyboard::isKeyPressed(KEY_MOVE_DOWN))
+	else if (sf::Keyboard::isKeyPressed(KEY_MOVE_DOWN))
 	{
 			//ChangeState(P_State_Lane_Switch);
 	}
-	if (sf::Keyboard::isKeyPressed(KEY_MOVE_LEFT))
+	else if (sf::Keyboard::isKeyPressed(KEY_MOVE_LEFT))
 	{
 		gEntities[mID].mBody->GetBody()->SetLinearVelocity(b2Vec2(-2,
 			gEntities[mID].mBody->GetBody()->GetLinearVelocity().y));
-
+		gEntities[mID].mIsFlipped = 0;
+		gScene->Players[mID].ChangeState(P_State_Running);
 	}
 	if (sf::Keyboard::isKeyPressed(KEY_JUMP))
 	{
 		gEntities[mID].mBody->GetBody()->SetLinearVelocity(b2Vec2(gEntities[mID].mBody->GetBody()->GetLinearVelocity().x,
 			-5));	
+		gScene->Players[mID].ChangeState(P_State_Jump);
+	}
+	else
+	{
+		gScene->Players[mID].ChangeState(P_State_Neutral);
 	}
 	/*
 	switch(sf::Keyboard::)
@@ -85,62 +91,67 @@ void PlayerComponent::HandleInput()
 		}
 		*/
 }
-//int Character::GetState()
-//{
-//	return mCurrState;
-//}
-//
-//void Character::ChangeState(PlayerState state)
-//{
-//
-//	int delta		= 0;
-//	int atk_delta	= 0;
-//	int curr_time	= gClock.getElapsedTime().asMilliseconds();
-//
-//	delta = curr_time - mLastStateChange;
-//	mNextStateChange -= delta;
-//	
-//	mState |= state;
-//
-//	if(mNextStateChange <= 0)
-//	{
-//		//testing purpose
-//		//should be fixed later to manually unset state
-//		mState = 0;
-//		mCurrState = P_State_Neutral;
-//	}
-//	//can only change states when we are in neutral state
-//	if(mCurrState != P_State_Neutral || state == P_State_Neutral)	return;
-//
-//	if(state == P_State_Charge_Atk)
-//	{
-//		if(mAtkPressTime == 0)
-//		{
-//			mAtkPressTime = curr_time;
-//			return;
-//		}
-//
-//		atk_delta		= curr_time - mAtkPressTime;
-//		std::cout<<"Atk delta is: " << atk_delta << std::endl;
-//		//hard coding 400 miliseconds as time btn needs to be held
-//		if(atk_delta < 400)
-//		{
-//			return;
-//		}
-//	}
-//	std:: cout <<"Last change time " << mLastStateChange << " Next change time " << mNextStateChange << std::endl;
-//	
-//	mAtkPressTime		= 0;
-//
-//	mState				|=state;
-//	mCurrState			= state;
-//
-//
-//	mLastStateChange	= gClock.getElapsedTime().asMilliseconds();
-//	mNextStateChange	= 5000;//hard coded 500 miliseconds for now
-//
-//	std::cout <<"Character State is " << mCurrState << std::endl;
-//}
+int PlayerComponent::GetState()
+{
+	return mCurrState;
+}
+
+void PlayerComponent::ChangeState(PlayerState state)
+{
+
+	int delta		= 0;
+	int atk_delta	= 0;
+	int curr_time	= gClock.getElapsedTime().asMilliseconds();
+
+	if(mPrevState == state)
+	{
+		return;
+	}
+	delta = curr_time - mLastStateChange;
+	mNextStateChange -= delta;
+	
+	mState |= state;
+
+	if(mNextStateChange <= 0)
+	{
+		//testing purpose
+		//should be fixed later to manually unset state
+		mState = 0;
+		mCurrState = P_State_Neutral;
+	}
+	//can only change states when we are in neutral state
+	if(mCurrState != P_State_Neutral || state == P_State_Neutral)	return;
+
+	if(state == P_State_Charge_Atk)
+	{
+		if(mAtkPressTime == 0)
+		{
+			mAtkPressTime = curr_time;
+			return;
+		}
+
+		atk_delta		= curr_time - mAtkPressTime;
+		std::cout<<"Atk delta is: " << atk_delta << std::endl;
+		//hard coding 400 miliseconds as time btn needs to be held
+		if(atk_delta < 400)
+		{
+			return;
+		}
+	}
+	std:: cout <<"Last change time " << mLastStateChange << " Next change time " << mNextStateChange << std::endl;
+	
+	mAtkPressTime		= 0;
+
+	mState				=state;
+	mPrevState			= mCurrState;
+	mCurrState			= state;
+
+
+	mLastStateChange	= gClock.getElapsedTime().asMilliseconds();
+	mNextStateChange	= 5000;//hard coded 500 miliseconds for now
+
+	std::cout <<"Character State is " << mCurrState << std::endl;
+}
 ////incomplete. Created to set up state changes
 //void Character::Update()
 //{

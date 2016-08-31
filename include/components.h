@@ -30,7 +30,8 @@ class PlayerComponent : public Component
 private:
 	int					mHealth;
 	int					mState;
-	//PlayerState			mCurrState; //flag of all states
+	PlayerState			mPrevState;
+	PlayerState			mCurrState; //flag of all states
 	
 	sf::Uint32			mAtkPressTime; //Time atk btn was pressed
 	sf::Uint32			mAtkHoldTime; // Amount of time atk btn was held

@@ -195,25 +195,36 @@ void Entity::Draw(sf::RenderTarget& target)
 {
 	int delta = 0;
 	sf::Transformable t;
-	t.setPosition(mBody->GetBody()->GetPosition().x*PPM-(mCurrentSprite->mFrameBB[0].left)-mBody->GetDimensions().x/2,
-		mBody->GetBody()->GetPosition().y*PPM-(mCurrentSprite->mFrameBB[0].top)-mBody->GetDimensions().y/2);
-	//mBody->GetBodyShape().SetAsBox((mCurrentSprite->mFrameBB[mCurrentFrame].width)/PPM,
-		//(mCurrentSprite->mFrameBB[mCurrentFrame].height)/PPM);
-	//if(!mSpriteArray)
-	//{
-	//	return;
-	//}
-	//if(!mCurrentSprite)
-	//{
-	//	mCurrentSprite = mSpriteArray[0];
-	//}
+	if(!mSpriteArray)
+	{
+		return;
+	}
+	if(!mCurrentSprite)
+	{
+		mCurrentSprite = mSpriteArray[0];
+	}
 	sf::IntRect rect(mCurrentFrame % mCurrentSprite->mFramesPerLine * ANIMATION_FRAME_LENGTH,
 		mCurrentFrame / mCurrentSprite->mFramesPerLine * ANIMATION_FRAME_LENGTH,
 		ANIMATION_FRAME_LENGTH,
 		ANIMATION_FRAME_LENGTH);
-	mCurrentSprite->mSfSprite->setTextureRect(rect);
-	target.draw(*mCurrentSprite->mSfSprite,t.getTransform());
 
+	//Check to see if flipped
+	if(mIsFlipped)
+	{
+		mCurrentSprite->mSfSprite->setTextureRect(sf::IntRect(rect.left+ANIMATION_FRAME_LENGTH,
+			rect.top,-ANIMATION_FRAME_LENGTH,ANIMATION_FRAME_LENGTH));
+		
+		t.setPosition(mBody->GetBody()->GetPosition().x*PPM-(ANIMATION_FRAME_LENGTH-mCurrentSprite->mFrameBB[mCurrentFrame].left)+mBody->GetDimensions().x/2,
+			mBody->GetBody()->GetPosition().y*PPM-(mCurrentSprite->mFrameBB[mCurrentFrame].top)-mBody->GetDimensions().y/2);
+
+	}	else
+	{
+		t.setPosition(mBody->GetBody()->GetPosition().x*PPM-(mCurrentSprite->mFrameBB[mCurrentFrame].left)-mBody->GetDimensions().x/2,
+		mBody->GetBody()->GetPosition().y*PPM-(mCurrentSprite->mFrameBB[mCurrentFrame].top)-mBody->GetDimensions().y/2);
+	
+		mCurrentSprite->mSfSprite->setTextureRect(rect);
+	}
+			//target.draw(*mCurrentSprite->mSfSprite,t.getTransform());
 	//Update Frames for animating
 	if(!paused && mLastDrawTime)
 	{
@@ -221,15 +232,35 @@ void Entity::Draw(sf::RenderTarget& target)
 	}
 	mLastDrawTime = gClock.getElapsedTime().asMilliseconds();
 	mNextFrameTime -= delta;
+	
 	if(mNextFrameTime <= 0)
 	{
-		if( mCurrentFrame < mCurrentSprite->mAnimation.maxFrames -2)
+		mCurrentFrame+= mCurrentSprite->mAnimation.frameInc;
+
+		if(mCurrentSprite->mAnimation.oscillate = true)
 		{
-			mCurrentFrame++;
-		} else
-		{
-			mCurrentFrame = 0;
-		}
+			if(mCurrentSprite->mAnimation.frameInc > 0)
+			{
+				if(mCurrentFrame >= mCurrentSprite->mAnimation.maxFrames-1)
+				{
+					mCurrentSprite->mAnimation.frameInc = -mCurrentSprite->mAnimation.frameInc;
+				}
+			}
+			else
+			{
+				if(mCurrentFrame <= 0)
+				{
+					mCurrentSprite->mAnimation.frameInc = -mCurrentSprite->mAnimation.frameInc;
+				}
+
+			}
+		}else 
+			{
+				if(mCurrentFrame >= mCurrentSprite->mAnimation.maxFrames-1)
+				{
+					mCurrentFrame = 0;
+				}
+			}
 		mNextFrameTime = mCurrentSprite->mAnimation.mpf;
 	}
 }
@@ -254,7 +285,7 @@ void Entity::Update(float deltaTime)
 		Vec2D dim = CreateVec2D(gEntities[10].mCurrentSprite->mFrameBB[gEntities[10].mCurrentFrame].width,
 				gEntities[10].mCurrentSprite->mFrameBB[gEntities[10].mCurrentFrame].height);
 
-		static_cast<Box*>(gEntities[10].mBody)->UpdateBoxShape(dim);
+		//static_cast<Box*>(gEntities[10].mBody)->UpdateBoxShape(dim);
 
 		//PrePhysics
 		//mBody->GetShape()->setRotation( mBody->GetBody()->GetAngle()*(180/3.14159265359)  );
@@ -302,10 +333,7 @@ void Entity::SetCurrentAnimation(int anim)
 *		This is mostly used for debugging purposes
 *@param The color
 */
-void Entity::ChangeBodyColor(sf::Color color)
-{
-	mBody->GetShape()->setFillColor(color);
-}
+
 /**
 *@brief Takes in a shape that contains the body for physics
 *@param The body/shape

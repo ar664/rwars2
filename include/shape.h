@@ -13,13 +13,11 @@ public:
 	virtual	void		init(b2World* world,const Vec2D position,const Vec2D dimensions,bool fixedRot) = 0;
 	b2Body*				GetBody(){return mBody;};
 	b2FixtureDef		GetFixture(){return mFixture;};
-	sf::Shape*			GetShape(){return mShape;};
 	b2PolygonShape		GetBodyShape(){return mBodyShape;};
 	Vec2D				GetDimensions(){return mDimensions;};
 	b2BodyDef*			GetBodyDef(){return &mBodyDef;};
 	int getN()			{return n;};
 	void				SetPoints(sf::Vector2f* points,int count);
-	void				SetShape(sf::Shape *shape){*mShape = *shape;};
 	void				SetFixedRotation(bool b){mBodyDef.fixedRotation = b;};
 	sf::Vector2f*		GetPoints(){return mPoints;};
 
@@ -30,7 +28,6 @@ protected:
 	b2BodyDef			mBodyDef;
 	b2PolygonShape		mBodyShape;
 	b2FixtureDef		mBodyFix;
-	sf::Shape*			mShape; //SFML shape Just for Drawing
 	sf::Vector2f*		mPoints;
 	int					mPointCount;
 	static int n;
