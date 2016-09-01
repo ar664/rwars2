@@ -81,7 +81,7 @@ void ResourceManager::FreeCaches()
 	mfSpriteCache* spriteCache = GetmfSpriteCache();
 	auto it = spriteCache->GetSpriteMap()->begin();
 	 while(it!= spriteCache->GetSpriteMap()->end()) {
-		 ResourceManager::FreemfSprite(it->first);
+		 ResourceManager::FreemfSprite((char*)it->first.c_str());
 		 it = spriteCache->GetSpriteMap()->begin();
 	 }
 
@@ -90,7 +90,7 @@ void ResourceManager::FreeCaches()
 sf::Sprite* mfSpriteCache::GetmfSprite(char* filepath)
 {
 
-	//Look for Texture
+	//Look for Sprite
 	auto it = mmfSpriteMap.find(filepath);
 	if(it == mmfSpriteMap.end())
 	{
@@ -118,7 +118,7 @@ void mfSpriteCache::FreemfSprite(char* filepath)
 		ResourceManager::FreeTexture(filepath);
 	}
 }
-std::map<char*,sf::Sprite*>* mfSpriteCache::GetSpriteMap()
+std::map<std::string,sf::Sprite*>* mfSpriteCache::GetSpriteMap()
 {
 	return &mmfSpriteMap;
 
@@ -177,9 +177,12 @@ void ResourceManager::LoadCharacterSpriteAssets(char* characterName,Sprite** spr
 								sIt++;
 								maxFrames = sIt->value.GetInt();
 								sIt++;
+								int oscillate = sIt->value.GetInt();
+								sIt++;
 								char filePath[128];
 								strcpy(filePath,sIt->value.GetString());
 								spriteDoublePointer[count] = LoadSprite(filePath);
+								spriteDoublePointer[count]->mAnimation.oscillate = oscillate;
 								spriteDoublePointer[count]->mAnimation.maxFrames = maxFrames;
 								count++;
 						

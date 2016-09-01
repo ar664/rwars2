@@ -23,11 +23,13 @@
 				{
 					"Name" : "idle",
 					"Frames" : 8,
+					"Oscillate" : 1,
 					"FilePath" : "sprites/Gill-Sawfish/idle.png"
 				},
 				{
 					"Name" : "run",
-					"Frames" : 8,
+					"Frames" : 7,
+					"Oscillate" : 0,
 					"FilePath" : "sprites/Gill-Sawfish/run.png"
 				}
 			

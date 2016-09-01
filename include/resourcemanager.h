@@ -19,7 +19,7 @@ public:
 	sf::Texture* GetTexture(char* filepath);
 	void		FreeTexture(char* filepath);
 private:
-	std::map<char*,sf::Texture*> mTextureMap;
+	std::map<std::string,sf::Texture*> mTextureMap;
 
 };
 /**
@@ -33,9 +33,9 @@ public:
 	~mfSpriteCache();
 	sf::Sprite* GetmfSprite(char* filepath);
 	void	FreemfSprite(char* filepath);
-	std::map<char*,sf::Sprite*>	*GetSpriteMap();
+	std::map<std::string,sf::Sprite*>	*GetSpriteMap();
 private:
-	std::map<char*,sf::Sprite*> mmfSpriteMap;
+	std::map<std::string,sf::Sprite*> mmfSpriteMap;
 
 };
 /**

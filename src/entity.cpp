@@ -233,11 +233,12 @@ void Entity::Draw(sf::RenderTarget& target)
 	mLastDrawTime = gClock.getElapsedTime().asMilliseconds();
 	mNextFrameTime -= delta;
 	
+	printf("%d\n",mCurrentFrame);
 	if(mNextFrameTime <= 0)
 	{
 		mCurrentFrame+= mCurrentSprite->mAnimation.frameInc;
 
-		if(mCurrentSprite->mAnimation.oscillate = true)
+		if(mCurrentSprite->mAnimation.oscillate == 1)
 		{
 			if(mCurrentSprite->mAnimation.frameInc > 0)
 			{
@@ -256,7 +257,7 @@ void Entity::Draw(sf::RenderTarget& target)
 			}
 		}else 
 			{
-				if(mCurrentFrame >= mCurrentSprite->mAnimation.maxFrames-1)
+				if(mCurrentFrame >= mCurrentSprite->mAnimation.maxFrames)
 				{
 					mCurrentFrame = 0;
 				}
@@ -349,6 +350,12 @@ void Entity::SetBodyFixtures(FixtureData* data)
 {
 	mBody->GetBody()->DestroyFixture(mBody->GetBody()->GetFixtureList());
 	b2Fixture* f;
+	for (f = mBody->GetBody()->GetFixtureList(); f; )
+	{
+	    b2Fixture* fixtureToDestroy = f;
+	    f = f->GetNext();
+	    mBody->GetBody()->DestroyFixture( fixtureToDestroy );
+	}
 	for(int i = 0; i < mCurrentSprite->mHurtBoxCount;i++)
 	{
 		b2PolygonShape polygonShape;

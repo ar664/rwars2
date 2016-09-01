@@ -37,6 +37,8 @@ void PlayerComponent::HandleInput()
 			gEntities[mID].mIsFlipped = 1;
 			FlipFixtures(gEntities[mID].mBody->GetBody()->GetFixtureList());
 		}
+		
+		gEntities[mID].mCurrentSprite = gEntities[mID].mSpriteArray[1];
 		gScene->Players[mID].ChangeState(P_State_Running);
 	}	
 	else if (sf::Keyboard::isKeyPressed(KEY_MOVE_UP))
@@ -56,17 +58,21 @@ void PlayerComponent::HandleInput()
 			gEntities[mID].mIsFlipped = 0;
 			FlipFixtures(gEntities[mID].mBody->GetBody()->GetFixtureList());
 		}
+		gEntities[mID].mCurrentSprite = gEntities[mID].mSpriteArray[1];
 		gScene->Players[mID].ChangeState(P_State_Running);
+		
+	}
+	else
+	{
+		gEntities[mID].mCurrentSprite = gEntities[mID].mSpriteArray[0];
+		gScene->Players[mID].ChangeState(P_State_Neutral);
+		
 	}
 	if (sf::Keyboard::isKeyPressed(KEY_JUMP))
 	{
 		gEntities[mID].mBody->GetBody()->SetLinearVelocity(b2Vec2(gEntities[mID].mBody->GetBody()->GetLinearVelocity().x,
 			-5));	
 		gScene->Players[mID].ChangeState(P_State_Jump);
-	}
-	else
-	{
-		gScene->Players[mID].ChangeState(P_State_Neutral);
 	}
 	/*
 	switch(sf::Keyboard::)
@@ -111,14 +117,14 @@ void PlayerComponent::ChangeState(PlayerState state)
 	int atk_delta	= 0;
 	int curr_time	= gClock.getElapsedTime().asMilliseconds();
 
-	if(mPrevState == state)
-	{
-		return;
-	}
 	delta = curr_time - mLastStateChange;
 	mNextStateChange -= delta;
 	
 	mState |= state;
+	
+	//@TODO Need to find a better spot to put this line of code becuase its currently running
+	//Every frame which could slow down the game
+	gEntities[mID].SetBodyFixtures(gEntities[mID].mCurrentSprite->mHurtBoxData);
 
 	if(mNextStateChange <= 0)
 	{
@@ -139,14 +145,14 @@ void PlayerComponent::ChangeState(PlayerState state)
 		}
 
 		atk_delta		= curr_time - mAtkPressTime;
-		std::cout<<"Atk delta is: " << atk_delta << std::endl;
+		//std::cout<<"Atk delta is: " << atk_delta << std::endl;
 		//hard coding 400 miliseconds as time btn needs to be held
 		if(atk_delta < 400)
 		{
 			return;
 		}
 	}
-	std:: cout <<"Last change time " << mLastStateChange << " Next change time " << mNextStateChange << std::endl;
+	//std:: cout <<"Last change time " << mLastStateChange << " Next change time " << mNextStateChange << std::endl;
 	
 	mAtkPressTime		= 0;
 
@@ -158,7 +164,8 @@ void PlayerComponent::ChangeState(PlayerState state)
 	mLastStateChange	= gClock.getElapsedTime().asMilliseconds();
 	mNextStateChange	= 5000;//hard coded 500 miliseconds for now
 
-	std::cout <<"Character State is " << mCurrState << std::endl;
+	//std::cout <<"Character State is " << mCurrState << std::endl;
+
 }
 ////incomplete. Created to set up state changes
 //void Character::Update()

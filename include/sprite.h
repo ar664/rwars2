@@ -16,7 +16,7 @@ typedef struct AnimationData{
 	int				heldFrame;
 	int				maxFrames;
 	int				holdFrame;
-	bool			oscillate;
+	int				oscillate;
 }Animation;
 
 

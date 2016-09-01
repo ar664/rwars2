@@ -140,8 +140,10 @@ void Start()
 	ResourceManager::LoadCharacterSpriteAssets("Gill-Sawfish",gEntities[10].mSpriteArray); 
 	
 	//Entity Testing
+	SetData(gEntities[10].mSpriteArray[0],"BoxData/Gill-Sawfish");
+	SetData(gEntities[10].mSpriteArray[1],"BoxData/Gill-Sawfish");
+	
 	gEntities[10].mCurrentSprite = gEntities[10].mSpriteArray[0];
-	SetData(gEntities[10].mCurrentSprite,"BoxData/Gill-Sawfish");
 	gEntities[10].SetBodyFixtures(gEntities[10].mCurrentSprite->mHurtBoxData);
 	while(!IsExiting())
 		Loop();

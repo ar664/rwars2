@@ -149,78 +149,6 @@ void SetData(Sprite* sprite,const char* charName)
 	//Parse the FileReadStream and close file
 	document.ParseStream(frs);
 	fclose(file);
-	/*
-	assert(document.IsObject());
-	assert(document.HasMember("HitBoxData"));
-	for(Value::ConstMemberIterator hitBoxItr =document.MemberBegin();
-		hitBoxItr != document.MemberEnd(); ++hitBoxItr)
-	{
-		if(hitBoxItr->value.IsArray())
-		{
-			const Value& hitBoxData = document["HitBoxData"];
-			assert(hitBoxData.IsArray());
-			//Start iterating through each sprites Hitboxs
-			for (SizeType i = 0; i < hitBoxData.Size(); i++)
-			{
-				//Iterate through the members of the object
-				for(Value::ConstMemberIterator hitBoxContent =hitBoxData[i].MemberBegin();
-					hitBoxContent != hitBoxData[i].MemberEnd(); ++hitBoxContent)
-				{
-					if(strcmp(hitBoxContent->name.GetString(),"AnimName") == 0)
-					{
-						strcpy(spriteFileName,"");
-						strcat(spriteFileName,"sprites/");
-						strcat(spriteFileName,hitBoxContent->value.GetString());
-						strcat(spriteFileName,".png");
-						printf("%s\n",spriteFileName);
-					}
-					else if(strcmp(hitBoxContent->name.GetString(),"NumFrames") == 0)
-					{
-						numFrames = hitBoxContent->value.GetInt();
-					}
-					else if(strcmp(hitBoxContent->name.GetString(),"BoxData") == 0)
-					{
-						sf::IntRect* rects = new sf::IntRect[numFrames];
-						//Start Getting the HitBox Data for Each Frame of the Animation
-						assert(hitBoxContent->value.IsArray());
-						const Value& BoxDataArray = hitBoxContent->value;
-						for (SizeType j = 0; j < BoxDataArray.Size(); j++)
-						{
-							//Make sure the Object has member FrameNum
-							assert(BoxDataArray[j].HasMember("FrameNum"));
-							//Iterate Through BoxData Members
-							for(Value::ConstMemberIterator BoxDataMember =BoxDataArray[j].MemberBegin();
-								BoxDataMember != BoxDataArray[j].MemberEnd(); ++BoxDataMember)
-								{
-									int frameNum;
-									if(strcmp(BoxDataMember->name.GetString(),"FrameNum") == 0)
-									{
-										frameNum = BoxDataMember->value.GetInt()-1;
-										printf("%s\n",BoxDataMember->name.GetString());
-									}
-									else if(strcmp(BoxDataMember->name.GetString(),"TopLeft") == 0)
-									{
-										const Value& b = BoxDataMember->value;
-										printf("%d\n",frameNum);
-										rects[frameNum].left = b[0].GetInt();
-										rects[frameNum].top  = b[1].GetInt();
-									}
-									else if(strcmp(BoxDataMember->name.GetString(),"BottomRight") == 0)
-									{
-										const Value& b = BoxDataMember->value;
-										printf("%d\n",frameNum);
-										rects[frameNum].width =  b[0].GetInt() - rects[frameNum].left ;
-										rects[frameNum].height = b[1].GetInt() - rects[frameNum].top ;
-									}
-								}
-						}
-						spriteArray->mFrameBB = rects;
-					}
-				}
-
-			}
-		}
-	}*/
 	assert(document.IsObject());
 	assert(document.HasMember("AnimationData"));
 
@@ -236,75 +164,79 @@ void SetData(Sprite* sprite,const char* charName)
 			for (SizeType i = 0; i < AnimData.Size(); i++)
 			{
 				//Iterate through the members of the object
-				for(Value::ConstMemberIterator data =AnimData[i].MemberBegin();
-					data != AnimData[i].MemberEnd(); ++data)
+				if(strcmp(AnimData[i].MemberBegin()->value.GetString(),sprite->mFileName) == 0)
 				{
-					if(strcmp(data->name.GetString(),"BaseBoxes") == 0)
+					for(Value::ConstMemberIterator data =AnimData[i].MemberBegin();
+						data != AnimData[i].MemberEnd(); ++data)
 					{
-						boxes += data->value.GetInt();
-					}
-					else if(strcmp(data->name.GetString(),"HurtBoxes") == 0 )
-					{
-						boxes += data->value.GetInt();
-					}
-					else if(strcmp(data->name.GetString(),"HitBoxes") == 0 )
-					{
-						boxes += data->value.GetInt();
-					}
-					else if(strcmp(data->name.GetString(),"BaseBoxDef") == 0 )
-					{
-						hurtData = new FixtureData[boxes];
-						sprite->mHurtBoxCount = boxes;
-						const Value& fData = data->value;
-						for (SizeType j = 0; j < fData.Size(); j++)
+						if(strcmp(data->name.GetString(),"BaseBoxes") == 0)
 						{
-							hurtData[0].mOffset = b2Vec2(fData[j].GetInt(),fData[j++].GetInt());
-							hurtData[0].mDimensions = b2Vec2(50,20);
-							hurtData[0].mColor= sf::Color(0,255,0,100);
-							hurtData[0].mType= BaseBox;
+							boxes += data->value.GetInt();
 						}
-					}
-					else if(strcmp(data->name.GetString(),"SpriteAxis") == 0 )
-					{	
-						const Value& fData = data->value;
-						for (SizeType j = 0; j < fData.Size(); j++)
+						else if(strcmp(data->name.GetString(),"HurtBoxes") == 0 )
 						{
-							sprite->mSpriteAxis = sf::Vector2f(fData[j].GetInt(),fData[j+1].GetInt());
-							j++;
+							boxes += data->value.GetInt();
 						}
-					}
-					else if(strcmp(data->name.GetString(),"HurtBoxDef") == 0 )
-					{
-						const Value& fData = data->value;
-						int frameIndex = 1;
-						//Iterate through members
-						for(Value::ConstMemberIterator data2 =fData.MemberBegin();
-							data2 != fData.MemberEnd(); ++data2)
+						else if(strcmp(data->name.GetString(),"HitBoxes") == 0 )
 						{
-							for(Value::ConstMemberIterator data3 =data2->value.MemberBegin();
-								data3 != data2->value.MemberEnd(); ++data3)
+							boxes += data->value.GetInt();
+						}
+						else if(strcmp(data->name.GetString(),"BaseBoxDef") == 0 )
+						{
+							hurtData = new FixtureData[boxes];
+							sprite->mHurtBoxCount = boxes;
+							const Value& fData = data->value;
+							for (SizeType j = 0; j < fData.Size(); j++)
 							{
-								if(strcmp(data3->name.GetString(),"HurtBoxOffset") == 0)
+								hurtData[0].mOffset = b2Vec2(fData[j].GetInt(),fData[j++].GetInt());
+								hurtData[0].mDimensions = b2Vec2(50,20);
+								hurtData[0].mColor= sf::Color(0,255,0,100);
+								hurtData[0].mType= BaseBox;
+							}
+						}
+						else if(strcmp(data->name.GetString(),"SpriteAxis") == 0 )
+						{	
+							const Value& fData = data->value;
+							for (SizeType j = 0; j < fData.Size(); j++)
+							{
+								sprite->mSpriteAxis = sf::Vector2f(fData[j].GetInt(),fData[j+1].GetInt());
+								j++;
+							}
+						}
+						else if(strcmp(data->name.GetString(),"HurtBoxDef") == 0 )
+						{
+							const Value& fData = data->value;
+							int frameIndex = 1;
+							//Iterate through members
+							for(Value::ConstMemberIterator data2 =fData.MemberBegin();
+								data2 != fData.MemberEnd(); ++data2)
+							{
+								for(Value::ConstMemberIterator data3 =data2->value.MemberBegin();
+									data3 != data2->value.MemberEnd(); ++data3)
 								{
-									const Value& fData2 = data3->value;
-									for (SizeType j = 0; j < fData2.Size(); j++)
+									if(strcmp(data3->name.GetString(),"HurtBoxOffset") == 0)
 									{
-										hurtData[frameIndex].mType = HurtBox;
-										hurtData[frameIndex].mColor = sf::Color(0,0,255,100);
-										hurtData[frameIndex].mOffset = b2Vec2(fData2[j].GetInt(),fData2[j+1].GetInt());
-										j++;
+										const Value& fData2 = data3->value;
+										for (SizeType j = 0; j < fData2.Size(); j++)
+										{
+											hurtData[frameIndex].mType = HurtBox;
+											hurtData[frameIndex].mColor = sf::Color(0,0,255,100);
+											hurtData[frameIndex].mOffset = b2Vec2(fData2[j].GetInt(),fData2[j+1].GetInt());
+											j++;
+										}
 									}
-								}
-								else if(strcmp(data3->name.GetString(),"HurtBoxDimensions") == 0)
-								{
-									const Value& fData2 = data3->value;
-									for (SizeType j = 0; j < fData2.Size(); j++)
+									else if(strcmp(data3->name.GetString(),"HurtBoxDimensions") == 0)
 									{
-										hurtData[frameIndex++].mDimensions= b2Vec2(fData2[j].GetInt(),fData2[j++].GetInt());
+										const Value& fData2 = data3->value;
+										for (SizeType j = 0; j < fData2.Size(); j++)
+										{
+											hurtData[frameIndex++].mDimensions= b2Vec2(fData2[j].GetInt(),fData2[j++].GetInt());
+										}
 									}
 								}
 							}
 						}
+						
 					}
 				}
 			}
@@ -342,7 +274,6 @@ Sprite *LoadSprite(char* filename)
 	sprite->mSfSprite->setTexture(*ResourceManager::GetTexture(filename));
 	sprite->mRefCount +=1;
 	sprite->mAnimation.frameInc = 1;
-	sprite->mAnimation.oscillate = false;
 	strcpy(sprite->mFileName,filename);
 	//Set Physics Dimensions
 	int l = sprite->mSfSprite->getTexture()->getSize().x / ANIMATION_FRAME_LENGTH;
@@ -362,7 +293,7 @@ Sprite *LoadSprite(char* filename)
 	sprite->mAnimation.maxFrames = sprite->mFramesPerLine * (sprite->mHeight / ANIMATION_FRAME_HEIGHT);
 	sprite->mAnimation.heldFrame = 0;
 	sprite->mAnimation.mpf = ANIMATION_DEFAULT_MPF;
-	sprite->mAnimation.oscillate = false;
+	sprite->mAnimation.oscillate = 0;
 
 	//sprite->SetFrameBB();
 
