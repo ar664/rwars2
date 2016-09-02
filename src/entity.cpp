@@ -283,14 +283,7 @@ Cell* Entity::GetCell()
 */
 void Entity::Update(float deltaTime)
 {
-		Vec2D dim = CreateVec2D(gEntities[10].mCurrentSprite->mFrameBB[gEntities[10].mCurrentFrame].width,
-				gEntities[10].mCurrentSprite->mFrameBB[gEntities[10].mCurrentFrame].height);
-
-		//static_cast<Box*>(gEntities[10].mBody)->UpdateBoxShape(dim);
-
-		//PrePhysics
-		//mBody->GetShape()->setRotation( mBody->GetBody()->GetAngle()*(180/3.14159265359)  );
-		//mBody->GetShape()->setPosition( mBody->GetBody()->GetPosition().x*PPM, mBody->GetBody()->GetPosition().y*PPM);
+	/*
 		//Grid Detection via Cells
 		Cell *newCell = gGrid->getCell(CreateVec2D(getPosition().x,getPosition().y));
 		if(newCell != GetCell())
@@ -305,6 +298,7 @@ void Entity::Update(float deltaTime)
 				gGrid->addEntity(this,newCell);
 			}
 		}
+		*/
 }
 
 /**
@@ -379,9 +373,11 @@ void Entity::SetBodyFixtures(FixtureData* data)
 		f= mBody->GetBody()->CreateFixture(&Fixture);
 		if(data[i].mType == BaseBox)
 			mBody->SetBaseBody(f);
-		f->SetUserData(&data[i]);
-
+		f->SetUserData(&data[i]);	
 	}
+	if(mIsFlipped == 1)
+		FlipFixtures(gEntities[mID].mBody->GetBody()->GetFixtureList());
+	
 }
 /**
 *@brief Checks to see if this entity contains this component

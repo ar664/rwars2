@@ -18,6 +18,7 @@
 #define PPM	30.0f
 #define MPP	(1.0f/PIXELS_PER_METER)
 
+#define MAX_PLAYERS			4
 //Whenever ssing an external type include the file before you use it to reduce errors.
 #include <SFML/Graphics.hpp>
 #include "scene.h"

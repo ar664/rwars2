@@ -15,7 +15,7 @@ class Scene
 public:
 	Scene();
 	~Scene();
-	PlayerComponent			Players		[MAX_ENTITIES];
+	PlayerComponent			Players		[MAX_PLAYERS];
 	void Draw(sf::RenderTarget &target);
 	void DebugDraw(sf::RenderTarget &target);
 	void Update();

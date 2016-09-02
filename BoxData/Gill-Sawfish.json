@@ -26,7 +26,7 @@
 			"SpriteAxis": [190,245],
 			"HurtBoxDef":
 				{
-					"1":{"LengthOfFrame":100,"HurtBoxOffset":[60,-30],"HurtBoxDimensions":[50,50]},	
+					"1":{"LengthOfFrame":100,"HurtBoxOffset":[60,-50],"HurtBoxDimensions":[50,50]},	
 					"2":{"LengthOfFrame":100,"HurtBoxOffset":[0,-60],"HurtBoxDimensions":[50,50]},
 					"4":{"LengthOfFrame":100,"HurtBoxOffset":[-60,-30],"HurtBoxDimensions":[50,50]}
 				}

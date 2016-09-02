@@ -5,6 +5,8 @@
 #include "include\components.h"
 #include "player.h"
 #include "globals.h"
+
+
 //
 //
 //Character **gCharacters = (Character**) malloc(sizeof(Character*)*ASSETS_CHARACTERS);
@@ -32,14 +34,13 @@ void PlayerComponent::HandleInput()
 	{
 		gEntities[mID].mBody->GetBody()->SetLinearVelocity(b2Vec2(2,
 			gEntities[mID].mBody->GetBody()->GetLinearVelocity().y));
+		gEntities[mID].mCurrentSprite = gEntities[mID].mSpriteArray[1];
+		gScene->Players[mID].ChangeState(P_State_Running);
 		if(gEntities[mID].mIsFlipped != 1)
 		{
 			gEntities[mID].mIsFlipped = 1;
 			FlipFixtures(gEntities[mID].mBody->GetBody()->GetFixtureList());
 		}
-		
-		gEntities[mID].mCurrentSprite = gEntities[mID].mSpriteArray[1];
-		gScene->Players[mID].ChangeState(P_State_Running);
 	}	
 	else if (sf::Keyboard::isKeyPressed(KEY_MOVE_UP))
 	{
@@ -53,13 +54,14 @@ void PlayerComponent::HandleInput()
 	{
 		gEntities[mID].mBody->GetBody()->SetLinearVelocity(b2Vec2(-2,
 			gEntities[mID].mBody->GetBody()->GetLinearVelocity().y));
+		gEntities[mID].mCurrentSprite = gEntities[mID].mSpriteArray[1];
+		gScene->Players[mID].ChangeState(P_State_Running);
+		
 		if(gEntities[mID].mIsFlipped != 0)
 		{
 			gEntities[mID].mIsFlipped = 0;
 			FlipFixtures(gEntities[mID].mBody->GetBody()->GetFixtureList());
 		}
-		gEntities[mID].mCurrentSprite = gEntities[mID].mSpriteArray[1];
-		gScene->Players[mID].ChangeState(P_State_Running);
 		
 	}
 	else
@@ -72,7 +74,7 @@ void PlayerComponent::HandleInput()
 	{
 		gEntities[mID].mBody->GetBody()->SetLinearVelocity(b2Vec2(gEntities[mID].mBody->GetBody()->GetLinearVelocity().x,
 			-5));	
-		gScene->Players[mID].ChangeState(P_State_Jump);
+		//gScene->Players[mID].ChangeState(P_State_Jump);
 	}
 	/*
 	switch(sf::Keyboard::)
@@ -122,10 +124,6 @@ void PlayerComponent::ChangeState(PlayerState state)
 	
 	mState |= state;
 	
-	//@TODO Need to find a better spot to put this line of code becuase its currently running
-	//Every frame which could slow down the game
-	gEntities[mID].SetBodyFixtures(gEntities[mID].mCurrentSprite->mHurtBoxData);
-
 	if(mNextStateChange <= 0)
 	{
 		//testing purpose
@@ -134,7 +132,13 @@ void PlayerComponent::ChangeState(PlayerState state)
 		mCurrState = P_State_Neutral;
 	}
 	//can only change states when we are in neutral state
-	if(mCurrState != P_State_Neutral || state == P_State_Neutral)	return;
+	//if(mCurrState != P_State_Neutral || state == P_State_Neutral)	return;
+	if(mCurrState == state)
+		return;
+	
+	//@TODO Need to find a better spot to put this line of code becuase its currently running
+	//Every frame which could slow down the game
+	gEntities[mID].SetBodyFixtures(gEntities[mID].mCurrentSprite->mHurtBoxData);
 
 	if(state == P_State_Charge_Atk)
 	{
