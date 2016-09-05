@@ -323,7 +323,6 @@ private:
         ST_IDLE,
         ST_MOVE,
         ST_JUMP,
-		ST_FALL,
         ST_MAX_STATES
     };
 	STATE_DECLARE(Movement,	Idle, NoEventData);
@@ -342,7 +341,6 @@ private:
 	BEGIN_STATE_MAP_EX
 		STATE_MAP_ENTRY_EX(&Idle)
 		STATE_MAP_ENTRY_EX(&Move)
-		STATE_MAP_ENTRY_ALL_EX(&Jump, 0, 0, &ExitJump)
 		STATE_MAP_ENTRY_ALL_EX(&Jump, 0, 0, &ExitJump)
 	END_STATE_MAP_EX
 };

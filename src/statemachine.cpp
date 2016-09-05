@@ -173,7 +173,6 @@ void Movement::MoveF()
         TRANSITION_MAP_ENTRY (ST_MOVE)		  // ST_Idle
         TRANSITION_MAP_ENTRY (ST_MOVE)		 // ST_Move
         TRANSITION_MAP_ENTRY (ST_MOVE)        // ST_Jump
-		TRANSITION_MAP_ENTRY (ST_MOVE)        // ST_Jump
     END_TRANSITION_MAP(NULL)
 
 }
@@ -183,7 +182,6 @@ void Movement::IdleF()
         TRANSITION_MAP_ENTRY (EVENT_IGNORED)		  // ST_Idle
         TRANSITION_MAP_ENTRY (ST_IDLE)				// ST_Move
         TRANSITION_MAP_ENTRY (EVENT_IGNORED)        // ST_Jump
-		TRANSITION_MAP_ENTRY (ST_MOVE)        // ST_Jump
     END_TRANSITION_MAP(NULL)
 
 }
@@ -193,7 +191,6 @@ void Movement::JumpF(MovementData* n)
         TRANSITION_MAP_ENTRY (ST_JUMP)		  // ST_Idle
         TRANSITION_MAP_ENTRY (ST_JUMP)		  // ST_Move
         TRANSITION_MAP_ENTRY (EVENT_IGNORED)	  // ST_Jump
-		TRANSITION_MAP_ENTRY (ST_MOVE)			// ST_Jump_Exit
     END_TRANSITION_MAP(n)
 
 }
