@@ -2,6 +2,7 @@
 #define _COMPONENT_H
 
 #include "include\player.h"
+#include "include\statemachine.h"
 
 typedef enum
 {
@@ -32,7 +33,6 @@ private:
 	int					mState;
 	PlayerState			mPrevState;
 	PlayerState			mCurrState; //flag of all states
-	
 	sf::Uint32			mAtkPressTime; //Time atk btn was pressed
 	sf::Uint32			mAtkHoldTime; // Amount of time atk btn was held
 	//currently using timers for state changes
@@ -41,6 +41,7 @@ private:
 	int					mNextStateChange;
 public:
 	int					mID;
+	MovementData*		mMoveData;
 
 	/**
 	 * @brief Handles movement, lane switch, jump, and attack inputs

@@ -4,10 +4,7 @@
     <ClCompile Include="src\AI.cpp" />
     <ClCompile Include="src\audio.cpp" />
     <ClCompile Include="src\components.cpp" />
-<<<<<<< HEAD
-=======
     <ClCompile Include="src\input.cpp" />
->>>>>>> ComponentSystem
     <ClCompile Include="src\entity.cpp" />
     <ClCompile Include="src\fgen.cpp" />
     <ClCompile Include="src\globals.cpp" />
@@ -17,11 +14,16 @@
     <ClCompile Include="src\particle.cpp" />
     <ClCompile Include="src\physics.cpp" />
     <ClCompile Include="src\player.cpp" />
+    <ClCompile Include="src\resourcemanager.cpp" />
     <ClCompile Include="src\scene.cpp" />
     <ClCompile Include="src\shape.cpp" />
     <ClCompile Include="src\sprite.cpp" />
+    <ClCompile Include="src\statemachine.cpp" />
     <ClCompile Include="src\vectors.cpp" />
     <ClCompile Include="include\input.h" />
+    <ClCompile Include="include\resourcemanager.h" />
+    <ClCompile Include="include\statemachine.h" />
+    <ClCompile Include="fault.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\AI.h" />
@@ -40,5 +42,6 @@
     <ClInclude Include="include\shape.h" />
     <ClInclude Include="include\sprite.h" />
     <ClInclude Include="include\vectors.h" />
+    <ClInclude Include="fault.h" />
   </ItemGroup>
 </Project>

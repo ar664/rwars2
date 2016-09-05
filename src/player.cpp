@@ -1,11 +1,11 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <math.h>
-
+#include "include\statemachine.h"
 #include "include\components.h"
 #include "player.h"
 #include "globals.h"
-
+Movement movement;
 
 //
 //
@@ -41,6 +41,8 @@ void PlayerComponent::HandleInput()
 			gEntities[mID].mIsFlipped = 1;
 			FlipFixtures(gEntities[mID].mBody->GetBody()->GetFixtureList());
 		}
+		movement.MoveF();
+		
 	}	
 	else if (sf::Keyboard::isKeyPressed(KEY_MOVE_UP))
 	{
@@ -62,18 +64,22 @@ void PlayerComponent::HandleInput()
 			gEntities[mID].mIsFlipped = 0;
 			FlipFixtures(gEntities[mID].mBody->GetBody()->GetFixtureList());
 		}
-		
+		movement.MoveF();
 	}
 	else
 	{
 		gEntities[mID].mCurrentSprite = gEntities[mID].mSpriteArray[0];
 		gScene->Players[mID].ChangeState(P_State_Neutral);
+		movement.IdleF();
 		
 	}
 	if (sf::Keyboard::isKeyPressed(KEY_JUMP))
 	{
 		gEntities[mID].mBody->GetBody()->SetLinearVelocity(b2Vec2(gEntities[mID].mBody->GetBody()->GetLinearVelocity().x,
 			-5));	
+
+		movement.JumpF(mMoveData);
+		mMoveData->mJumped = 1;
 		//gScene->Players[mID].ChangeState(P_State_Jump);
 	}
 	/*

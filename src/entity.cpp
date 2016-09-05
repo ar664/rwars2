@@ -233,7 +233,7 @@ void Entity::Draw(sf::RenderTarget& target)
 	mLastDrawTime = gClock.getElapsedTime().asMilliseconds();
 	mNextFrameTime -= delta;
 	
-	printf("%d\n",mCurrentFrame);
+	//printf("%d\n",mCurrentFrame);
 	if(mNextFrameTime <= 0)
 	{
 		mCurrentFrame+= mCurrentSprite->mAnimation.frameInc;
@@ -408,6 +408,7 @@ void Entity::AddComponent(sf::Int64 component)
 		else if (mMask & component == component)
 		{
 			std::printf("Entity already has this component");
+			return;
 		}
 		else
 		{
@@ -415,8 +416,9 @@ void Entity::AddComponent(sf::Int64 component)
 		}
 	switch(component)
 	{
-		case COMPONENT_PLAYER:
+		case COMPONENT_PLAYER: 
 			gScene->Players[mID].mID = mID;
+			gScene->Players[mID].mMoveData = new MovementData();
 	}
 
 	}
