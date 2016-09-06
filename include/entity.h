@@ -98,17 +98,12 @@ public:
 	//Getters
 	Cell*			GetCell();
 	Grid*			GetGrid();
-	Vec2D			GetDimension();
-	Vec2D			GetVelocity();
-	Vec2D			GetPosition();
 	pShape*			GetShape(){return mBody;};
 	//Setters
 	void			SetCurrentAnimation(int anim);
 	void			SetCell(Cell* cell);
-	void			SetPosition(Vec2D vec);
-	void			SetDimensions(Vec2D vec);
-	void			SetVelocity(Vec2D vec);
-	
+	void			SetSprite(int n);
+
 	void			IncrementContact() { mNumContacts++; };
 	void			DecrementContact() { mNumContacts--; };
 	

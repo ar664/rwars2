@@ -1,4 +1,5 @@
 #include <assert.h>
+#include "include\globals.h"
 #include "include\statemachine.h"
  
 
@@ -108,7 +109,6 @@ void StateMachine::StateEngine(const StateMapRow* const pStateMap)
 //----------------------------------------------------------------------------
 void StateMachine::StateEngine(const StateMapRowEx* const pStateMapEx)
 {
-	const EventData* pDataTemp = NULL;
 
 	// While events are being generated keep executing states
 	while (m_eventGenerated)
@@ -128,7 +128,7 @@ void StateMachine::StateEngine(const StateMapRowEx* const pStateMapEx)
 		// Execute the guard condition
 		bool guardResult = true;
 		if (guard != NULL)
-			guardResult = guard->InvokeGuardCondition(this, pDataTemp);
+			guardResult = guard->InvokeGuardCondition(this, m_pEventData);
 
 		// If the guard condition succeeds
 		if (guardResult == true)
@@ -142,7 +142,7 @@ void StateMachine::StateEngine(const StateMapRowEx* const pStateMapEx)
 
 				// Execute the state entry action on the new state
 				if (entry != NULL)
-					entry->InvokeEntryAction(this, pDataTemp);
+					entry->InvokeEntryAction(this, m_pEventData);
 
 				// Ensure exit/entry actions didn't call InternalEvent by accident 
 				ASSERT_TRUE(m_eventGenerated == false);
@@ -163,58 +163,141 @@ MovementData::MovementData()
 {
 	memset(this,0,sizeof(MovementData));
 }
-Movement::Movement() : StateMachine(ST_MAX_STATES)
+MovementMachine::MovementMachine() : StateMachine(ST_MAX_STATES)
 {
 }
  
-void Movement::MoveF()
+void MovementMachine::MoveF(MovementData* n)
 {
     BEGIN_TRANSITION_MAP                      // - Current State -
         TRANSITION_MAP_ENTRY (ST_MOVE)		  // ST_Idle
-        TRANSITION_MAP_ENTRY (ST_MOVE)		 // ST_Move
+        TRANSITION_MAP_ENTRY (ST_MOVE)		  // ST_Move
         TRANSITION_MAP_ENTRY (ST_MOVE)        // ST_Jump
-    END_TRANSITION_MAP(NULL)
+    END_TRANSITION_MAP(n)
 
 }
-void Movement::IdleF()
+void MovementMachine::IdleF(MovementData* n)
 {
     BEGIN_TRANSITION_MAP							// - Current State -
-        TRANSITION_MAP_ENTRY (EVENT_IGNORED)		  // ST_Idle
+        TRANSITION_MAP_ENTRY (EVENT_IGNORED)	    // ST_Idle
         TRANSITION_MAP_ENTRY (ST_IDLE)				// ST_Move
         TRANSITION_MAP_ENTRY (EVENT_IGNORED)        // ST_Jump
-    END_TRANSITION_MAP(NULL)
+    END_TRANSITION_MAP(n)
 
 }
-void Movement::JumpF(MovementData* n)
+void MovementMachine::JumpF(MovementData* n)
 {
-    BEGIN_TRANSITION_MAP                      // - Current State -
-        TRANSITION_MAP_ENTRY (ST_JUMP)		  // ST_Idle
-        TRANSITION_MAP_ENTRY (ST_JUMP)		  // ST_Move
-        TRANSITION_MAP_ENTRY (EVENT_IGNORED)	  // ST_Jump
+    BEGIN_TRANSITION_MAP							// - Current State -
+        TRANSITION_MAP_ENTRY (ST_JUMP)				// ST_Idle
+        TRANSITION_MAP_ENTRY (ST_JUMP)			 	// ST_Move
+        TRANSITION_MAP_ENTRY (EVENT_IGNORED)	    // ST_Jump
     END_TRANSITION_MAP(n)
 
 }
 
-STATE_DEFINE(Movement,Idle,NoEventData)
+STATE_DEFINE(MovementMachine,Idle,MovementData)
 {
-	//Do Nothing
+	if(data->mGrounded == 1)
+	{
+		mSpriteMachine->IdleS();
+	}
 	printf("I Am Idle\n");
 }
-STATE_DEFINE(Movement,Move,NoEventData)
+STATE_DEFINE(MovementMachine,Move,MovementData)
 {
 	printf("I Am Moving\n");
+	mSpriteMachine->MoveS();
+	switch(data->key)
+	{
+	case KEY_MOVE_RIGHT:
+		gEntities[data->mID].mBody->GetBody()->SetLinearVelocity(b2Vec2(2,
+			gEntities[data->mID].mBody->GetBody()->GetLinearVelocity().y));
+		if(gEntities[data->mID].mIsFlipped != 1)
+		{
+			gEntities[data->mID].mIsFlipped = 1;
+			FlipFixtures(gEntities[data->mID].mBody->GetBody()->GetFixtureList());
+		}
+		break;
+	case KEY_MOVE_LEFT:
+		gEntities[data->mID].mBody->GetBody()->SetLinearVelocity(b2Vec2(-2,
+			gEntities[data->mID].mBody->GetBody()->GetLinearVelocity().y));
+		if(gEntities[data->mID].mIsFlipped != 0)
+		{
+			gEntities[data->mID].mIsFlipped = 0;
+			FlipFixtures(gEntities[data->mID].mBody->GetBody()->GetFixtureList());
+		}
+		break;
+	default:
+		break;
+	}
 }
-
-STATE_DEFINE(Movement,Jump,MovementData)
+STATE_DEFINE(MovementMachine,Jump,MovementData)
 {
+		mSpriteMachine->JumpS();
 		printf("I Am Jumping\n");
 }
-EXIT_DEFINE(Movement,ExitJump)
+/**
+*This is the Beginning of where i start to define the functions
+*	for the spriteMachine
+*
+*
+*/
+
+SpriteMachine::SpriteMachine(int id) : StateMachine(ST_MAX_STATES)
 {
-	printf("ExitJump\n");
+	mID = id;
+	InternalEvent(ST_IDLE,NULL);
+}
+
+void SpriteMachine::IdleS()
+{
+	BEGIN_TRANSITION_MAP							// - Current State -
+        TRANSITION_MAP_ENTRY (ST_IDLE)				// ST_Idle
+        TRANSITION_MAP_ENTRY (ST_IDLE)			 	// ST_Move
+        TRANSITION_MAP_ENTRY (EVENT_IGNORED)	    // ST_Jump
+    END_TRANSITION_MAP(NULL)
+
+}
+void SpriteMachine::MoveS()
+{
+	BEGIN_TRANSITION_MAP							// - Current State -
+        TRANSITION_MAP_ENTRY (ST_MOVE)				// ST_Idle
+        TRANSITION_MAP_ENTRY (EVENT_IGNORED)	    // ST_Move
+        TRANSITION_MAP_ENTRY (EVENT_IGNORED)	    // ST_Jump
+    END_TRANSITION_MAP(NULL)
+
+}
+void SpriteMachine::JumpS()
+{
+BEGIN_TRANSITION_MAP							// - Current State -
+        TRANSITION_MAP_ENTRY (ST_JUMP)				// ST_Idle
+        TRANSITION_MAP_ENTRY (ST_JUMP)			 	// ST_Move
+        TRANSITION_MAP_ENTRY (ST_JUMP)			    // ST_Jump
+    END_TRANSITION_MAP(NULL)
 
 }
 
+
+STATE_DEFINE(SpriteMachine,Idle,NoEventData)
+{
+	gEntities[mID].SetSprite(0);
+	printf("Switch to Idle Sprite\n");
+}
+STATE_DEFINE(SpriteMachine,Move,NoEventData)
+{
+	gEntities[mID].SetSprite(1);
+	printf("Switch to Move Sprite\n");
+}
+STATE_DEFINE(SpriteMachine,Jump,NoEventData)
+{
+	gEntities[mID].SetSprite(2);
+	printf("Switch to Jump Sprite\n");
+}
+
+
+
+
+//Old Code just in case
 
 /*
 StateMachine::StateMachine(int maxStates) :

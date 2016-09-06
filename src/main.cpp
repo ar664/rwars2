@@ -142,6 +142,7 @@ void Start()
 	//Entity Testing
 	SetData(gEntities[10].mSpriteArray[0],"BoxData/Gill-Sawfish");
 	SetData(gEntities[10].mSpriteArray[1],"BoxData/Gill-Sawfish");
+	SetData(gEntities[10].mSpriteArray[2],"BoxData/Gill-Sawfish");
 	
 	gEntities[10].mCurrentSprite = gEntities[10].mSpriteArray[0];
 	gEntities[10].SetBodyFixtures(gEntities[10].mCurrentSprite->mHurtBoxData);

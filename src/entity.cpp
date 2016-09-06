@@ -236,6 +236,12 @@ void Entity::Draw(sf::RenderTarget& target)
 	//printf("%d\n",mCurrentFrame);
 	if(mNextFrameTime <= 0)
 	{
+		if(mCurrentFrame == mCurrentSprite->mAnimation.heldFrame-1)
+		{
+			mCurrentSprite->mAnimation.holdFrame = 1;
+		}
+		if(mCurrentSprite->mAnimation.holdFrame == 1)
+			return;
 		mCurrentFrame+= mCurrentSprite->mAnimation.frameInc;
 
 		if(mCurrentSprite->mAnimation.oscillate == 1)
@@ -265,7 +271,13 @@ void Entity::Draw(sf::RenderTarget& target)
 		mNextFrameTime = mCurrentSprite->mAnimation.mpf;
 	}
 }
+void Entity::SetSprite(int n)
+{
+	mCurrentFrame = 0;
+	mCurrentSprite->mAnimation.holdFrame = 0;
+	mCurrentSprite = mSpriteArray[n];
 
+}
 void Entity::Think()
 {
 	//Empty Think Should be replaced on inheritance
@@ -283,6 +295,12 @@ Cell* Entity::GetCell()
 */
 void Entity::Update(float deltaTime)
 {
+
+	if(mMask & COMPONENT_PLAYER == COMPONENT_PLAYER)
+	{
+		if(mBody != nullptr)
+			gScene->Players[mID].mMoveData->mGrounded = mBody->mTouchingGround;
+	}
 	/*
 		//Grid Detection via Cells
 		Cell *newCell = gGrid->getCell(CreateVec2D(getPosition().x,getPosition().y));
@@ -323,11 +341,6 @@ void Entity::SetCurrentAnimation(int anim)
 	mCurrentSprite = mSpriteArray[anim];
 	mCurrentFrame = 0;
 }
-/**
-*@brief This is used to change the color of the body.
-*		This is mostly used for debugging purposes
-*@param The color
-*/
 
 /**
 *@brief Takes in a shape that contains the body for physics
@@ -350,6 +363,8 @@ void Entity::SetBodyFixtures(FixtureData* data)
 	    f = f->GetNext();
 	    mBody->GetBody()->DestroyFixture( fixtureToDestroy );
 	}
+
+
 	for(int i = 0; i < mCurrentSprite->mHurtBoxCount;i++)
 	{
 		b2PolygonShape polygonShape;
@@ -371,9 +386,9 @@ void Entity::SetBodyFixtures(FixtureData* data)
 		Fixture.friction = 0.3f;
 
 		f= mBody->GetBody()->CreateFixture(&Fixture);
+		f->SetUserData(&data[i]);	
 		if(data[i].mType == BaseBox)
 			mBody->SetBaseBody(f);
-		f->SetUserData(&data[i]);	
 	}
 	if(mIsFlipped == 1)
 		FlipFixtures(gEntities[mID].mBody->GetBody()->GetFixtureList());
@@ -419,6 +434,7 @@ void Entity::AddComponent(sf::Int64 component)
 		case COMPONENT_PLAYER: 
 			gScene->Players[mID].mID = mID;
 			gScene->Players[mID].mMoveData = new MovementData();
+			gScene->Players[mID].mMoveData->mID = mID;
 	}
 
 	}

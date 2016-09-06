@@ -155,11 +155,11 @@ void Scene::Update()
 	{
 		if(gEntities[i].mBody != nullptr)
 		{
+			gEntities[i].Update(gDeltaTime);
 			if(gEntities[i].mMask & COMPONENT_PLAYER == COMPONENT_PLAYER)
 			{
 				gScene->Players[gEntities[i].mID].HandleInput();
 			}
-			gEntities[i].Update(gDeltaTime);
 		}
 	}
 	m_world->Step(gDeltaTime,8,6);

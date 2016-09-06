@@ -230,13 +230,22 @@ void SetData(Sprite* sprite,const char* charName)
 										const Value& fData2 = data3->value;
 										for (SizeType j = 0; j < fData2.Size(); j++)
 										{
-											hurtData[frameIndex++].mDimensions= b2Vec2(fData2[j].GetInt(),fData2[j++].GetInt());
+											hurtData[frameIndex].mDimensions= b2Vec2(fData2[j].GetInt(),fData2[j+1].GetInt());
+											j++;
+											frameIndex++;
 										}
 									}
 								}
 							}
 						}
-						
+						else if(strcmp(data->name.GetString(),"MPF") == 0)
+						{
+							sprite->mAnimation.mpf = data->value.GetInt();
+						}
+						else if(strcmp(data->name.GetString(),"HeldFrame") == 0)
+						{
+							sprite->mAnimation.heldFrame= data->value.GetInt();
+						}
 					}
 				}
 			}
@@ -291,7 +300,7 @@ Sprite *LoadSprite(char* filename)
 
 	//Setup Animation Data
 	sprite->mAnimation.maxFrames = sprite->mFramesPerLine * (sprite->mHeight / ANIMATION_FRAME_HEIGHT);
-	sprite->mAnimation.heldFrame = 0;
+	sprite->mAnimation.heldFrame = 100;
 	sprite->mAnimation.mpf = ANIMATION_DEFAULT_MPF;
 	sprite->mAnimation.oscillate = 0;
 

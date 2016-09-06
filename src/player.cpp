@@ -5,7 +5,7 @@
 #include "include\components.h"
 #include "player.h"
 #include "globals.h"
-Movement movement;
+MovementMachine movement;
 
 //
 //
@@ -32,16 +32,9 @@ void PlayerComponent::HandleInput()
 	
 	if (sf::Keyboard::isKeyPressed(KEY_MOVE_RIGHT))
 	{
-		gEntities[mID].mBody->GetBody()->SetLinearVelocity(b2Vec2(2,
-			gEntities[mID].mBody->GetBody()->GetLinearVelocity().y));
-		gEntities[mID].mCurrentSprite = gEntities[mID].mSpriteArray[1];
+		mMoveData->key = KEY_MOVE_RIGHT;
+		movement.MoveF(mMoveData);
 		gScene->Players[mID].ChangeState(P_State_Running);
-		if(gEntities[mID].mIsFlipped != 1)
-		{
-			gEntities[mID].mIsFlipped = 1;
-			FlipFixtures(gEntities[mID].mBody->GetBody()->GetFixtureList());
-		}
-		movement.MoveF();
 		
 	}	
 	else if (sf::Keyboard::isKeyPressed(KEY_MOVE_UP))
@@ -54,30 +47,24 @@ void PlayerComponent::HandleInput()
 	}
 	else if (sf::Keyboard::isKeyPressed(KEY_MOVE_LEFT))
 	{
-		gEntities[mID].mBody->GetBody()->SetLinearVelocity(b2Vec2(-2,
-			gEntities[mID].mBody->GetBody()->GetLinearVelocity().y));
-		gEntities[mID].mCurrentSprite = gEntities[mID].mSpriteArray[1];
+		mMoveData->key = KEY_MOVE_LEFT;
+		//gEntities[mID].SetSprite(1);
+		movement.MoveF(mMoveData);
 		gScene->Players[mID].ChangeState(P_State_Running);
-		
-		if(gEntities[mID].mIsFlipped != 0)
-		{
-			gEntities[mID].mIsFlipped = 0;
-			FlipFixtures(gEntities[mID].mBody->GetBody()->GetFixtureList());
-		}
-		movement.MoveF();
 	}
 	else
 	{
-		gEntities[mID].mCurrentSprite = gEntities[mID].mSpriteArray[0];
+		//gEntities[mID].SetSprite(0);
+		mMoveData->key = sf::Keyboard::Unknown;
+		movement.IdleF(mMoveData);
 		gScene->Players[mID].ChangeState(P_State_Neutral);
-		movement.IdleF();
 		
 	}
 	if (sf::Keyboard::isKeyPressed(KEY_JUMP))
 	{
 		gEntities[mID].mBody->GetBody()->SetLinearVelocity(b2Vec2(gEntities[mID].mBody->GetBody()->GetLinearVelocity().x,
 			-5));	
-
+		gEntities[mID].SetSprite(2);
 		movement.JumpF(mMoveData);
 		mMoveData->mJumped = 1;
 		//gScene->Players[mID].ChangeState(P_State_Jump);

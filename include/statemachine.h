@@ -1,7 +1,7 @@
 #ifndef _STATEMACHINE_H
 #define _STATEMACHINE_H
 
-
+#include <SFML/Graphics.hpp>
 #include <string>
 #include <queue>  
 #include <typeinfo>
@@ -17,6 +17,7 @@ public:
 typedef EventData NoEventData;
 
 class StateMachine;
+class SpriteMachine;
 
 /// @brief Abstract state base class that all states inherit from.
 class StateBase
@@ -301,17 +302,21 @@ private:
 class MovementData : public EventData
 {
 public:
+	int mID;
+	sf::Keyboard::Key key;
 	MovementData();
 	int mJumped;
+	int mGrounded;
 };
-class Movement : public StateMachine
+class MovementMachine : public StateMachine
 {
 public:
-    Movement();
-
+    MovementMachine();
+	SpriteMachine*		mSpriteMachine;
+	int					mID;
     // External events taken by this state machine
-	void IdleF();
-	void MoveF();
+	void IdleF(MovementData* data);
+	void MoveF(MovementData* data);
 	void JumpF(MovementData* data);
 
 private:
@@ -325,10 +330,11 @@ private:
         ST_JUMP,
         ST_MAX_STATES
     };
-	STATE_DECLARE(Movement,	Idle, NoEventData);
-	STATE_DECLARE(Movement,	Move, NoEventData);
-	STATE_DECLARE(Movement,	Jump, MovementData);
-	EXIT_DECLARE(Movement,	ExitJump);
+	STATE_DECLARE(MovementMachine,	Idle, MovementData);
+	STATE_DECLARE(MovementMachine,	Move, MovementData);
+	STATE_DECLARE(MovementMachine,	Jump, MovementData);
+	//ENTRY_DECLARE(MovementMachine, SwitchSprite, MovementData)
+	//EXIT_DECLARE(MovementMachine,	ExitJump);
 
     // State map to define state object order. Each state map entry defines a
     // state object.
@@ -341,11 +347,44 @@ private:
 	BEGIN_STATE_MAP_EX
 		STATE_MAP_ENTRY_EX(&Idle)
 		STATE_MAP_ENTRY_EX(&Move)
-		STATE_MAP_ENTRY_ALL_EX(&Jump, 0, 0, &ExitJump)
+		STATE_MAP_ENTRY_EX(&Jump)
 	END_STATE_MAP_EX
 };
 
+class SpriteMachine : public StateMachine
+{
+public:
+	SpriteMachine(int id);
+	int			mID;
+	// External events taken by this state machine
+	void IdleS();
+	void MoveS();
+	void JumpS();
 
+private:
+
+    // State enumeration order must match the order of state method entries
+    // in the state map.
+    enum States
+    {
+        ST_IDLE,
+        ST_MOVE,
+        ST_JUMP,
+        ST_MAX_STATES
+    };
+	STATE_DECLARE(SpriteMachine,	Idle, NoEventData);
+	STATE_DECLARE(SpriteMachine,	Move, NoEventData);
+	STATE_DECLARE(SpriteMachine,	Jump, NoEventData);
+
+	BEGIN_STATE_MAP_EX
+		STATE_MAP_ENTRY_EX(&Idle)
+		STATE_MAP_ENTRY_EX(&Move)
+		STATE_MAP_ENTRY_EX(&Jump)
+	END_STATE_MAP_EX
+
+	
+
+};
 /*
 class EventData
 {

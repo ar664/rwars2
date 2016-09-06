@@ -28,9 +28,15 @@
 				},
 				{
 					"Name" : "run",
-					"Frames" : 7,
+					"Frames" : 8,
 					"Oscillate" : 0,
 					"FilePath" : "sprites/Gill-Sawfish/run.png"
+				},
+				{
+					"Name" : "jump",
+					"Frames" : 6,
+					"Oscillate" : 0,
+					"FilePath" : "sprites/Gill-Sawfish/jump.png"
 				}
 			
 			]

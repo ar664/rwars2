@@ -11,13 +11,16 @@ enum TypeOfBox
 {
 		HurtBox,
 		AttackBox,
-		BaseBox
+		BaseBox,
+		GroundSensor
 };
 
 
 class pShape
 {
 public:
+	int					mTouchingGround;
+
 	virtual	void		init(b2World* world,const Vec2D position,const Vec2D dimensions,bool fixedRot) = 0;
 	b2Body*				GetBody(){return mBody;};
 	b2FixtureDef		GetFixture(){return mFixture;};
@@ -31,7 +34,7 @@ public:
 
 	void				SetPoints(sf::Vector2f* points,int count);
 	void				SetFixedRotation(bool b){mBodyDef.fixedRotation = b;};
-	void				SetBaseBody(b2Fixture* f){mBaseFixture = f;};
+	void				SetBaseBody(b2Fixture* f);
 protected:
 	b2Body*				mBody; // This handles the physics
 	b2Fixture*			mBaseFixture;

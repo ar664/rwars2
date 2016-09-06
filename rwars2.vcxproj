@@ -17,6 +17,7 @@
     <ClCompile Include="src\components.cpp" />
     <ClCompile Include="src\input.cpp" />
     <ClCompile Include="src\entity.cpp" />
+    <ClCompile Include="src\fault.cpp" />
     <ClCompile Include="src\fgen.cpp" />
     <ClCompile Include="src\globals.cpp" />
     <ClCompile Include="src\graphics.cpp" />
@@ -38,6 +39,7 @@
     <ClInclude Include="include\audio.h" />
     <ClInclude Include="include\components.h" />
     <ClInclude Include="include\entity.h" />
+    <ClCompile Include="include\fault.h" />
     <ClInclude Include="include\fgen.h" />
     <ClInclude Include="include\globals.h" />
     <ClInclude Include="include\graphics.h" />

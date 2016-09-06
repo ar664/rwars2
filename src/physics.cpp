@@ -11,19 +11,33 @@ Grid* gGrid;
 *@param The contact data
 */
 void ContactListener::BeginContact(b2Contact* contact) {
-  
-      //check if fixture A was a Entity
+	 FixtureData* f;
       void* bodyUserData = contact->GetFixtureA()->GetBody()->GetUserData();
       if ( bodyUserData )
 	  {
         static_cast<Entity*>( bodyUserData )->IncrementContact();
+		f = static_cast<FixtureData*>(contact->GetFixtureA()->GetUserData());
+		//Handle TouchGround
+ 		if(f->mType == GroundSensor)
+		{
+			static_cast<Entity*>( bodyUserData )->mBody->mTouchingGround  = 1;
+		}
 	  }
       //check if fixture B was a Entity
       bodyUserData = contact->GetFixtureB()->GetBody()->GetUserData();
       if ( bodyUserData )
 	  {
+		f = static_cast<FixtureData*>(contact->GetFixtureB()->GetUserData());
+		//Handle TouchGround
+ 		if(f->mType == GroundSensor)
+		{
+			static_cast<Entity*>( bodyUserData )->mBody->mTouchingGround = 1;
+		}
         static_cast<Entity*>( bodyUserData )->IncrementContact();
 	  }
+	  
+
+
     };
 /**
 *@brief This overides Box2Ds event listener, detects contact between two bodies

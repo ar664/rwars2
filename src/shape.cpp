@@ -82,6 +82,32 @@ void Box::UpdateBoxShape(Vec2D dimensions)
 	
 
 }
+void pShape::SetBaseBody(b2Fixture* f)
+{
+	mBaseFixture = f;
+	//b2Vec2 baseOffset = static_cast<FixtureData*>(f->GetUserData())->mOffset;
+	FixtureData *d = new FixtureData();
+	d->mOffset = b2Vec2(0,5);
+	d->mDimensions = b2Vec2(50,15);
+	d->mColor= sf::Color(255,0,0,100);
+	d->mType= GroundSensor;
+
+	//Handle TouchGround
+	b2PolygonShape polygonShape;
+	polygonShape.SetAsBox((d->mDimensions.x/2)/PPM,(d->mDimensions.y/2)/PPM,
+		b2Vec2(d->mOffset.x/PPM,d->mOffset.y/PPM),0);
+
+
+	b2FixtureDef Fixture;
+
+	Fixture.shape = &polygonShape;
+	Fixture.density = 1.0f;
+	Fixture.friction = 0.3f;
+	
+	b2Fixture *fix = mBody->CreateFixture(&Fixture);
+	fix->SetUserData(d);
+	fix->SetSensor(true);
+}
 
 /**
 *@brief This function Flips the fixtures of a b2Body on the x-axis
@@ -97,13 +123,13 @@ void FlipFixtures(b2Fixture* fixtures)
 		if(fData->mType == BaseBox)
 			continue;
 		int sizex,sizey;
+		sizex = static_cast<FixtureData*>(f->GetUserData())->mDimensions.x;
+		sizey = static_cast<FixtureData*>(f->GetUserData())->mDimensions.y;
 		shape = (b2PolygonShape*)f->GetShape();
-		sizex = shape->GetVertex(1).x - shape->GetVertex(0).x;
-		sizey = shape->GetVertex(2).y - shape->GetVertex(1).y;
 	
-		b2Vec2 prev = b2Vec2(shape->m_centroid.x,+shape->m_centroid.y);
+		b2Vec2 prev = b2Vec2(shape->m_centroid.x,shape->m_centroid.y);
 		prev.x = -prev.x;
-		shape->SetAsBox(50/2/PPM,50/2/PPM,prev,0);
+		shape->SetAsBox((sizex/2)/PPM,(sizey/2)/PPM,prev,0);
 	}
 
 }
