@@ -32,6 +32,10 @@
 					"1":{"LengthOfFrame":100,"HurtBoxOffset":[60,-50],"HurtBoxDimensions":[50,50]},	
 					"2":{"LengthOfFrame":100,"HurtBoxOffset":[0,-60],"HurtBoxDimensions":[50,50]},
 					"4":{"LengthOfFrame":100,"HurtBoxOffset":[-60,-30],"HurtBoxDimensions":[50,50]}
+				},
+			"HitBoxDef":
+				{
+					"1" :{"Frame": 1,"HitBoxOffset":[0,0],"HitBoxDimensions": [0,0]}
 				}
 		},
 		{

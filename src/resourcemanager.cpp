@@ -3,6 +3,7 @@
 TextureCache ResourceManager::mTextureCache;
 mfSpriteCache ResourceManager::mmfSpriteCache;
 rapidjson::Document ResourceManager::mAssetCache;
+
 using namespace rapidjson;
 TextureCache::TextureCache()
 {
@@ -73,8 +74,12 @@ sf::Sprite* ResourceManager::GetmfSprite(char* spritePath)
 mfSpriteCache* ResourceManager::GetmfSpriteCache()
 {
 	return &mmfSpriteCache;
-
 }
+TextureCache* ResourceManager::GetTextureCache()
+{
+	return & mTextureCache;
+}
+
 void ResourceManager::FreeCaches()
 {
 	{
@@ -106,16 +111,18 @@ sf::Sprite* mfSpriteCache::GetmfSprite(char* filepath)
 
 void mfSpriteCache::FreemfSprite(char* filepath)
 {
-	auto it = mmfSpriteMap.find(filepath);
+	char filePathCopy[255];
+	strcpy(filePathCopy,filepath);
+	auto it = mmfSpriteMap.find(filePathCopy);
 	if(it != mmfSpriteMap.end())
 	{
 		delete it->second;
 		mmfSpriteMap.erase(it);
 	}
-	sf::Texture* texture = ResourceManager::GetTexture(filepath);
-	if(texture != nullptr)
+	auto tit = ResourceManager::GetTextureCache()->GetTextureMap()->find(filePathCopy);
+	if(tit != ResourceManager::GetTextureCache()->GetTextureMap()->end())
 	{
-		ResourceManager::FreeTexture(filepath);
+		ResourceManager::FreeTexture(filePathCopy);
 	}
 }
 std::map<std::string,sf::Sprite*>* mfSpriteCache::GetSpriteMap()

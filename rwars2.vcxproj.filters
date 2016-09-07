@@ -23,7 +23,8 @@
     <ClCompile Include="include\input.h" />
     <ClCompile Include="include\resourcemanager.h" />
     <ClCompile Include="include\statemachine.h" />
-    <ClCompile Include="fault.cpp" />
+    <ClCompile Include="src\fault.cpp" />
+    <ClCompile Include="include\fault.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\AI.h" />
@@ -42,6 +43,5 @@
     <ClInclude Include="include\shape.h" />
     <ClInclude Include="include\sprite.h" />
     <ClInclude Include="include\vectors.h" />
-    <ClInclude Include="fault.h" />
   </ItemGroup>
 </Project>

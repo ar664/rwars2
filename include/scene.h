@@ -21,11 +21,10 @@ public:
 	void Update();
 	void RemoveEntity(Entity* ent);
 	b2World*		GetWorld(){return m_world;};
-
 private:
 	Entity *mEntityList;
 	b2World* m_world;
 	std::vector<Entity*> EntitiesScheduledForRemoval;
 };
-
+void DestroyScene();
 #endif

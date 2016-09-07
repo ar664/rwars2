@@ -11,7 +11,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="fault.cpp" />
     <ClCompile Include="src\AI.cpp" />
     <ClCompile Include="src\audio.cpp" />
     <ClCompile Include="src\components.cpp" />
@@ -34,7 +33,6 @@
     <ClCompile Include="src\vectors.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="fault.h" />
     <ClInclude Include="include\AI.h" />
     <ClInclude Include="include\audio.h" />
     <ClInclude Include="include\components.h" />

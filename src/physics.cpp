@@ -4,6 +4,7 @@
 #include "globals.h"
 #include "vectors.h"
 #include "physics.h"
+#include "include\statemachine.h"
 
 Grid* gGrid;
 /**
@@ -17,10 +18,16 @@ void ContactListener::BeginContact(b2Contact* contact) {
 	  {
         static_cast<Entity*>( bodyUserData )->IncrementContact();
 		f = static_cast<FixtureData*>(contact->GetFixtureA()->GetUserData());
-		//Handle TouchGround
- 		if(f->mType == GroundSensor)
+		//Handle Fixture Type
+ 		switch(f->mType)
 		{
-			static_cast<Entity*>( bodyUserData )->mBody->mTouchingGround  = 1;
+		case GroundSensor: static_cast<Entity*>( bodyUserData )->mBody->mTouchingGround  = 1;
+			break;
+		case HitBox:
+			printf("I got hit with a hitbox");
+			break;
+		default:
+			break;
 		}
 	  }
       //check if fixture B was a Entity
@@ -28,15 +35,19 @@ void ContactListener::BeginContact(b2Contact* contact) {
       if ( bodyUserData )
 	  {
 		f = static_cast<FixtureData*>(contact->GetFixtureB()->GetUserData());
-		//Handle TouchGround
- 		if(f->mType == GroundSensor)
+		//Handle Fixture Type
+ 		switch(f->mType)
 		{
-			static_cast<Entity*>( bodyUserData )->mBody->mTouchingGround = 1;
+		case GroundSensor: static_cast<Entity*>( bodyUserData )->mBody->mTouchingGround  = 1;
+			break;
+		case HitBox:
+			printf("I got hit with a hitbox");
+			break;
+		default:
+			break;
 		}
         static_cast<Entity*>( bodyUserData )->IncrementContact();
 	  }
-	  
-
 
     };
 /**

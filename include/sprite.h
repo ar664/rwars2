@@ -41,6 +41,7 @@ public:
 	sf::Sprite*					mSfSprite;
 	sf::IntRect*				mFrameBB;		//Frame Bounding Box
 	FixtureData*				mHurtBoxData;
+	FixtureData*				mAttackBoxData;
 	~Sprite(void);
 	void FreeSprite();
 	void SetFrameBB();

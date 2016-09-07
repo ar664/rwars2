@@ -199,6 +199,11 @@ void Loop()
 					
 					CallbackRunSystem();
 				break;
+			case Exiting:
+				delete gScene;
+				gRenderWindow.close();
+				exit(1);
+				break;	
 			default:
 				break;
 			}
@@ -212,8 +217,7 @@ void HandleEvent(sf::Event Event)
 	switch(Event.type)
 	{
 	case sf::Event::Closed:
-		gRenderWindow.close();
-		exit(1);
+		gGameState = Exiting;
 		break;
 	default:
 		break;

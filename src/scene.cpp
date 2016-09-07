@@ -53,41 +53,11 @@ Scene::Scene()
 	newBox->init(m_world,CreateVec2D(100,100)
 		,CreateVec2D(50,50),true);
 	ent->SetBody(newBox);
-
-	//b2PolygonShape polygonShape;
-    //b2FixtureDef myFixtureDef;
-    //myFixtureDef.shape = &polygonShape;
-    //myFixtureDef.density = 1;
-	//
-	//b2Vec2 pos;
-	//pos = b2Vec2( 25/PPM,0); //radial placement
-    //polygonShape.SetAsBox(50/2/PPM, 50/2/PPM, pos, 0 ); //a 2x2 rectangle
-	//b2Fixture* fixOne = ent->mBody->GetBody()->CreateFixture(&myFixtureDef); //add a fixture to the body
-	//FixtureData *fixData = new FixtureData;
-	//fixData->mColor = sf::Color(0,0,255,100);
-	//fixData->mType = HurtBox;
-	//fixOne->SetUserData(fixData);
-	//
-	//pos = b2Vec2( -25/PPM,0); //radial placement
-    //polygonShape.SetAsBox(50/2/PPM, 50/2/PPM, pos, 0 ); //a 2x2 rectangle
-	//b2Fixture* fixTwo = ent->mBody->GetBody()->CreateFixture(&myFixtureDef); //add a fixture to the body
-	//fixTwo->SetUserData(fixData);
-	//
-	//pos = b2Vec2( 0,-25/PPM); //radial placement
-    //polygonShape.SetAsBox(50/2/PPM, 50/2/PPM, pos, 0 ); //a 2x2 rectangle
-	//b2Fixture* fixThree = ent->mBody->GetBody()->CreateFixture(&myFixtureDef); //add a fixture to the body
-	//fixThree->SetUserData(fixData);
-	//
-	//pos = b2Vec2( 0,25/PPM); //radial placement
-    //polygonShape.SetAsBox(50/2/PPM, 50/2/PPM, pos, 0 ); //a 2x2 rectangle
-	//b2Fixture* fixFour = ent->mBody->GetBody()->CreateFixture(&myFixtureDef); //add a fixture to the body
-	//fixFour->SetUserData(fixData);
-
 }
 Scene::~Scene(){
-	m_world->~b2World();
-
+	delete m_world;
 }
+
 void Scene::RemoveEntity(Entity* ent)
 {
 	EntitiesScheduledForRemoval.push_back(ent);
@@ -168,7 +138,12 @@ void Scene::Update()
 	std::vector<Entity*>::iterator end = EntitiesScheduledForRemoval.end();
 	 for (; it!=end; ++it) {
 			Entity* dyingEntity = *it;
-			dyingEntity->Free();
+			if(dyingEntity->mBody != nullptr)
+			{
+				b2Body* b = dyingEntity->mBody->GetBody();
+				dyingEntity->Free();
+				b->GetWorld()->DestroyBody(b);
+			}
 		}
   
 	 //clear this list for next time

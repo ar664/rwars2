@@ -18,6 +18,7 @@ public:
 	~TextureCache();
 	sf::Texture* GetTexture(char* filepath);
 	void		FreeTexture(char* filepath);
+	std::map<std::string,sf::Texture*>	*GetTextureMap(){return &mTextureMap;};
 private:
 	std::map<std::string,sf::Texture*> mTextureMap;
 

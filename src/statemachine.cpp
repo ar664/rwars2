@@ -5,9 +5,7 @@
 
 using namespace std;
 
-//----------------------------------------------------------------------------
-// StateMachine
-//----------------------------------------------------------------------------
+
 StateMachine::StateMachine(unsigned char maxStates, unsigned char initialState) :
 	MAX_STATES(maxStates),
 	m_currentState(initialState),
@@ -18,9 +16,7 @@ StateMachine::StateMachine(unsigned char maxStates, unsigned char initialState) 
 	ASSERT_TRUE(MAX_STATES < EVENT_IGNORED);
 }  
 
-//----------------------------------------------------------------------------
-// ExternalEvent
-//----------------------------------------------------------------------------
+
 void StateMachine::ExternalEvent(unsigned char newState, const EventData* pData)
 {
 	// If we are supposed to ignore this event
@@ -43,9 +39,7 @@ void StateMachine::ExternalEvent(unsigned char newState, const EventData* pData)
 	}
 }
 
-//----------------------------------------------------------------------------
-// InternalEvent
-//----------------------------------------------------------------------------
+
 void StateMachine::InternalEvent(unsigned char newState, const EventData* pData)
 {
 	if (pData == NULL)
@@ -56,9 +50,7 @@ void StateMachine::InternalEvent(unsigned char newState, const EventData* pData)
 	m_newState = newState;
 }
 
-//----------------------------------------------------------------------------
-// StateEngine
-//----------------------------------------------------------------------------
+
 void StateMachine::StateEngine(void)
 {
 	const StateMapRow* pStateMap = GetStateMap();
@@ -74,9 +66,7 @@ void StateMachine::StateEngine(void)
 	}
 }
 
-//----------------------------------------------------------------------------
-// StateEngine
-//----------------------------------------------------------------------------
+
 void StateMachine::StateEngine(const StateMapRow* const pStateMap)
 {	
 
@@ -104,9 +94,7 @@ void StateMachine::StateEngine(const StateMapRow* const pStateMap)
 	}
 }
 
-//----------------------------------------------------------------------------
-// StateEngine
-//----------------------------------------------------------------------------
+
 void StateMachine::StateEngine(const StateMapRowEx* const pStateMapEx)
 {
 
@@ -163,11 +151,11 @@ MovementData::MovementData()
 {
 	memset(this,0,sizeof(MovementData));
 }
-MovementMachine::MovementMachine() : StateMachine(ST_MAX_STATES)
+CharacterStateMachine::CharacterStateMachine() : StateMachine(ST_MAX_STATES)
 {
 }
  
-void MovementMachine::MoveF(MovementData* n)
+void CharacterStateMachine::MoveF(MovementData* n)
 {
     BEGIN_TRANSITION_MAP                      // - Current State -
         TRANSITION_MAP_ENTRY (ST_MOVE)		  // ST_Idle
@@ -176,16 +164,16 @@ void MovementMachine::MoveF(MovementData* n)
     END_TRANSITION_MAP(n)
 
 }
-void MovementMachine::IdleF(MovementData* n)
+void CharacterStateMachine::IdleF(MovementData* n)
 {
     BEGIN_TRANSITION_MAP							// - Current State -
         TRANSITION_MAP_ENTRY (EVENT_IGNORED)	    // ST_Idle
         TRANSITION_MAP_ENTRY (ST_IDLE)				// ST_Move
-        TRANSITION_MAP_ENTRY (EVENT_IGNORED)        // ST_Jump
+        TRANSITION_MAP_ENTRY (ST_IDLE)				// ST_Jump
     END_TRANSITION_MAP(n)
 
 }
-void MovementMachine::JumpF(MovementData* n)
+void CharacterStateMachine::JumpF(MovementData* n)
 {
     BEGIN_TRANSITION_MAP							// - Current State -
         TRANSITION_MAP_ENTRY (ST_JUMP)				// ST_Idle
@@ -195,18 +183,22 @@ void MovementMachine::JumpF(MovementData* n)
 
 }
 
-STATE_DEFINE(MovementMachine,Idle,MovementData)
+STATE_DEFINE(CharacterStateMachine,Idle,MovementData)
 {
-	if(data->mGrounded == 1)
+	if(data->mTouchingGround == 1)
 	{
-		mSpriteMachine->IdleS();
+		gEntities[data->mID].mSpriteMachine->IdleS();
 	}
-	printf("I Am Idle\n");
+	//printf("I Am Idle\n");
 }
-STATE_DEFINE(MovementMachine,Move,MovementData)
+STATE_DEFINE(CharacterStateMachine,Move,MovementData)
 {
-	printf("I Am Moving\n");
-	mSpriteMachine->MoveS();
+	//printf("I Am Moving\n");
+	if(data->mTouchingGround != 0)
+	{
+		printf("%d\n",data->mTouchingGround);
+		gEntities[data->mID].mSpriteMachine->MoveS();
+	}
 	switch(data->key)
 	{
 	case KEY_MOVE_RIGHT:
@@ -231,10 +223,10 @@ STATE_DEFINE(MovementMachine,Move,MovementData)
 		break;
 	}
 }
-STATE_DEFINE(MovementMachine,Jump,MovementData)
+STATE_DEFINE(CharacterStateMachine,Jump,MovementData)
 {
-		mSpriteMachine->JumpS();
-		printf("I Am Jumping\n");
+		gEntities[data->mID].mSpriteMachine->JumpS();
+		//printf("I Am Jumping\n");
 }
 /**
 *This is the Beginning of where i start to define the functions
@@ -254,7 +246,7 @@ void SpriteMachine::IdleS()
 	BEGIN_TRANSITION_MAP							// - Current State -
         TRANSITION_MAP_ENTRY (ST_IDLE)				// ST_Idle
         TRANSITION_MAP_ENTRY (ST_IDLE)			 	// ST_Move
-        TRANSITION_MAP_ENTRY (EVENT_IGNORED)	    // ST_Jump
+        TRANSITION_MAP_ENTRY (ST_IDLE)				// ST_Jump
     END_TRANSITION_MAP(NULL)
 
 }
@@ -263,7 +255,7 @@ void SpriteMachine::MoveS()
 	BEGIN_TRANSITION_MAP							// - Current State -
         TRANSITION_MAP_ENTRY (ST_MOVE)				// ST_Idle
         TRANSITION_MAP_ENTRY (EVENT_IGNORED)	    // ST_Move
-        TRANSITION_MAP_ENTRY (EVENT_IGNORED)	    // ST_Jump
+        TRANSITION_MAP_ENTRY (ST_MOVE)				  // ST_Jump
     END_TRANSITION_MAP(NULL)
 
 }
@@ -281,16 +273,19 @@ BEGIN_TRANSITION_MAP							// - Current State -
 STATE_DEFINE(SpriteMachine,Idle,NoEventData)
 {
 	gEntities[mID].SetSprite(0);
+	gEntities[mID].SetBodyFixtures(gEntities[mID].mCurrentSprite->mHurtBoxData);
 	printf("Switch to Idle Sprite\n");
 }
 STATE_DEFINE(SpriteMachine,Move,NoEventData)
 {
 	gEntities[mID].SetSprite(1);
+	gEntities[mID].SetBodyFixtures(gEntities[mID].mCurrentSprite->mHurtBoxData);
 	printf("Switch to Move Sprite\n");
 }
 STATE_DEFINE(SpriteMachine,Jump,NoEventData)
 {
 	gEntities[mID].SetSprite(2);
+	gEntities[mID].SetBodyFixtures(gEntities[mID].mCurrentSprite->mHurtBoxData);
 	printf("Switch to Jump Sprite\n");
 }
 

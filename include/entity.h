@@ -6,6 +6,7 @@
 #include "vectors.h"
 #include "sprite.h"
 #include "include\components.h"
+#include "include\statemachine.h"
 
 
 class		pShape;
@@ -14,7 +15,7 @@ struct		FixtureData;
 struct		rShape;
 struct		Cell;
 struct		Manifold;
-
+class		StateMachine;
 class		Grid;
 
 #define		MAX_ENTITIES	1000
@@ -69,6 +70,8 @@ public:
 	int						mNumSprites;
 	Sprite**				mSpriteArray;
 	Sprite*					mCurrentSprite;	
+	SpriteMachine*			mSpriteMachine;
+
 	//Box2D Stuff
 	pShape*					mBody;
 

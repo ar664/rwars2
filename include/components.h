@@ -42,6 +42,7 @@ private:
 public:
 	int					mID;
 	MovementData*		mMoveData;
+	SpriteMachine*		mSpriteMachine;
 
 	/**
 	 * @brief Handles movement, lane switch, jump, and attack inputs

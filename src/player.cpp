@@ -5,8 +5,7 @@
 #include "include\components.h"
 #include "player.h"
 #include "globals.h"
-MovementMachine movement;
-
+CharacterStateMachine movement;
 //
 //
 //Character **gCharacters = (Character**) malloc(sizeof(Character*)*ASSETS_CHARACTERS);
@@ -29,7 +28,7 @@ MovementMachine movement;
 //
 void PlayerComponent::HandleInput()
 {
-	
+	mMoveData->mTouchingGround = gEntities[mID].mBody->mTouchingGround;
 	if (sf::Keyboard::isKeyPressed(KEY_MOVE_RIGHT))
 	{
 		mMoveData->key = KEY_MOVE_RIGHT;
@@ -48,57 +47,26 @@ void PlayerComponent::HandleInput()
 	else if (sf::Keyboard::isKeyPressed(KEY_MOVE_LEFT))
 	{
 		mMoveData->key = KEY_MOVE_LEFT;
-		//gEntities[mID].SetSprite(1);
 		movement.MoveF(mMoveData);
-		gScene->Players[mID].ChangeState(P_State_Running);
 	}
 	else
 	{
-		//gEntities[mID].SetSprite(0);
 		mMoveData->key = sf::Keyboard::Unknown;
-		movement.IdleF(mMoveData);
-		gScene->Players[mID].ChangeState(P_State_Neutral);
+		if(mMoveData->mTouchingGround == 1)
+		{
+			movement.IdleF(mMoveData);
+		}
 		
 	}
 	if (sf::Keyboard::isKeyPressed(KEY_JUMP))
 	{
 		gEntities[mID].mBody->GetBody()->SetLinearVelocity(b2Vec2(gEntities[mID].mBody->GetBody()->GetLinearVelocity().x,
 			-5));	
-		gEntities[mID].SetSprite(2);
+ 		mMoveData->mJumped = 1;
+		mMoveData->mTouchingGround = 0;
+		gEntities[mID].mBody->mTouchingGround = 0;
 		movement.JumpF(mMoveData);
-		mMoveData->mJumped = 1;
-		//gScene->Players[mID].ChangeState(P_State_Jump);
 	}
-	/*
-	switch(sf::Keyboard::)
-		{
-		case KEY_JUMP :
-			//ChangeState(P_State_Jump);
-			break;
-		case KEY_MOVE_UP :
-			//ChangeState(P_State_Lane_Switch);
-			break;
-		case KEY_MOVE_DOWN :
-			//ChangeState(P_State_Lane_Switch);
-			break;
-		case KEY_MOVE_LEFT :
-			//move left
-			gEntities[mID].mBody->SetVelocity(CreateVec2D(-3,0));
-			printf("MoveLeft\n");
-			break;
-		case KEY_MOVE_RIGHT :
-			//move right
-			gEntities[mID].mBody->SetVelocity(CreateVec2D(3,0));
-			printf("MoveRight\n");
-			break;
-		case KEY_ATTACK :
-			//ChangeState(P_State_Charge_Atk);
-			break;
-		default:
-			gEntities[mID].mBody->SetVelocity(CreateVec2D(0,0));
-			break;
-		}
-		*/
 }
 int PlayerComponent::GetState()
 {
@@ -131,8 +99,7 @@ void PlayerComponent::ChangeState(PlayerState state)
 	
 	//@TODO Need to find a better spot to put this line of code becuase its currently running
 	//Every frame which could slow down the game
-	gEntities[mID].SetBodyFixtures(gEntities[mID].mCurrentSprite->mHurtBoxData);
-
+	
 	if(state == P_State_Charge_Atk)
 	{
 		if(mAtkPressTime == 0)

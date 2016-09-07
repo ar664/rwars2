@@ -87,18 +87,20 @@ void Entity::Free()
 	int i;
 
 	//Free Sprites
-	if(mSpriteArray)
+	if(mSpriteArray != NULL)
 	{
-		//for(i = 0; i < mNumSprites; i++)
-	//	{
-		//	mSpriteArray[i]->FreeSprite();
-	//	}
-		free(mSpriteArray);
+		for(i = 0; i < MAX_SPRITE_ARRAY; i++)
+		{
+			if(mSpriteArray[i] != NULL)
+				mSpriteArray[i]->FreeSprite();
+		}
+		delete(mSpriteArray);
+		mSpriteArray =nullptr;
 	}
-	if(mBody)
+	if(mBody != nullptr)
 	{
-		mBody->GetBody()->GetWorld()->DestroyBody(mBody->GetBody());
-		free(mBody);
+		delete(mBody);
+		mBody = nullptr;
 	}
 	//Reset you own memory
 	memset(this, 0, sizeof(Entity));
@@ -117,7 +119,9 @@ Entity* CreateEntity()
 		gEntities[i].mInUse = 1;
 		gEntities[i].mID = i;
 		numEntities +=1;
-		gEntities[i].mSpriteArray = new Sprite* [25];
+		gEntities[i].mSpriteArray = new Sprite* [MAX_SPRITE_ARRAY];
+		gEntities[i].mSpriteMachine = nullptr;
+		memset(gEntities[i].mSpriteArray,0,sizeof(Sprite*)*MAX_SPRITE_ARRAY);
 		gEntities[i].mMask = COMPONENT_ENTITY;
 		return &gEntities[i];
 
@@ -299,7 +303,7 @@ void Entity::Update(float deltaTime)
 	if(mMask & COMPONENT_PLAYER == COMPONENT_PLAYER)
 	{
 		if(mBody != nullptr)
-			gScene->Players[mID].mMoveData->mGrounded = mBody->mTouchingGround;
+			gScene->Players[mID].mMoveData->mTouchingGround = mBody->mTouchingGround;
 	}
 	/*
 		//Grid Detection via Cells
@@ -435,7 +439,8 @@ void Entity::AddComponent(sf::Int64 component)
 			gScene->Players[mID].mID = mID;
 			gScene->Players[mID].mMoveData = new MovementData();
 			gScene->Players[mID].mMoveData->mID = mID;
+			gScene->Players[mID].mSpriteMachine = new SpriteMachine(mID);
+			gEntities[mID].mSpriteMachine = gScene->Players[mID].mSpriteMachine;
 	}
-
 	}
 }

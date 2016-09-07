@@ -5,12 +5,12 @@
 #include <string>
 #include <queue>  
 #include <typeinfo>
-#include "fault.h"
+#include "include\fault.h"
 
 class EventData
 {
 public:
-	virtual ~EventData() {}
+	//virtual ~EventData() {}
 	//XALLOCATOR
 };
 
@@ -259,7 +259,7 @@ private:
 	void stateMachine::EX_##exitName(void)
 
 #define BEGIN_TRANSITION_MAP \
-    static const unsigned char TRANSITIONS[] = {\
+    const unsigned char TRANSITIONS[] = {\
 
 #define TRANSITION_MAP_ENTRY(entry)\
     entry,
@@ -303,16 +303,15 @@ class MovementData : public EventData
 {
 public:
 	int mID;
+	int mTouchingGround;
 	sf::Keyboard::Key key;
 	MovementData();
 	int mJumped;
-	int mGrounded;
 };
-class MovementMachine : public StateMachine
+class CharacterStateMachine : public StateMachine
 {
 public:
-    MovementMachine();
-	SpriteMachine*		mSpriteMachine;
+    CharacterStateMachine();
 	int					mID;
     // External events taken by this state machine
 	void IdleF(MovementData* data);
@@ -330,11 +329,11 @@ private:
         ST_JUMP,
         ST_MAX_STATES
     };
-	STATE_DECLARE(MovementMachine,	Idle, MovementData);
-	STATE_DECLARE(MovementMachine,	Move, MovementData);
-	STATE_DECLARE(MovementMachine,	Jump, MovementData);
-	//ENTRY_DECLARE(MovementMachine, SwitchSprite, MovementData)
-	//EXIT_DECLARE(MovementMachine,	ExitJump);
+	STATE_DECLARE(CharacterStateMachine,	Idle, MovementData);
+	STATE_DECLARE(CharacterStateMachine,	Move, MovementData);
+	STATE_DECLARE(CharacterStateMachine,	Jump, MovementData);
+	//ENTRY_DECLARE(CharacterStateMachine, SwitchSprite, MovementData)
+	//EXIT_DECLARE(CharacterStateMachine,	ExitJump);
 
     // State map to define state object order. Each state map entry defines a
     // state object.

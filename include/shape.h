@@ -10,7 +10,7 @@
 enum TypeOfBox
 {
 		HurtBox,
-		AttackBox,
+		HitBox,
 		BaseBox,
 		GroundSensor
 };
@@ -76,7 +76,7 @@ protected:
 
 struct FixtureData
 {
-
+	int					mFrame;
 	TypeOfBox			mType;
 	sf::Color			mColor;
 	b2Vec2				mOffset;

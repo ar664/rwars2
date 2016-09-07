@@ -19,6 +19,8 @@
 #define MPP	(1.0f/PIXELS_PER_METER)
 
 #define MAX_PLAYERS			4
+
+#define MAX_SPRITE_ARRAY	25
 //Whenever ssing an external type include the file before you use it to reduce errors.
 #include <SFML/Graphics.hpp>
 #include "scene.h"
