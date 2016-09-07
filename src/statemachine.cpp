@@ -196,7 +196,7 @@ STATE_DEFINE(CharacterStateMachine,Move,MovementData)
 	//printf("I Am Moving\n");
 	if(data->mTouchingGround != 0)
 	{
-		printf("%d\n",data->mTouchingGround);
+		//printf("%d\n",data->mTouchingGround);
 		gEntities[data->mID].mSpriteMachine->MoveS();
 	}
 	switch(data->key)
@@ -274,19 +274,19 @@ STATE_DEFINE(SpriteMachine,Idle,NoEventData)
 {
 	gEntities[mID].SetSprite(0);
 	gEntities[mID].SetBodyFixtures(gEntities[mID].mCurrentSprite->mHurtBoxData);
-	printf("Switch to Idle Sprite\n");
+	//printf("Switch to Idle Sprite\n");
 }
 STATE_DEFINE(SpriteMachine,Move,NoEventData)
 {
 	gEntities[mID].SetSprite(1);
 	gEntities[mID].SetBodyFixtures(gEntities[mID].mCurrentSprite->mHurtBoxData);
-	printf("Switch to Move Sprite\n");
+	//printf("Switch to Move Sprite\n");
 }
 STATE_DEFINE(SpriteMachine,Jump,NoEventData)
 {
 	gEntities[mID].SetSprite(2);
 	gEntities[mID].SetBodyFixtures(gEntities[mID].mCurrentSprite->mHurtBoxData);
-	printf("Switch to Jump Sprite\n");
+	//printf("Switch to Jump Sprite\n");
 }
 
 

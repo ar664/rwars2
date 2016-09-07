@@ -237,7 +237,7 @@ void Entity::Draw(sf::RenderTarget& target)
 	mLastDrawTime = gClock.getElapsedTime().asMilliseconds();
 	mNextFrameTime -= delta;
 	
-	//printf("%d\n",mCurrentFrame);
+	printf("%d\n",mCurrentFrame);
 	if(mNextFrameTime <= 0)
 	{
 		if(mCurrentFrame == mCurrentSprite->mAnimation.heldFrame-1)
@@ -279,6 +279,7 @@ void Entity::SetSprite(int n)
 {
 	mCurrentFrame = 0;
 	mCurrentSprite->mAnimation.holdFrame = 0;
+	mCurrentSprite->mAnimation.frameInc = std::abs(mCurrentSprite->mAnimation.frameInc);
 	mCurrentSprite = mSpriteArray[n];
 
 }
