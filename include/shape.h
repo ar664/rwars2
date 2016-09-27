@@ -3,7 +3,6 @@
 #define MaxPolyVertexCount 64
 #include <assert.h>
 #include <utility>
-#include "matrix.h"
 #include "globals.h"
 #include "include\Box2D\Box2D.h"
 

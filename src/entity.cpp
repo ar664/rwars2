@@ -122,7 +122,7 @@ Entity* CreateEntity()
 		gEntities[i].mSpriteArray = new Sprite* [MAX_SPRITE_ARRAY];
 		gEntities[i].mSpriteMachine = nullptr;
 		memset(gEntities[i].mSpriteArray,0,sizeof(Sprite*)*MAX_SPRITE_ARRAY);
-		gEntities[i].mMask = COMPONENT_ENTITY;
+
 		return &gEntities[i];
 
 	}
@@ -144,6 +144,7 @@ bool EntitySystemInit()
 		return false;
 	}
 	memset(gEntities, 0, sizeof(Entity)*MAX_ENTITIES);
+	
 	atexit(EntitySystemShutdown);
 	return true;
 }
@@ -237,7 +238,6 @@ void Entity::Draw(sf::RenderTarget& target)
 	mLastDrawTime = gClock.getElapsedTime().asMilliseconds();
 	mNextFrameTime -= delta;
 	
-	printf("%d\n",mCurrentFrame);
 	if(mNextFrameTime <= 0)
 	{
 		if(mCurrentFrame == mCurrentSprite->mAnimation.heldFrame-1)
@@ -301,11 +301,11 @@ Cell* Entity::GetCell()
 void Entity::Update(float deltaTime)
 {
 
-	if(mMask & COMPONENT_PLAYER == COMPONENT_PLAYER)
-	{
-		if(mBody != nullptr)
-			gScene->Players[mID].mMoveData->mTouchingGround = mBody->mTouchingGround;
-	}
+	//if(mMask & COMPONENT_PLAYER == COMPONENT_PLAYER)
+	//{
+	//	if(mBody != nullptr)
+	//		//gScene->Players[mID].mMoveData->mTouchingGround = mBody->mTouchingGround;
+	//}
 	/*
 		//Grid Detection via Cells
 		Cell *newCell = gGrid->getCell(CreateVec2D(getPosition().x,getPosition().y));
@@ -398,50 +398,4 @@ void Entity::SetBodyFixtures(FixtureData* data)
 	if(mIsFlipped == 1)
 		FlipFixtures(gEntities[mID].mBody->GetBody()->GetFixtureList());
 	
-}
-/**
-*@brief Checks to see if this entity contains this component
-*@param The component
-*@return true if it has, false if it doesnt
-*/
-bool Entity::HasComponent(sf::Int64 component)
-{
-	if (mMask & component == component)
-		return true;
-	else
-		return false;
-
-}
-/**
-*@brief Adds a component to the Entities component Mask
-*@param The component ENUM
-*/
-void Entity::AddComponent(sf::Int64 component)
-{
-	if(gScene != nullptr)
-	{
-		if(mID > MAX_ENTITIES)
-		{
-			std::printf("Exceed EntityLimit..EXIT");
-			exit(0);
-		}
-		else if (mMask & component == component)
-		{
-			std::printf("Entity already has this component");
-			return;
-		}
-		else
-		{
-			mMask = mMask | component;
-		}
-	switch(component)
-	{
-		case COMPONENT_PLAYER: 
-			gScene->Players[mID].mID = mID;
-			gScene->Players[mID].mMoveData = new MovementData();
-			gScene->Players[mID].mMoveData->mID = mID;
-			gScene->Players[mID].mSpriteMachine = new SpriteMachine(mID);
-			gEntities[mID].mSpriteMachine = gScene->Players[mID].mSpriteMachine;
-	}
-	}
 }

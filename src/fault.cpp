@@ -6,5 +6,5 @@
 //----------------------------------------------------------------------------
 void FaultHandler(const char* file, unsigned short line)
 {	
-	assert(0);
+	//assert(0);
 }

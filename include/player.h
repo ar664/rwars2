@@ -31,14 +31,13 @@ typedef enum PlayerState
 // *		mNextStateChange	-	The next sf time State returns to Neutral and can be changed
 // */
 //
-/*
-class Character 
+class Player 
 {
 private:
 	int					mHealth;
 	int					mState;
 	PlayerState			mCurrState; //flag of all states
-	
+	PlayerState			mPrevState;
 	sf::Uint32			mAtkPressTime; //Time atk btn was pressed
 	sf::Uint32			mAtkHoldTime; // Amount of time atk btn was held
 	//currently using timers for state changes
@@ -46,37 +45,37 @@ private:
 	sf::Uint32			mLastStateChange;
 	int					mNextStateChange;
 public:
-	Character();
+	Player();
 
 	/**
 	 * @brief Handles movement, lane switch, jump, and attack inputs
 	 * @param Event, player input to handle event
 	 */
-//void HandleInput(sf::Event Event);
+void HandleInput();
 ///**
 // * @brief Changes player state if enough time has passed since last state change
 // * @param state, state player must change to
 // */
-//void ChangeState(PlayerState state);
+void ChangeState(PlayerState state);
 ///**
 // * @brief Handles updating player status and state
 // */
-//void Update();
+void Update();
 //
 ///**
 //  *@brief Handles updating player actions / interaction with world
 //*/
-//void Think();
+void Think();
 //
 ///**
 // * @brief Handles Collision Events with other entities
 // * @param other, entity that touched this player
 // */
-////void Touch(Entity *other);
+void Touch(Entity *other);
 //
-////int GetState();
+int GetState();
 //
-//};
+};
 
 //extern Character **gCharacters;
 

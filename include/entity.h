@@ -3,10 +3,12 @@
 
 #include <SFML/Audio.hpp>
 
+#include <typeindex>
+#include <map>
 #include "vectors.h"
 #include "sprite.h"
-#include "include\components.h"
 #include "include\statemachine.h"
+
 
 
 class		pShape;
@@ -57,9 +59,7 @@ private:
 
 	Vec2D					mDimension;
 	Cell*					mCell;
-	
 public:
-	sf::Int64				mMask;
 	int						mIsFlipped;
 	int						mID;
 	int						mInUse;
@@ -74,8 +74,7 @@ public:
 
 	//Box2D Stuff
 	pShape*					mBody;
-
-
+	
 	sf::SoundBuffer**		mSounds;
 
 
@@ -119,9 +118,6 @@ public:
 	void			LoadSounds(char **SoundFiles);
 	void			Free();
 	
-	//Component Methods
-	void			AddComponent(sf::Int64 component);
-	bool			HasComponent(sf::Int64 component);
 };
 
 

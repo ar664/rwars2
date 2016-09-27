@@ -25,7 +25,6 @@
 #include <SFML/Graphics.hpp>
 #include "scene.h"
 #include "physics.h"
-#include "fgen.h"
 extern int numSprites;
 extern int numEntities;
 extern float gDeltaTime;

@@ -2,7 +2,7 @@
 #define _SCENE_H		
 //#include "include\entity.h"
 #include "include\Box2D\Box2D.h"
-#include "include\components.h"
+#include "include\entity.h"
 
 
 /**
@@ -15,16 +15,17 @@ class Scene
 public:
 	Scene();
 	~Scene();
-	PlayerComponent			Players		[MAX_ENTITIES];
+	Entity *mEntityList;
+	
+
 	void Draw(sf::RenderTarget &target);
 	void DebugDraw(sf::RenderTarget &target);
 	void Update();
 	void RemoveEntity(Entity* ent);
 	b2World*		GetWorld(){return m_world;};
-private:
-	Entity *mEntityList;
-	b2World* m_world;
 	std::vector<Entity*> EntitiesScheduledForRemoval;
+private:
+	b2World* m_world;
 };
 void DestroyScene();
 #endif

@@ -7,7 +7,6 @@
 #include <iostream>
 #include <string.h>
 #include "include\resourcemanager.h"
-#include "fgen.h"
 #include "physics.h"
 #include "audio.h"
 #include "entity.h"
@@ -24,6 +23,7 @@ char *test_files[] = {"sprites/Crate.png", 0};
 float deltaTime = 0;
 Scene *gScene;
 Entity test, test2;
+
 GameState gGameState;
 
 Sprite splashSprite;
@@ -125,13 +125,13 @@ void Start()
 	Init_Graphics(WINDOW_WIDTH,WINDOW_HEIGHT,"RWARS");
 	SpriteListInit();
 	EntitySystemInit();
+
 	//CallbackInitSystem();
 	
 	gGameState =Playing;
 	//LoadAssets();
 	gGrid = new Grid(6,6,100);
 	gScene = new Scene;
-	gEntities[10].AddComponent(COMPONENT_PLAYER);
 	gClock.restart();
 	splashSprite = *LoadSprite("sprites/rwars_title_pixel.png");
 	
@@ -146,6 +146,8 @@ void Start()
 	
 	gEntities[10].mCurrentSprite = gEntities[10].mSpriteArray[0];
 	gEntities[10].SetBodyFixtures(gEntities[10].mCurrentSprite->mHurtBoxData);
+
+
 	while(!IsExiting())
 		Loop();
 	gRenderWindow.close();
@@ -176,8 +178,7 @@ void Loop()
 		while(gRenderWindow.pollEvent(gEvent))
 					{
 						HandleEvent(gEvent);
-						//doubleg
-						//AudioLoop(0);
+
 					}
 
 		switch(gGameState)
@@ -191,7 +192,7 @@ void Loop()
 					while(accumulator >= gDeltaTime)
 					{
 						deltaTime = accumulator/gDeltaTime;
-						gScene->Update();
+						//gScene->Update();
 						accumulator -= gDeltaTime;
 					}
 					gEntities[10].Draw(gRenderWindow);

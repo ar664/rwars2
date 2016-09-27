@@ -19,7 +19,6 @@ Scene::Scene()
 	Box *newBox;
 
 	mEntityList = gEntities;
-	memset(Players,0,sizeof(PlayerComponent)*MAX_ENTITIES);
 	std::mt19937 randGenerator;
 	std::uniform_real_distribution<float> xDist(0,500);
 	std::uniform_real_distribution<float> yDist(0,400);
@@ -123,13 +122,9 @@ void Scene::Update()
 	//Step through the physics simulation
 	for(int i = 0; i < MAX_ENTITIES;++i)
 	{
-		if(gEntities[i].mBody != nullptr)
+		if(gEntities[i].mInUse)
 		{
-			gEntities[i].Update(gDeltaTime);
-			if(gEntities[i].mMask & COMPONENT_PLAYER == COMPONENT_PLAYER)
-			{
-				gScene->Players[gEntities[i].mID].HandleInput();
-			}
+			//Do something
 		}
 	}
 	m_world->Step(gDeltaTime,8,6);

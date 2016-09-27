@@ -1,8 +1,8 @@
+
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <math.h>
 #include "include\statemachine.h"
-#include "include\components.h"
 #include "player.h"
 #include "globals.h"
 CharacterStateMachine movement;
@@ -26,14 +26,19 @@ CharacterStateMachine movement;
 //	//mBody = new RigidBody();
 //}
 //
-void PlayerComponent::HandleInput()
+
+Player::Player()
 {
+
+}
+void Player::HandleInput()
+{
+	/*
 	mMoveData->mTouchingGround = gEntities[mID].mBody->mTouchingGround;
 	if (sf::Keyboard::isKeyPressed(KEY_MOVE_RIGHT))
 	{
 		mMoveData->key = KEY_MOVE_RIGHT;
 		movement.MoveF(mMoveData);
-		gScene->Players[mID].ChangeState(P_State_Running);
 		
 	}	
 	else if (sf::Keyboard::isKeyPressed(KEY_MOVE_UP))
@@ -67,13 +72,11 @@ void PlayerComponent::HandleInput()
 		gEntities[mID].mBody->mTouchingGround = 0;
 		movement.JumpF(mMoveData);
 	}
-}
-int PlayerComponent::GetState()
-{
-	return mCurrState;
+	*/
 }
 
-void PlayerComponent::ChangeState(PlayerState state)
+
+void Player::ChangeState(PlayerState state)
 {
 
 	int delta		= 0;
