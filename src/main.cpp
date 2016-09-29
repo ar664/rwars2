@@ -6,11 +6,11 @@
 #include <SFML/Window.hpp>
 #include <iostream>
 #include <string.h>
-#include "include\resourcemanager.h"
+#include "resourcemanager.h"
 #include "physics.h"
 #include "audio.h"
 #include "entity.h"
-#include "include\scene.h"
+#include "scene.h"
 #include "player.h"
 #include "graphics.h"
 #include "globals.h"

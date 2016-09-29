@@ -5,10 +5,10 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Window.hpp>
 #include <random>
-#include "include\globals.h"
-#include "include\shape.h"
-#include "include\physics.h"
-#include "include\scene.h"
+#include "globals.h"
+#include "shape.h"
+#include "physics.h"
+#include "scene.h"
 
 ContactListener CLInstance;
 

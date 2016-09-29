@@ -4,7 +4,7 @@
 #include <assert.h>
 #include <utility>
 #include "globals.h"
-#include "include\Box2D\Box2D.h"
+#include "Box2D/Box2D.h"
 
 enum TypeOfBox
 {

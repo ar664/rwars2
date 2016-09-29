@@ -2,7 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <math.h>
-#include "include\statemachine.h"
+#include "statemachine.h"
 #include "player.h"
 #include "globals.h"
 CharacterStateMachine movement;

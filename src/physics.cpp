@@ -4,7 +4,7 @@
 #include "globals.h"
 #include "vectors.h"
 #include "physics.h"
-#include "include\statemachine.h"
+#include "statemachine.h"
 
 Grid* gGrid;
 /**

@@ -1,5 +1,5 @@
 IDIR=include
-CC=g++ -std=c++11 --debug
+CC=g++ -fpermissive --std=c++11 --debug
 CFLAGS=-I$(IDIR)
 
 SRCDIR=src
@@ -7,14 +7,14 @@ ODIR=obj
 LDIR=lib
 
 #Libs are included without the lib prefix because -l does that for you
-LIBS=-lm -lsfml-system -lsfml-audio -lsfml-window -lsfml-graphics -lsfml-audio 
+LIBS=-lm -lsfml-system -lsfml-audio -lsfml-window -lsfml-graphics -lsfml-audio -lBox2D 
 
 #H files go here
-_DEPS = audio.h physics.h player.h sprite.h globals.h graphics.h vectors.h entity.h main.h particle.h fgen.h matrix.h
+_DEPS = AI.h audio.h entity.h fault.h globals.h graphics.h main.h physics.h player.h resourcemanager.h scene.h shape.h sprite.h statemachine.h vectors.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
 #Target object files go here (There basically the c files)
-_OBJ = audio.o physics.o player.o sprite.o globals.o graphics.o vectors.o entity.o main.o particle.o fgen.o matrix.o
+_OBJ = AI.o audio.o entity.o fault.o globals.o graphics.o main.o physics.o player.o resourcemanager.o scene.o shape.o sprite.o statemachine.o vectors.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 

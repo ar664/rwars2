@@ -5,7 +5,7 @@
 #include <string>
 #include <queue>  
 #include <typeinfo>
-#include "include\fault.h"
+#include "fault.h"
 
 class EventData
 {
@@ -232,7 +232,7 @@ private:
 
 #define STATE_DECLARE(stateMachine, stateName, eventData) \
 	void ST_##stateName(const eventData*); \
-	StateAction<stateMachine, eventData, &##stateMachine::ST_##stateName> stateName;
+	StateAction<stateMachine, eventData, &stateMachine::ST_##stateName> stateName;
 	
 #define STATE_DEFINE(stateMachine, stateName, eventData) \
 	void stateMachine::ST_##stateName(const eventData* data)

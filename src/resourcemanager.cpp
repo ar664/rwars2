@@ -1,4 +1,4 @@
-#include "include\resourcemanager.h"
+#include "resourcemanager.h"
 
 TextureCache ResourceManager::mTextureCache;
 mfSpriteCache ResourceManager::mmfSpriteCache;

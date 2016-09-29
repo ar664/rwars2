@@ -1,8 +1,8 @@
 #ifndef _SCENE_H
 #define _SCENE_H		
 //#include "include\entity.h"
-#include "include\Box2D\Box2D.h"
-#include "include\entity.h"
+#include <Box2D/Box2D.h>
+#include "entity.h"
 
 
 /**

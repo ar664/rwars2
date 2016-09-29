@@ -3,7 +3,7 @@
 #include <vector>
 #include "entity.h"
 #include "shape.h"
-#include "include\Box2D\Box2D.h"
+#include "Box2D/Box2D.h"
 
 const float Gravity_constant = 6.3;
 const float Damping_constant = .99;	//Acts like wind resistance

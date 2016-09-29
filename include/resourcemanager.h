@@ -2,9 +2,9 @@
 #define _RESOURCEMANAGER_H
 #include <SFML/Graphics.hpp>
 #include <map>
-#include "include\sprite.h"
-#include "include\rapidjson\filereadstream.h"
-#include "include\rapidjson\document.h"
+#include "sprite.h"
+#include "rapidjson/filereadstream.h"
+#include "rapidjson/document.h"
 
 
 /**

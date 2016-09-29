@@ -1,7 +1,9 @@
 #include <assert.h>
-#include "include\globals.h"
-#include "include\statemachine.h"
+#include "globals.h"
+#include "statemachine.h"
  
+#define KEY_MOVE_RIGHT 1
+#define KEY_MOVE_LEFT 2
 
 using namespace std;
 

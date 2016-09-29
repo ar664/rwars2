@@ -1,11 +1,10 @@
-#include "sprite.h"
 #include <SFML/Graphics.hpp>
 #include <malloc.h>
 #include <string.h>
 #include <iostream>
-#include "include\rapidjson\filereadstream.h"
-#include "include\rapidjson\document.h"
-#include "include\resourcemanager.h"
+#include "rapidjson/filereadstream.h"
+#include "rapidjson/document.h"
+#include "resourcemanager.h"
 #include "shape.h"
 #include "vectors.h"
 #include "globals.h"

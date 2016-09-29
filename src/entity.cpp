@@ -2,8 +2,8 @@
 #include <SFML/Audio.hpp>
 #include <string.h>
 #include <malloc.h>
-#include "include\rapidjson\filereadstream.h"
-#include "include\rapidjson\document.h"
+#include "rapidjson/filereadstream.h"
+#include "rapidjson/document.h"
 #include "shape.h"
 #include "globals.h"
 #include "physics.h"
