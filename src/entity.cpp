@@ -301,27 +301,6 @@ Cell* Entity::GetCell()
 void Entity::Update(float deltaTime)
 {
 
-	//if(mMask & COMPONENT_PLAYER == COMPONENT_PLAYER)
-	//{
-	//	if(mBody != nullptr)
-	//		//gScene->Players[mID].mMoveData->mTouchingGround = mBody->mTouchingGround;
-	//}
-	/*
-		//Grid Detection via Cells
-		Cell *newCell = gGrid->getCell(CreateVec2D(getPosition().x,getPosition().y));
-		if(newCell != GetCell())
-			{
-				if(GetCell() == NULL)
-			{
-				gGrid->addEntity(this,newCell);
-			}
-			else if(newCell != GetCell())
-			{
-				gGrid->removeEntityFromCell(this);
-				gGrid->addEntity(this,newCell);
-			}
-		}
-		*/
 }
 
 /**

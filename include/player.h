@@ -77,7 +77,4 @@ int GetState();
 //
 };
 
-//extern Character **gCharacters;
-
-//Character * PlayerLoad(int num, char **sprites);
 #endif
